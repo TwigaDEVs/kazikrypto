@@ -1,6 +1,6 @@
 # Kazi Krypto
 
-Description: The use case involves building a freelancing platform on the Ethereum blockchain using React Native for Android application development. The platform will utilize Infura, MetaMask SDK, MetaMask Snaps, and Linea to enable cross-chain functionality and seamless integration with the Ethereum network. The platform aims to connect freelancers and clients, facilitating secure and transparent transactions while leveraging the benefits of blockchain technology.
+Description: The use case involves building a freelancing platform on the Ethereum blockchain using React Native for Android application development. The platform will utilize Infura, MetaMask SDK, MetaMask snaps, and Linea to enable cross-chain functionality and seamless integration with the Ethereum network. The platform aims to connect freelancers and clients, facilitating secure and transparent transactions while leveraging the benefits of blockchain technology.
 
 ## Key Features
 
