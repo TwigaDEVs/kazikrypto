@@ -1,0 +1,1747 @@
+{
+  "contractName": "KaziKrypto",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "payable",
+      "type": "constructor"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.13+commit.abaa5c0e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"payable\",\"type\":\"constructor\"}],\"devdoc\":{\"details\":\"user Registration and profilesJob posting and biddingSmart contract escrowmessaging and collaborationreputation and reviewspayment and escrow releasetransaction history and analyticsconflict resolution\",\"kind\":\"dev\",\"methods\":{\"constructor\":{\"details\":\"allow smart contract to receive payments\"}},\"title\":\"Kazi Krypto\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"notice\":\"The contract a freelancing platform on the Ethereum blockchainThe platform aims to connect freelancers and clients, facilitating secure and transparent transactions while leveraging the benefits of blockchain technology\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/KaziKrypto.sol\":\"KaziKrypto\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/KaziKrypto.sol\":{\"keccak256\":\"0xb5dcc7d9d6ff3decc5450ec0a0895b4bf3b180c14c449e83229d06d16fa51fa4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6b35d77597c339b4f7cdab32c6fd89b5b3c4b08396e3600207446e8576681156\",\"dweb:/ipfs/QmUEnntXUQgSzcpZxQ4VraYHZX4RNXfUWxzdffk1VquKfc\"]}},\"version\":1}",
+  "bytecode": "0x6080604052603f8060116000396000f3fe6080604052600080fdfea26469706673582212203e01484c46dd72be9a93fd3a643467df5b31d5ef318d1963921d0ab65037ed7464736f6c634300080d0033",
+  "deployedBytecode": "0x6080604052600080fdfea26469706673582212203e01484c46dd72be9a93fd3a643467df5b31d5ef318d1963921d0ab65037ed7464736f6c634300080d0033",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "625:3139:0:-:0;;;;;;;;;",
+  "deployedSourceMap": "625:3139:0:-:0;;;;;",
+  "source": "// SPDX-License-Identifier: MIT\r\npragma solidity >=0.4.1 < 0.9.0;\r\n\r\n/**\r\n* @title Kazi Krypto\r\n* @notice The contract a freelancing platform on the Ethereum blockchain\r\n* @notice The platform aims to connect freelancers and clients, facilitating secure and\r\ntransparent transactions while leveraging the benefits of blockchain technology\r\n\r\n* @dev user Registration and profiles\r\n* @dev Job posting and bidding\r\n* @dev Smart contract escrow\r\n* @dev messaging and collaboration\r\n* @dev reputation and reviews\r\n* @dev payment and escrow release\r\n* @dev transaction history and analytics\r\n* @dev conflict resolution\r\n */\r\n \r\n\r\ncontract KaziKrypto {\r\n\r\n    /**\r\n    * @dev allow smart contract to receive payments\r\n    */\r\n    constructor() public payable{\r\n\r\n    }\r\n\r\n\r\n    /// @title Freelancer Profile\r\n    /// @dev Struct to store user profile\r\n    struct Freelancer {\r\n        address payable accountId;\r\n        string fullName;\r\n        string profession;\r\n        string paymentPreference;\r\n        string[] skills;\r\n        uint profileRating;\r\n    }\r\n\r\n    /// @title freelancer portfolio\r\n    /// @notice all portfolios mapped to the specific freelancer Id\r\n    struct FreelancerPortfolio {\r\n        address accountId;\r\n        string[] images;\r\n        string[] videos;\r\n        string taskUrl;\r\n        string description;\r\n    }\r\n\r\n    /// @title freelancer experience\r\n    /// @dev store freelancer experience\r\n    struct FreelancerExperience {\r\n        address accountId;\r\n        string fromDate;\r\n        string toDate;\r\n        string jobTitle;\r\n        string jobDescription;\r\n    }\r\n\r\n    /// @title Job posting and bidding\r\n    /// @dev struct to store job requirements\r\n    struct ClientJobs {\r\n        address accountId;\r\n        string projectTitle;\r\n        string projectDescription;\r\n        string projectDuration;\r\n        uint projectBudget;\r\n        string[] skillRequirements;\r\n        string[] images; ///@dev optional\r\n    }\r\n\r\n    /// @title FreelancerBids;\r\n    /// @dev store each freelancerBid\r\n    /// @dev make a reference to the account Id of the freelancer\r\n    struct FreelancerBids {\r\n        uint bidId;\r\n        address accountId;\r\n        string bidDescription;\r\n        uint budget;\r\n        string[] relevantFiles; /// @dev optional\r\n        bool bidApproved;\r\n    }\r\n\r\n    /// @title Milestones\r\n    /// @dev allow frelancer to bid in form of milestones\r\n    /// @dev optional\r\n\r\n    struct ProjectMilestones {\r\n        uint bidId;\r\n        string milestoneName;\r\n        string milestoneDescription;\r\n        string milestoneBudget;\r\n        string milestoneDuration;\r\n        bool milestoneWorkApproved;\r\n    }\r\n\r\n    /// @title Chats\r\n    /// @dev chat from intended sender to intended receiver\r\n\r\n    struct Chats {\r\n        uint timestamp;\r\n        address sender;\r\n        address receiver;\r\n        string message;\r\n        string[] attachedFiles; /// @dev optional\r\n        bool seen;\r\n    }\r\n\r\n    /// @title client ratings\r\n    /// @dev single client Rating\r\n    /// @dev done by the freelancer\r\n\r\n    struct ClientRatings {\r\n        uint bidId;\r\n        string ProjectName; /// @dev optional\r\n        address accountId;\r\n        string feedback; /// @dev optional\r\n        uint ratingForTimelyPayments; /// @dev maximum 5\r\n        uint ratingForTimelyFeedbacks; /// @dev maximum 5\r\n    }\r\n\r\n    /// @title freelancerr Ratings\r\n    /// @dev single freelancer Rating\r\n\r\n    struct FreelancerRatings {\r\n        uint bidId;\r\n        string ProjectName; /// @dev optional;\r\n        address accountId; \r\n        string feedback; /// @dev optional;\r\n        uint ratingForCompletedProjects; /// @dev max 5;\r\n        uint ratingForCommunicationSkills; /// @dev max 5;\r\n    }\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n    \r\n    \r\n}",
+  "sourcePath": "C:\\Users\\Felabs\\Desktop\\kazikrypto\\contract\\contracts\\KaziKrypto.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/KaziKrypto.sol",
+    "exportedSymbols": {
+      "KaziKrypto": [
+        138
+      ]
+    },
+    "id": 139,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.4",
+          ".1",
+          "<",
+          "0.9",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:32:0"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "KaziKrypto",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 2,
+          "nodeType": "StructuredDocumentation",
+          "src": "69:549:0",
+          "text": " @title Kazi Krypto\n @notice The contract a freelancing platform on the Ethereum blockchain\n @notice The platform aims to connect freelancers and clients, facilitating secure and\ntransparent transactions while leveraging the benefits of blockchain technology\n @dev user Registration and profiles\n @dev Job posting and bidding\n @dev Smart contract escrow\n @dev messaging and collaboration\n @dev reputation and reviews\n @dev payment and escrow release\n @dev transaction history and analytics\n @dev conflict resolution"
+        },
+        "fullyImplemented": true,
+        "id": 138,
+        "linearizedBaseContracts": [
+          138
+        ],
+        "name": "KaziKrypto",
+        "nameLocation": "634:10:0",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 6,
+              "nodeType": "Block",
+              "src": "752:10:0",
+              "statements": []
+            },
+            "documentation": {
+              "id": 3,
+              "nodeType": "StructuredDocumentation",
+              "src": "654:64:0",
+              "text": " @dev allow smart contract to receive payments"
+            },
+            "id": 7,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nameLocation": "-1:-1:-1",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 4,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "735:2:0"
+            },
+            "returnParameters": {
+              "id": 5,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "752:0:0"
+            },
+            "scope": 138,
+            "src": "724:38:0",
+            "stateMutability": "payable",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "KaziKrypto.Freelancer",
+            "id": 21,
+            "members": [
+              {
+                "constant": false,
+                "id": 9,
+                "mutability": "mutable",
+                "name": "accountId",
+                "nameLocation": "895:9:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 21,
+                "src": "879:25:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address_payable",
+                  "typeString": "address payable"
+                },
+                "typeName": {
+                  "id": 8,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "879:15:0",
+                  "stateMutability": "payable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address_payable",
+                    "typeString": "address payable"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 11,
+                "mutability": "mutable",
+                "name": "fullName",
+                "nameLocation": "922:8:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 21,
+                "src": "915:15:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 10,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "915:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 13,
+                "mutability": "mutable",
+                "name": "profession",
+                "nameLocation": "948:10:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 21,
+                "src": "941:17:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 12,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "941:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 15,
+                "mutability": "mutable",
+                "name": "paymentPreference",
+                "nameLocation": "976:17:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 21,
+                "src": "969:24:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 14,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "969:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 18,
+                "mutability": "mutable",
+                "name": "skills",
+                "nameLocation": "1013:6:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 21,
+                "src": "1004:15:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                  "typeString": "string[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "id": 16,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1004:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "id": 17,
+                  "nodeType": "ArrayTypeName",
+                  "src": "1004:8:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                    "typeString": "string[]"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 20,
+                "mutability": "mutable",
+                "name": "profileRating",
+                "nameLocation": "1035:13:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 21,
+                "src": "1030:18:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 19,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1030:4:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "Freelancer",
+            "nameLocation": "857:10:0",
+            "nodeType": "StructDefinition",
+            "scope": 138,
+            "src": "850:206:0",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "KaziKrypto.FreelancerPortfolio",
+            "id": 34,
+            "members": [
+              {
+                "constant": false,
+                "id": 23,
+                "mutability": "mutable",
+                "name": "accountId",
+                "nameLocation": "1216:9:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 34,
+                "src": "1208:17:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 22,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1208:7:0",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 26,
+                "mutability": "mutable",
+                "name": "images",
+                "nameLocation": "1245:6:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 34,
+                "src": "1236:15:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                  "typeString": "string[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "id": 24,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1236:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "id": 25,
+                  "nodeType": "ArrayTypeName",
+                  "src": "1236:8:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                    "typeString": "string[]"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 29,
+                "mutability": "mutable",
+                "name": "videos",
+                "nameLocation": "1271:6:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 34,
+                "src": "1262:15:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                  "typeString": "string[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "id": 27,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1262:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "id": 28,
+                  "nodeType": "ArrayTypeName",
+                  "src": "1262:8:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                    "typeString": "string[]"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 31,
+                "mutability": "mutable",
+                "name": "taskUrl",
+                "nameLocation": "1295:7:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 34,
+                "src": "1288:14:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 30,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1288:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 33,
+                "mutability": "mutable",
+                "name": "description",
+                "nameLocation": "1320:11:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 34,
+                "src": "1313:18:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 32,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1313:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "FreelancerPortfolio",
+            "nameLocation": "1177:19:0",
+            "nodeType": "StructDefinition",
+            "scope": 138,
+            "src": "1170:169:0",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "KaziKrypto.FreelancerExperience",
+            "id": 45,
+            "members": [
+              {
+                "constant": false,
+                "id": 36,
+                "mutability": "mutable",
+                "name": "accountId",
+                "nameLocation": "1474:9:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 45,
+                "src": "1466:17:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 35,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1466:7:0",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 38,
+                "mutability": "mutable",
+                "name": "fromDate",
+                "nameLocation": "1501:8:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 45,
+                "src": "1494:15:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 37,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1494:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 40,
+                "mutability": "mutable",
+                "name": "toDate",
+                "nameLocation": "1527:6:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 45,
+                "src": "1520:13:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 39,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1520:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 42,
+                "mutability": "mutable",
+                "name": "jobTitle",
+                "nameLocation": "1551:8:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 45,
+                "src": "1544:15:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 41,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1544:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 44,
+                "mutability": "mutable",
+                "name": "jobDescription",
+                "nameLocation": "1577:14:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 45,
+                "src": "1570:21:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 43,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1570:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "FreelancerExperience",
+            "nameLocation": "1434:20:0",
+            "nodeType": "StructDefinition",
+            "scope": 138,
+            "src": "1427:172:0",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "KaziKrypto.ClientJobs",
+            "id": 62,
+            "members": [
+              {
+                "constant": false,
+                "id": 47,
+                "mutability": "mutable",
+                "name": "accountId",
+                "nameLocation": "1731:9:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 62,
+                "src": "1723:17:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 46,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1723:7:0",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 49,
+                "mutability": "mutable",
+                "name": "projectTitle",
+                "nameLocation": "1758:12:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 62,
+                "src": "1751:19:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 48,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1751:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 51,
+                "mutability": "mutable",
+                "name": "projectDescription",
+                "nameLocation": "1788:18:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 62,
+                "src": "1781:25:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 50,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1781:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 53,
+                "mutability": "mutable",
+                "name": "projectDuration",
+                "nameLocation": "1824:15:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 62,
+                "src": "1817:22:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 52,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1817:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 55,
+                "mutability": "mutable",
+                "name": "projectBudget",
+                "nameLocation": "1855:13:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 62,
+                "src": "1850:18:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 54,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1850:4:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 58,
+                "mutability": "mutable",
+                "name": "skillRequirements",
+                "nameLocation": "1888:17:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 62,
+                "src": "1879:26:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                  "typeString": "string[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "id": 56,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1879:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "id": 57,
+                  "nodeType": "ArrayTypeName",
+                  "src": "1879:8:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                    "typeString": "string[]"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 61,
+                "mutability": "mutable",
+                "name": "images",
+                "nameLocation": "1925:6:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 62,
+                "src": "1916:15:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                  "typeString": "string[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "id": 59,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1916:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "id": 60,
+                  "nodeType": "ArrayTypeName",
+                  "src": "1916:8:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                    "typeString": "string[]"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "ClientJobs",
+            "nameLocation": "1701:10:0",
+            "nodeType": "StructDefinition",
+            "scope": 138,
+            "src": "1694:262:0",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "KaziKrypto.FreelancerBids",
+            "id": 77,
+            "members": [
+              {
+                "constant": false,
+                "id": 64,
+                "mutability": "mutable",
+                "name": "bidId",
+                "nameLocation": "2140:5:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 77,
+                "src": "2135:10:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 63,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2135:4:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 66,
+                "mutability": "mutable",
+                "name": "accountId",
+                "nameLocation": "2164:9:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 77,
+                "src": "2156:17:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 65,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2156:7:0",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 68,
+                "mutability": "mutable",
+                "name": "bidDescription",
+                "nameLocation": "2191:14:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 77,
+                "src": "2184:21:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 67,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2184:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 70,
+                "mutability": "mutable",
+                "name": "budget",
+                "nameLocation": "2221:6:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 77,
+                "src": "2216:11:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 69,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2216:4:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 73,
+                "mutability": "mutable",
+                "name": "relevantFiles",
+                "nameLocation": "2247:13:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 77,
+                "src": "2238:22:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                  "typeString": "string[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "id": 71,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2238:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "id": 72,
+                  "nodeType": "ArrayTypeName",
+                  "src": "2238:8:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                    "typeString": "string[]"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 76,
+                "mutability": "mutable",
+                "name": "bidApproved",
+                "nameLocation": "2294:11:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 77,
+                "src": "2289:16:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 75,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2289:4:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "FreelancerBids",
+            "nameLocation": "2109:14:0",
+            "nodeType": "StructDefinition",
+            "scope": 138,
+            "src": "2102:211:0",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "KaziKrypto.ProjectMilestones",
+            "id": 90,
+            "members": [
+              {
+                "constant": false,
+                "id": 79,
+                "mutability": "mutable",
+                "name": "bidId",
+                "nameLocation": "2473:5:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 90,
+                "src": "2468:10:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 78,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2468:4:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 81,
+                "mutability": "mutable",
+                "name": "milestoneName",
+                "nameLocation": "2496:13:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 90,
+                "src": "2489:20:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 80,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2489:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 83,
+                "mutability": "mutable",
+                "name": "milestoneDescription",
+                "nameLocation": "2527:20:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 90,
+                "src": "2520:27:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 82,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2520:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 85,
+                "mutability": "mutable",
+                "name": "milestoneBudget",
+                "nameLocation": "2565:15:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 90,
+                "src": "2558:22:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 84,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2558:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 87,
+                "mutability": "mutable",
+                "name": "milestoneDuration",
+                "nameLocation": "2598:17:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 90,
+                "src": "2591:24:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 86,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2591:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 89,
+                "mutability": "mutable",
+                "name": "milestoneWorkApproved",
+                "nameLocation": "2631:21:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 90,
+                "src": "2626:26:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 88,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2626:4:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "ProjectMilestones",
+            "nameLocation": "2439:17:0",
+            "nodeType": "StructDefinition",
+            "scope": 138,
+            "src": "2432:228:0",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "KaziKrypto.Chats",
+            "id": 105,
+            "members": [
+              {
+                "constant": false,
+                "id": 92,
+                "mutability": "mutable",
+                "name": "timestamp",
+                "nameLocation": "2782:9:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 105,
+                "src": "2777:14:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 91,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2777:4:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 94,
+                "mutability": "mutable",
+                "name": "sender",
+                "nameLocation": "2810:6:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 105,
+                "src": "2802:14:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 93,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2802:7:0",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 96,
+                "mutability": "mutable",
+                "name": "receiver",
+                "nameLocation": "2835:8:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 105,
+                "src": "2827:16:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 95,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2827:7:0",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 98,
+                "mutability": "mutable",
+                "name": "message",
+                "nameLocation": "2861:7:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 105,
+                "src": "2854:14:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 97,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2854:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 101,
+                "mutability": "mutable",
+                "name": "attachedFiles",
+                "nameLocation": "2888:13:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 105,
+                "src": "2879:22:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                  "typeString": "string[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "id": 99,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2879:6:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "id": 100,
+                  "nodeType": "ArrayTypeName",
+                  "src": "2879:8:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                    "typeString": "string[]"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 104,
+                "mutability": "mutable",
+                "name": "seen",
+                "nameLocation": "2935:4:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 105,
+                "src": "2930:9:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 103,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2930:4:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "Chats",
+            "nameLocation": "2760:5:0",
+            "nodeType": "StructDefinition",
+            "scope": 138,
+            "src": "2753:194:0",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "KaziKrypto.ClientRatings",
+            "id": 121,
+            "members": [
+              {
+                "constant": false,
+                "id": 107,
+                "mutability": "mutable",
+                "name": "bidId",
+                "nameLocation": "3097:5:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 121,
+                "src": "3092:10:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 106,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "3092:4:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 109,
+                "mutability": "mutable",
+                "name": "ProjectName",
+                "nameLocation": "3120:11:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 121,
+                "src": "3113:18:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 108,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "3113:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 112,
+                "mutability": "mutable",
+                "name": "accountId",
+                "nameLocation": "3168:9:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 121,
+                "src": "3160:17:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 111,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "3160:7:0",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 114,
+                "mutability": "mutable",
+                "name": "feedback",
+                "nameLocation": "3195:8:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 121,
+                "src": "3188:15:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 113,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "3188:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 117,
+                "mutability": "mutable",
+                "name": "ratingForTimelyPayments",
+                "nameLocation": "3237:23:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 121,
+                "src": "3232:28:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 116,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "3232:4:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 120,
+                "mutability": "mutable",
+                "name": "ratingForTimelyFeedbacks",
+                "nameLocation": "3295:24:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 121,
+                "src": "3290:29:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 119,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "3290:4:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "ClientRatings",
+            "nameLocation": "3067:13:0",
+            "nodeType": "StructDefinition",
+            "scope": 138,
+            "src": "3060:286:0",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "KaziKrypto.FreelancerRatings",
+            "id": 137,
+            "members": [
+              {
+                "constant": false,
+                "id": 123,
+                "mutability": "mutable",
+                "name": "bidId",
+                "nameLocation": "3472:5:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 137,
+                "src": "3467:10:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 122,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "3467:4:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 125,
+                "mutability": "mutable",
+                "name": "ProjectName",
+                "nameLocation": "3495:11:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 137,
+                "src": "3488:18:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 124,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "3488:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 128,
+                "mutability": "mutable",
+                "name": "accountId",
+                "nameLocation": "3544:9:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 137,
+                "src": "3536:17:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 127,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "3536:7:0",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 130,
+                "mutability": "mutable",
+                "name": "feedback",
+                "nameLocation": "3572:8:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 137,
+                "src": "3565:15:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 129,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "3565:6:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 133,
+                "mutability": "mutable",
+                "name": "ratingForCompletedProjects",
+                "nameLocation": "3615:26:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 137,
+                "src": "3610:31:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 132,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "3610:4:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 136,
+                "mutability": "mutable",
+                "name": "ratingForCommunicationSkills",
+                "nameLocation": "3673:28:0",
+                "nodeType": "VariableDeclaration",
+                "scope": 137,
+                "src": "3668:33:0",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 135,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "3668:4:0",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "FreelancerRatings",
+            "nameLocation": "3438:17:0",
+            "nodeType": "StructDefinition",
+            "scope": 138,
+            "src": "3431:294:0",
+            "visibility": "public"
+          }
+        ],
+        "scope": 139,
+        "src": "625:3139:0",
+        "usedErrors": []
+      }
+    ],
+    "src": "33:3731:0"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.13+commit.abaa5c0e.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.13",
+  "updatedAt": "2023-07-18T14:20:24.527Z",
+  "devdoc": {
+    "details": "user Registration and profilesJob posting and biddingSmart contract escrowmessaging and collaborationreputation and reviewspayment and escrow releasetransaction history and analyticsconflict resolution",
+    "kind": "dev",
+    "methods": {
+      "constructor": {
+        "details": "allow smart contract to receive payments"
+      }
+    },
+    "title": "Kazi Krypto",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "notice": "The contract a freelancing platform on the Ethereum blockchainThe platform aims to connect freelancers and clients, facilitating secure and transparent transactions while leveraging the benefits of blockchain technology",
+    "version": 1
+  }
+}
