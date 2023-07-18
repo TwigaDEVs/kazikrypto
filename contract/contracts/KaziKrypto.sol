@@ -65,12 +65,85 @@ contract KaziKrypto {
         address accountId;
         string projectTitle;
         string projectDescription;
+        string projectDuration;
         uint projectBudget;
         string[] skillRequirements;
+        string[] images; ///@dev optional
     }
 
-    /// @title FreelancerSkills;
-    /// @dev store each freelancer skills
-    /// @notice these skills will display when the freelancer profile page is opened
+    /// @title FreelancerBids;
+    /// @dev store each freelancerBid
+    /// @dev make a reference to the account Id of the freelancer
+    struct FreelancerBids {
+        uint bidId;
+        address accountId;
+        string bidDescription;
+        uint budget;
+        string[] relevantFiles; /// @dev optional
+        bool bidApproved;
+    }
+
+    /// @title Milestones
+    /// @dev allow frelancer to bid in form of milestones
+    /// @dev optional
+
+    struct ProjectMilestones {
+        uint bidId;
+        string milestoneName;
+        string milestoneDescription;
+        string milestoneBudget;
+        string milestoneDuration;
+        bool milestoneWorkApproved;
+    }
+
+    /// @title Chats
+    /// @dev chat from intended sender to intended receiver
+
+    struct Chats {
+        uint timestamp;
+        address sender;
+        address receiver;
+        string message;
+        string[] attachedFiles; /// @dev optional
+        bool seen;
+    }
+
+    /// @title client ratings
+    /// @dev single client Rating
+    /// @dev done by the freelancer
+
+    struct ClientRatings {
+        uint bidId;
+        string ProjectName; /// @dev optional
+        address accountId;
+        string feedback; /// @dev optional
+        uint ratingForTimelyPayments; /// @dev maximum 5
+        uint ratingForTimelyFeedbacks; /// @dev maximum 5
+    }
+
+    /// @title freelancerr Ratings
+    /// @dev single freelancer Rating
+
+    struct FreelancerRatings {
+        uint bidId;
+        string ProjectName; /// @dev optional;
+        address accountId; 
+        string feedback; /// @dev optional;
+        uint ratingForCompletedProjects; /// @dev max 5;
+        uint ratingForCommunicationSkills; /// @dev max 5;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    
     
 }
