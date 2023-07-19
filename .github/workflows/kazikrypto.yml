@@ -1,0 +1,30 @@
+name: kazikrypto ci
+
+on:
+  push:
+    branches:
+     - kazi
+ 
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout repo
+      uses: actions/checkout@v2
+      
+    - name: set up node js for truffle
+      uses: actions/setup-node@v2
+      with: 
+        node-version: 18
+        
+    - name: install  dependacies needed by truffle
+      run: npm install
+      
+    - name: compile the contract
+      run: npx truffle compile
+    
+    - name: test contract
+      run: npx truffle test
