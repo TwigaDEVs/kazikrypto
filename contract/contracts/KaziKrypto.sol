@@ -33,6 +33,7 @@ contract KaziKrypto {
     struct Freelancer {
         address payable accountId;
         string fullName;
+        uint hourlyRate;
         string profession;
         string paymentPreference;
         string[] skills;
@@ -43,8 +44,8 @@ contract KaziKrypto {
     /// @notice all portfolios mapped to the specific freelancer Id
     struct FreelancerPortfolio {
         address accountId;
-        string[] images;
-        string[] videos;
+        string[] images; /// @dev optional
+        string[] videos; /// @dev optional
         string taskUrl;
         string description;
     }
@@ -62,6 +63,7 @@ contract KaziKrypto {
     /// @title Job posting and bidding
     /// @dev struct to store job requirements
     struct ClientJobs {
+        uint jobId;
         address accountId;
         string projectTitle;
         string projectDescription;
@@ -69,12 +71,14 @@ contract KaziKrypto {
         uint projectBudget;
         string[] skillRequirements;
         string[] images; ///@dev optional
+        bool bidAvailable;
     }
 
     /// @title FreelancerBids;
     /// @dev store each freelancerBid
     /// @dev make a reference to the account Id of the freelancer
     struct FreelancerBids {
+        uint jobId;
         uint bidId;
         address accountId;
         string bidDescription;
@@ -82,6 +86,8 @@ contract KaziKrypto {
         string[] relevantFiles; /// @dev optional
         bool bidApproved;
     }
+
+    uint private clientBidId;
 
     /// @title Milestones
     /// @dev allow frelancer to bid in form of milestones
@@ -133,11 +139,148 @@ contract KaziKrypto {
         uint ratingForCommunicationSkills; /// @dev max 5;
     }
 
+    /// @title Transaction History
+    /// @dev store transaction history
+    struct Transaction {
+        address payable from;
+        address payable to;
+        string transactionPurpose;
+        uint transactionAmount;
+        uint timestamp;
+        string transactionStatus;
+    }
+
+    mapping(address => Transaction[]) transactions;
+
+    /// @dev freelancer detail storage
+    /// @dev store personal details
+    /// @dev store each freelancer portfolio
+    /// @dev store freelancer experience
+    /// @dev store freelancer ratings;
+    /// @dev everybody is a freelancer 
+    /// @dev current project milestones
+    mapping(address => Freelancer) freelancers;
+    mapping(address => FreelancerPortfolio[]) freelancerPortfolios;
+    mapping(address => FreelancerExperience[]) freelancerExperiences;
+    mapping(address => FreelancerRatings[]) freelancerRatings;
+    mapping(address => ProjectMilestones[]) milestonesInAccount;
+
+    /// @dev client detail storage
+    /// @dev store Client Jobs
+    /// @dev not everybody is a client
+    uint internal clientJobId;
+    ClientJobs[] allClientJobs;
+    mapping(uint => FreelancerBids[]) allBidsForClientJobs;
+
+    /// @dev acceptedBidDetail
+    /// @dev storage done here if the data stored above has been validated
+    mapping(uint => ProjectMilestones[]) projectMilestonesForAcceptedBids;
 
 
+    /// @dev Chat storage;
+    mapping(address => Chats[]) freelancerChats;
 
+    /**
+    * @param _fullName full names for freelancer
+    * @param _profession he inputs his profession
+    * @param _preferredPayment he fills his preferred payment
+    * @param _skill he fills in his skills
+    * @dev rating is automatically filled for the first time as 0
+    * @notice after logging in for the first time update details here
+     */
 
+    function addNewFreelancer(string memory _fullName, uint _hourlyRate,string memory _profession, string memory _preferredPayment, string[] memory _skill)public{
+        /// @dev validate inputs
+        // require(_fullName.length > 0, "enter_name");
+        // require(_profession.length > 0, "enter_profession");
+        // require(_preferredPayment.length > 0, "enter_preferred_payment");
+        // require(_skill.length > 0, "enter_one_skill");
 
+        /// @dev make the storage
+        freelancers[msg.sender] = Freelancer(payable(msg.sender), _fullName,_hourlyRate,  _profession, _preferredPayment, _skill, 0); 
+    }
+
+    /**
+    * @notice adds portfolio to an existing freelancer profile
+    * @param _images images involved
+    * @param _description description involved | optional
+    * @param _taskurl url to the task | optional
+    * @param _videos videos involved if any
+    * 
+     */
+
+     function addPortfolio(string[] memory _images, string[] memory _videos, string memory _taskurl, string memory _description) public {
+        freelancerPortfolios[msg.sender].push(FreelancerPortfolio(msg.sender, _images, _videos, _taskurl, _description));
+     }
+
+     /**
+     * @notice adds experiences to a freelancer account
+     * @param _fromDate date started
+     * @param _toDate date ended, // optional if still working
+     * @param _jobTitle role of the freelancer
+     * @param _jobDescription description of the job
+     */
+
+     function addFreelancerExperience(string memory _fromDate, string memory _toDate, string memory _jobTitle, string memory _jobDescription)public{
+        freelancerExperiences[msg.sender].push(FreelancerExperience(msg.sender, _fromDate, _toDate, _jobTitle, _jobDescription));
+     }
+
+    /**
+    * @dev anyone can do this
+    * @dev one has to fully pay for the task when posting to ensure integrity of the DAPP
+    * @param _projectTitle title of the task
+    * @param _projectDescription description of the project
+    * @param _projectDuration should be in range of dates
+    * @param _projectBudget should be more than 0
+    * @param _skillRequirements at least one
+    * @param _images if any*/
+     function postAClientJob(string memory _projectTitle, string memory _projectDescription, string memory _projectDuration, uint _projectBudget, string[] memory _skillRequirements, string[] memory _images) public payable {
+        address payable contractAddress = payable(address(this));
+        (bool sent, bytes memory data) = contractAddress.call{value: msg.value}("");
+        clientJobId++;
+        allClientJobs.push(ClientJobs(clientJobId, msg.sender, _projectTitle, _projectDescription, _projectDuration, _projectBudget, _skillRequirements, _images, true));
+        transactions[msg.sender].push(Transaction(payable(msg.sender), contractAddress, "Project posting", msg.value, block.timestamp, "on_escrow"));
+     }
+
+    /**
+    * @dev makeAbidding
+    * @dev only occurs on existing project id
+    * @param _jobid id for  the job description
+    * @param _bidDescription auto generated id for bid description
+    * @param _budget freelancer budget for bid description
+    * @param _relevantFiles if the freelancer needs to upload relevant files to justify his bidding */
+     function makeABidding(uint _jobid, string memory _bidDescription, uint _budget, string[] memory _relevantFiles) public {
+        uint internalBidCounter;
+        for(uint i = 0; i < allBidsForClientJobs[_jobid].length; i++){
+            if(allBidsForClientJobs[_jobid][i].accountId == msg.sender){
+                revert("allready_made_bid");
+            }
+        }
+
+        for (uint i = 0; i < allClientJobs.length; i++) {
+            if(allClientJobs[i].jobId == _jobid){
+                clientBidId++;
+                internalBidCounter++;
+                allBidsForClientJobs[_jobid].push(FreelancerBids(_jobid, clientBidId, msg.sender, _bidDescription, _budget, _relevantFiles, false));
+            }
+        }
+
+        if(internalBidCounter < 1){
+            revert("bid_doesnt_exist");
+        }
+     }
+
+     function chat(address _receiver, string memory _message, string[] memory _attachedFiles) public {
+        freelancerChats[_receiver].push(Chats(block.timestamp, msg.sender, _receiver, _message, _attachedFiles, false));
+     }
+
+     function markAsRead(address _receiver)public{
+        for(uint i = 0; i < freelancerChats[_receiver].length; i++){
+            if(freelancerChats[_receiver][i].sender == msg.sender){
+                freelancerChats[_receiver][i].seen = true;
+            }
+        }
+     }
 
 
 
@@ -145,5 +288,7 @@ contract KaziKrypto {
 
 
     
+
+
     
 }
