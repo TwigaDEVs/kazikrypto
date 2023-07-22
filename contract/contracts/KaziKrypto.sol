@@ -32,6 +32,7 @@ contract KaziKrypto {
     /// @dev Struct to store user profile
     struct Freelancer {
         address payable accountId;
+        string profileImage;
         string fullName;
         uint hourlyRate;
         string profession;
@@ -189,7 +190,7 @@ contract KaziKrypto {
     * @notice after logging in for the first time update details here
      */
 
-    function addNewFreelancer(string memory _fullName, uint _hourlyRate,string memory _profession, string memory _preferredPayment, string[] memory _skill)public{
+    function addNewFreelancer(string memory _fullName,string memory _profileImage, uint _hourlyRate,string memory _profession, string memory _preferredPayment, string[] memory _skill)public{
         /// @dev validate inputs
         // require(_fullName.length > 0, "enter_name");
         // require(_profession.length > 0, "enter_profession");
@@ -197,7 +198,7 @@ contract KaziKrypto {
         // require(_skill.length > 0, "enter_one_skill");
 
         /// @dev make the storage
-        freelancers[msg.sender] = Freelancer(payable(msg.sender), _fullName,_hourlyRate,  _profession, _preferredPayment, _skill, 0); 
+        freelancers[msg.sender] = Freelancer(payable(msg.sender),_profileImage, _fullName,_hourlyRate,  _profession, _preferredPayment, _skill, 0); 
     }
 
     function getFreelancer(address _freelancerAddress) public view returns (Freelancer memory) {
@@ -339,8 +340,6 @@ contract KaziKrypto {
     function getChats(address _receiver) public view returns (Chats[] memory) {
         return freelancerChats[_receiver];
     }
-
-
 
 
     
