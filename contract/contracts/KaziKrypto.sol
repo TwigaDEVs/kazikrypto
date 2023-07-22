@@ -200,6 +200,10 @@ contract KaziKrypto {
         freelancers[msg.sender] = Freelancer(payable(msg.sender), _fullName,_hourlyRate,  _profession, _preferredPayment, _skill, 0); 
     }
 
+    function getFreelancer(address _freelancerAddress) public view returns (Freelancer memory) {
+        return freelancers[_freelancerAddress];
+    }
+
     /**
     * @notice adds portfolio to an existing freelancer profile
     * @param _images images involved
@@ -213,6 +217,10 @@ contract KaziKrypto {
         freelancerPortfolios[msg.sender].push(FreelancerPortfolio(msg.sender, _images, _videos, _taskurl, _description));
      }
 
+
+    function getPortfolio(address _freelancerAddress, uint256 _index) public view returns (FreelancerPortfolio memory) {
+        return freelancerPortfolios[_freelancerAddress][_index];
+    }
      /**
      * @notice adds experiences to a freelancer account
      * @param _fromDate date started
@@ -224,6 +232,11 @@ contract KaziKrypto {
      function addFreelancerExperience(string memory _fromDate, string memory _toDate, string memory _jobTitle, string memory _jobDescription)public{
         freelancerExperiences[msg.sender].push(FreelancerExperience(msg.sender, _fromDate, _toDate, _jobTitle, _jobDescription));
      }
+
+    function getExperience(address _freelancerAddress, uint256 _index) public view returns (FreelancerExperience memory) {
+        return freelancerExperiences[_freelancerAddress][_index];
+    }
+
 
     /**
     * @dev anyone can do this
@@ -241,6 +254,12 @@ contract KaziKrypto {
         allClientJobs.push(ClientJobs(clientJobId, msg.sender, _projectTitle, _projectDescription, _projectDuration, _projectBudget, _skillRequirements, _images, true));
         transactions[msg.sender].push(Transaction(payable(msg.sender), contractAddress, "Project posting", msg.value, block.timestamp, "on_escrow"));
      }
+
+
+    function getClientJob(uint256 _jobId) public view returns (ClientJobs memory) {
+        require(_jobId > 0 && _jobId <= clientJobId, "Invalid job ID");
+        return allClientJobs[_jobId - 1];
+    }
 
     /**
     * @dev makeAbidding
@@ -270,6 +289,22 @@ contract KaziKrypto {
         }
      }
 
+    function getBid(uint256 _jobid, uint256 _bidId) public view returns (FreelancerBids memory) {
+        require(_bidId > 0 && _bidId <= clientBidId, "Invalid bid ID");
+        FreelancerBids[] memory bids = allBidsForClientJobs[_jobid];
+        for (uint256 i = 0; i < bids.length; i++) {
+            if (bids[i].bidId == _bidId) {
+                return bids[i];
+            }
+        }
+        revert("Bid not found");
+    }
+
+    function getBids(uint256 _jobid) public view returns (FreelancerBids[] memory) {
+        return allBidsForClientJobs[_jobid];
+    }
+
+
      function chat(address _receiver, string memory _message, string[] memory _attachedFiles) public {
         freelancerChats[_receiver].push(Chats(block.timestamp, msg.sender, _receiver, _message, _attachedFiles, false));
      }
@@ -282,7 +317,28 @@ contract KaziKrypto {
         }
      }
 
+    function getChat(address _receiver, uint _index) public view returns (
+        uint timestamp,
+        address sender,
+        address receiver,
+        string memory message,
+        string[] memory attachedFiles,
+        bool seen
+    ) {
+        Chats memory chat = freelancerChats[_receiver][_index];
+        return (
+            chat.timestamp,
+            chat.sender,
+            chat.receiver,
+            chat.message,
+            chat.attachedFiles,
+            chat.seen
+        );
+    }
 
+    function getChats(address _receiver) public view returns (Chats[] memory) {
+        return freelancerChats[_receiver];
+    }
 
 
 
