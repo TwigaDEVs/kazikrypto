@@ -19,7 +19,7 @@ jobs:
         node-version: "16.x"
     - name: Install Truffle and Ganache
 
-      run: npm install -g truffle 
+      run: npm install -g truffle chai
 
     - name: Run Tests
       run: cd contract && truffle test --network ganache
