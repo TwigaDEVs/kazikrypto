@@ -26,8 +26,7 @@ jobs:
     - name: Check Test Coverage
       id: coverage
       run: |
-        npm install --save-dev solidity-coverage
-        npx truffle run coverage
+        truffle run coverage
         coverage_pct=$(jq .total.lines.pct coverage/contracts/report.json)
     
         if [ "$coverage_pct" -lt "100" ]; then
