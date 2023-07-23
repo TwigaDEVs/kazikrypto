@@ -23,8 +23,14 @@ jobs:
       run: npm install -g truffle 
     - name: install packages
       run: cd contract && npm install
+
+    - run: pwd
+
+    - name: test for ruffle
+      run: npx truffle run --configfile truffle-config.js coverage
+
     - name: Check Test Coverage
-      id: coverage
+      # id: coverage
       run: |
         truffle run coverage
         coverage_pct=$(jq .total.lines.pct coverage/contracts/report.json)
