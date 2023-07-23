@@ -10,9 +10,9 @@ on:
 
 jobs:
 
-  test:
+  serve:
 
-    name: Run Tests
+    name: Run ganache serve
 
     runs-on: ubuntu-latest
 
@@ -37,6 +37,17 @@ jobs:
       - name: get truffle version 
         run: truffle --version && ganache-cli
         
+  test:
+
+    name: Run Tests
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout code
+
+        uses: actions/checkout@v2
 
       - name: Compile contracts
 
