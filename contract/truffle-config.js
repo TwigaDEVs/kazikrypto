@@ -53,7 +53,7 @@ module.exports = {
     port: 8555,
     gas: 0xfffffffffff, 
     gasPrice: 0x01       
-  }
+  },
   //  plugins: [
   //   'solidity-coverage',
   //  ],
