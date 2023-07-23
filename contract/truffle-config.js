@@ -47,9 +47,16 @@ module.exports = {
     host: "localhost",
     port: 8545 // Standard Ethereum port
    },
-   plugins: [
-    'solidity-coverage',
-   ],
+   coverage: {
+    host: "localhost",
+    network_id: "*",
+    port: 8555,
+    gas: 0xfffffffffff, 
+    gasPrice: 0x01       
+  }
+  //  plugins: [
+  //   'solidity-coverage',
+  //  ],
    development: {
     host: "127.0.0.1",     // Localhost (default: none)
     port: 7545,            // Standard Ethereum port (default: none)
