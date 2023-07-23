@@ -47,12 +47,12 @@ module.exports = {
     host: "localhost",
     port: 8545 // Standard Ethereum port
    },
-    development: {
-     host: "127.0.0.1",     // Localhost (default: none
-     port: 8545,            // Standard Ethereum port (default: none)
-     network_id: "*",       // Any network (default: none)
-     gas: 5000000
-    },
+   development: {
+    host: "127.0.0.1",     // Localhost (default: none)
+    port: 7545,            // Standard Ethereum port (default: none)
+    network_id: "*",       // Any network (default: none)
+    gas: 5000000
+   },
     //
     // goerli: {
     //   provider: () => new HDWalletProvider(mnemonic, `https://goerli.infura.io/v3/${infuraProjectId}`),
