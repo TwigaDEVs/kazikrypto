@@ -1,41 +1,67 @@
-name: Solidity Tests
-
-on:
-
-  push:
-
-    branches:
-
-      - kazi
+name: CI
+on: push
 
 jobs:
-
-  serve:
-
-    name: Run ganache serve
-
+  test:
     runs-on: ubuntu-latest
 
+    services:
+      ganache:
+        image: trufflesuite/ganache-cli
+        ports:
+          - 8545:8545
+
     steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: "12.x"
 
-      - name: Checkout code
+    - name: Install Dependencies  
+      run: cd contract && npm install
 
-        uses: actions/checkout@v2
+    - name: Run Tests
+      run: cd contract && truffle test --network ganache
 
-      - name: Set up Node.js
+# name: Solidity Tests
 
-        uses: actions/setup-node@v2
+# on:
 
-        with:
+#   push:
 
-          node-version: '16'
+#     branches:
 
-      - name: Install Truffle and Ganache
+#       - kazi
 
-        run: npm install -g truffle ganache-cli
+# jobs:
+
+#   serve:
+
+#     name: Run ganache serve
+
+#     runs-on: ubuntu-latest
+
+#     steps:
+
+#       - name: Checkout code
+
+#         uses: actions/checkout@v2
+
+#       - name: Set up Node.js
+
+#         uses: actions/setup-node@v2
+
+#         with:
+
+#           node-version: '16'
+
+#       - name: Install Truffle and Ganache
+
+#         run: npm install -g truffle ganache-cli
         
-      - name: Run Truffle Test with CI=true for Codechecks  
-        run: CI=true truffle test
+#       - name: Run Truffle Test with CI=true for Codechecks  
+#         run: CI=true truffle test
         
 #   test:
 
