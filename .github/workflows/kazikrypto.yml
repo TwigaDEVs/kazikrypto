@@ -34,27 +34,27 @@ jobs:
 
         run: npm install -g truffle ganache-cli
         
-      - name: get truffle version 
-        run: truffle --version && ganache-cli
-        
-  test:
-
-    name: Run Tests
-
-    runs-on: ubuntu-latest
-
-    steps:
-
-      - name: Checkout code
-
-        uses: actions/checkout@v2
-
-      - name: Compile contracts
-
-        run: cd contract && truffle compile
-        
       - name: Run Truffle Test with CI=true for Codechecks  
         run: CI=true truffle test
+        
+#   test:
+
+#     name: Run Tests
+
+#     runs-on: ubuntu-latest
+
+#     steps:
+
+#       - name: Checkout code
+
+#         uses: actions/checkout@v2
+
+#       - name: Compile contracts
+
+#         run: cd contract && truffle compile
+        
+#       - name: Run Truffle Test with CI=true for Codechecks  
+#         run: CI=true truffle test
 
 #       - name: Run Tests
 
