@@ -35,7 +35,8 @@ jobs:
         run: npm install -g truffle ganache-cli
         
       - name: get truffle version 
-        run: truffle --version
+        run: truffle --version && ganache-cli
+        
 
       - name: Compile contracts
 
