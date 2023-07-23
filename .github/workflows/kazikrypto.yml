@@ -2,6 +2,7 @@ name: CI
 on: push
 
 jobs:
+
   test:
     runs-on: ubuntu-latest
 
@@ -18,10 +19,27 @@ jobs:
       with:
         node-version: "16.x"
     - name: Install Truffle and Ganache
-
+    
       run: npm install -g truffle 
     - name: install packages
       run: cd contract && npm install
+    - name: Check Test Coverage
+      id: coverage
+      run: |
+        npm install --save-dev solidity-coverage
+        npx truffle run coverage
+        coverage_pct=$(jq .total.lines.pct coverage/contracts/report.json)
+    
+        if [ "$coverage_pct" -lt "100" ]; then
+          echo "::error ::Coverage of ${coverage_pct}% is below 100% target."
+          exit 1
+        fi
+        
+        echo "::set-output name=coverage::${coverage_pct}"
+    
+    - name: Fail if coverage < 100%
+      if: steps.coverage.outputs.coverage < 100
+      run: exit 1
 
     - name: Run Tests
       run: cd contract && truffle test --network ganache
@@ -29,6 +47,7 @@ jobs:
   merge:
 
         needs: test
+        if: ${{ success() }}
     
         runs-on: ubuntu-latest
     
@@ -39,6 +58,7 @@ jobs:
         - name: Merge to main
           uses: devmasx/merge-branch@v1.4.0
           with:
+            token: ${{ secrets.ADMIN_TOKEN }}
             type: now
             label_name: 'auto-merged'
             target_branch: main
