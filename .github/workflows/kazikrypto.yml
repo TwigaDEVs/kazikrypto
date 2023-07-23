@@ -52,10 +52,13 @@ jobs:
       - name: Compile contracts
 
         run: cd contract && truffle compile
+        
+      - name: Run Truffle Test with CI=true for Codechecks  
+        run: CI=true truffle test
 
-      - name: Run Tests
+#       - name: Run Tests
 
-        run: cd contract && truffle test
+#         run: cd contract && truffle test
 
 #       - name: Merge to main if tests pass
 
