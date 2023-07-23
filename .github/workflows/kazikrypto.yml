@@ -26,82 +26,19 @@ jobs:
     - name: Run Tests
       run: cd contract && truffle test --network ganache
 
-# name: Solidity Tests
+  merge:
 
-# on:
-
-#   push:
-
-#     branches:
-
-#       - kazi
-
-# jobs:
-
-#   serve:
-
-#     name: Run ganache serve
-
-#     runs-on: ubuntu-latest
-
-#     steps:
-
-#       - name: Checkout code
-
-#         uses: actions/checkout@v2
-
-#       - name: Set up Node.js
-
-#         uses: actions/setup-node@v2
-
-#         with:
-
-#           node-version: '16'
-
-#       - name: Install Truffle and Ganache
-
-#         run: npm install -g truffle ganache-cli
+        needs: test
+    
+        runs-on: ubuntu-latest
+    
+        steps:
         
-#       - name: Run Truffle Test with CI=true for Codechecks  
-#         run: CI=true truffle test
+        - uses: actions/checkout@v2
         
-#   test:
-
-#     name: Run Tests
-
-#     runs-on: ubuntu-latest
-
-#     steps:
-
-#       - name: Checkout code
-
-#         uses: actions/checkout@v2
-
-#       - name: Compile contracts
-
-#         run: cd contract && truffle compile
-        
-#       - name: Run Truffle Test with CI=true for Codechecks  
-#         run: CI=true truffle test
-
-#       - name: Run Tests
-
-#         run: cd contract && truffle test
-
-#       - name: Merge to main if tests pass
-
-#         if: ${{ success() }}
-
-#         run: |
-
-#           git config user.name "GitHub Actions"
-
-#           git config user.email "actions@users.noreply.github.com"
-
-#           git checkout main
-
-#           git merge $GITHUB_HEAD_REF --no-ff --no-commit
-
-#           git commit -m "Merge pull request #${{ github.event.pull_request.number }}: tests pass"
-
-#           git push
+        - name: Merge to main
+          uses: devmasx/merge-branch@v1.4.0
+          with:
+            type: now
+            label_name: 'auto-merged'
+            target_branch: main
