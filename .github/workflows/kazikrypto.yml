@@ -16,10 +16,10 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: "12.x"
+        node-version: "16.x"
+    - name: Install Truffle and Ganache
 
-    - name: Install Dependencies  
-      run: cd contract && npm install
+      run: npm install -g truffle 
 
     - name: Run Tests
       run: cd contract && truffle test --network ganache
