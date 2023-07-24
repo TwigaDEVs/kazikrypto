@@ -1,5 +1,5 @@
 #!/bin/bash
-cd contract
+# cd contract
 # Get the list of all functions in the smart contract
 functions=$(truffle run compile --contracts | grep -E "function|constructor")
 

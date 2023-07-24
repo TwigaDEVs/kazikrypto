@@ -1,5 +1,5 @@
 #!/bin/bash
-cd contract
+# cd contract
 # Compile contracts
 truffle compile
 

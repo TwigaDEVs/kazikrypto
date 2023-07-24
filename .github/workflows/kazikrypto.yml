@@ -17,10 +17,16 @@ jobs:
     
       run: npm install -g truffle 
     - name: run first test coverage
-      run:  bash ./check-coverage.sh
+      run: | 
+       pwd
+       ls
+       cd contract
+       bash ./check-coverage.sh
 
     - name: run second test coverage
-      run:  bash ./check-tests.sh
+      run: |
+       cd contaract
+       bash ./check-tests.sh
      
   test:
     # needs: coverage
