@@ -18,7 +18,9 @@ jobs:
       run: cd contract && npm install
     - name: Check Test Coverage
       id: coverage
-      run: truffle run coverage --configfile contract/truffle-config.js coverage
+      run: |
+        cd contract
+        truffle run coverage --configfile ./truffle-config.js coverage
      
   test:
     needs: coverage
