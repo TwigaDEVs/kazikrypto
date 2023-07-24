@@ -3,14 +3,10 @@ on: push
 
 jobs:
 
-  coverage:
+  check-coverage:
 
     runs-on: ubuntu-latest
-    services:
-      ganache:
-        image: trufflesuite/ganache-cli
-        ports:
-          - 8545:8545
+   
     steps: 
     - uses: actions/checkout@v3
     - name: Use Node.js
@@ -19,17 +15,12 @@ jobs:
         node-version: "14.x"
     - name: Install Truffle and solidity coverage 
     
-      run: npm install -g truffle solidity-coverage
-    - name: install packages
-      run: |
-        cd contract 
-        npm install
-       # npm install --save-dev solidity-coverage
-    - name: Check Test Coverage
-      id: coverage
-      run: |
-        cd contract
-        truffle run coverage 
+      run: npm install -g truffle 
+    - name: run first test coverage
+      run:  bash ./check-coverage.sh
+
+    - name: run second test coverage
+      run:  bash ./check-tests.sh
      
   test:
     # needs: coverage
