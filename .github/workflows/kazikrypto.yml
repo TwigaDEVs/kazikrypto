@@ -27,6 +27,24 @@ jobs:
       run: |
        cd contaract
        bash ./check-tests.sh
+  check-coverage-tests2:
+
+    runs-on: ubuntu-latest
+   
+    steps: 
+    - uses: actions/checkout@v3
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: "14.x"
+    - name: Install Truffle and solidity coverage 
+    
+      run: npm install -g truffle 
+    
+    - name: run second test coverage
+      run: |
+       cd contaract
+       bash ./check-tests.sh
      
   test:
     # needs: coverage
