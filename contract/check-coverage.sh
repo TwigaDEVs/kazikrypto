@@ -5,7 +5,7 @@ truffle compile
 
 # Extract all functions 
   "contractName": "KaziKrypto",
-ARTIFACTS=$(find build/contracts  "KaziKrypto.json")
+ARTIFACTS=$(find build/contracts -name  "KaziKrypto.json")
 > all_functions.txt
 
 for FILE in $ARTIFACTS; do
