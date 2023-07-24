@@ -12,7 +12,7 @@
   "devDependencies": {
     "bn.js": "^5.2.1",
     "chai": "^4.3.7",
-    "chai-bn": "^0.3.1",
-    "solidity-coverage":"0.8.4"
+    "chai-bn": "^0.3.1"
+   
   }
 }
