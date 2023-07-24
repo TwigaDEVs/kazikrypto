@@ -4,7 +4,7 @@
 truffle compile
 
 # Extract all functions 
-  "contractName": "KaziKrypto",
+
 ARTIFACTS=$(find build/contracts -name  "KaziKrypto.json")
 > all_functions.txt
 
