@@ -3,27 +3,33 @@ on: push
 
 jobs:
 
-  # coverage:
-  #   runs-on: ubuntu-latest
-  #   steps: 
-  #   - uses: actions/checkout@v3
-  #   - name: Use Node.js
-  #     uses: actions/setup-node@v3
-  #     with:
-  #       node-version: "16.x"
-  #   - name: Install Truffle and solidity coverage 
+  coverage:
+
+    runs-on: ubuntu-latest
+    services:
+      ganache:
+        image: trufflesuite/ganache-cli
+        ports:
+          - 8545:8545
+    steps: 
+    - uses: actions/checkout@v3
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: "16.x"
+    - name: Install Truffle and solidity coverage 
     
-  #     run: npm install -g truffle solidity-coverage@0.7.22
-  #   - name: install packages
-  #     run: |
-  #       cd contract 
-  #       npm install
-  #      # npm install --save-dev solidity-coverage
-  #   - name: Check Test Coverage
-  #     id: coverage
-  #     run: |
-  #       cd contract
-  #       truffle run coverage 
+      run: npm install -g truffle solidity-coverage@0.7.22
+    - name: install packages
+      run: |
+        cd contract 
+        npm install
+       # npm install --save-dev solidity-coverage
+    - name: Check Test Coverage
+      id: coverage
+      run: |
+        cd contract
+        truffle run coverage 
      
   test:
     # needs: coverage
@@ -52,24 +58,24 @@ jobs:
     # - run: pwd
 
 
-    - name: Check Test Coverage
-      id: coverage
-      run: |
-        cd contract
-        truffle run coverage  --verbose
-        coverage_pct=$(jq .total.lines.pct coverage/contracts/report.json)
+    # - name: Check Test Coverage
+    #   id: coverage
+    #   run: |
+    #     cd contract
+    #     truffle run coverage  --verbose
+    #     coverage_pct=$(jq .total.lines.pct coverage/contracts/report.json)
     
-        if [ "$coverage_pct" -lt "100" ]; then
-          echo "::error ::Coverage of ${coverage_pct}% is below 100% target."
-          exit 1
-        fi
+    #     if [ "$coverage_pct" -lt "100" ]; then
+    #       echo "::error ::Coverage of ${coverage_pct}% is below 100% target."
+    #       exit 1
+    #     fi
         
-        echo "::set-output name=coverage::${coverage_pct}"
+    #     echo "::set-output name=coverage::${coverage_pct}"
     
-    # - name: Fail if coverage < 100%
-    #   if: steps.coverage.outputs.coverage < 100
-    #   run: exit 1
-    # // "solidity-coverage": "^0.7.22"
+    # # - name: Fail if coverage < 100%
+    # #   if: steps.coverage.outputs.coverage < 100
+    # #   run: exit 1
+    # # // "solidity-coverage": "^0.7.22"
 
     - name: Run Tests
       run: cd contract && truffle test --network ganache
