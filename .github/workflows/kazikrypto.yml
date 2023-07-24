@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       ganache:
-        image: trufflesuite/ganache-cli
+        image: trufflesuite/ganache-cli:v7.3.2
         ports:
           - 8545:8545
     steps: 
@@ -16,7 +16,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: "16.x"
+        node-version: "14.x"
     - name: Install Truffle and solidity coverage 
     
       run: npm install -g truffle solidity-coverage@0.7.22
@@ -50,8 +50,8 @@ jobs:
       with:
         node-version: "16.x"
     - name: Install Truffle and solidity coverage 
-    
-      run: npm install -g truffle  
+     
+      run: npm install -g truffle   
     - name: install packages
       run: cd contract && npm install
 

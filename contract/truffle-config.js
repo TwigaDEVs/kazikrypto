@@ -50,7 +50,10 @@ module.exports = {
     gas: 0xfffffffffff, 
     gasPrice: 0x01,
     ganacheOptions: {
-      version: "7.3.2"
+        host: "ganache",
+        port: 8545,
+        network_id: "*",
+       version: "7.3.2"
     }       
   },
   
