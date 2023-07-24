@@ -66,6 +66,51 @@ contract("KaziKrypto", (accounts) => {
     expect(portfolio.description).to.equal(description);
   });
 
+  it("should allow freelancers to update their profile information", async () => {
+    const fullName = "John Doe";
+    const hourlyRate = 25;
+    const profession = "Developer";
+    const preferredPayment = "ETH";
+    const skills = ["Solidity", "JavaScript"];
+
+    await kaziKrypto.addNewFreelancer(fullName, hourlyRate, profession, preferredPayment, skills);
+
+    const newFullName = "Jane Doe";
+    const newHourlyRate = 30;
+    const newProfession = "Software Engineer";
+    const newPreferredPayment = "BTC";
+    const newSkills = ["Solidity", "Python"];
+
+    await kaziKrypto.editFreelancerProfile(newFullName, newHourlyRate, newProfession, newPreferredPayment, newSkills);
+
+    const freelancer = await kaziKrypto.freelancers(accounts[0]);
+
+    expect(freelancer.fullName).to.equal(newFullName);
+    expect(freelancer.hourlyRate.toNumber()).to.equal(newHourlyRate);
+    expect(freelancer.profession).to.equal(newProfession);
+    expect(freelancer.paymentPreference).to.equal(newPreferredPayment);
+    expect(freelancer.skills).to.deep.equal(newSkills);
+  });
+
+  it("should allow freelancers to set their profile visibility status", async () => {
+    const fullName = "John Doe";
+    const hourlyRate = 25;
+    const profession = "Developer";
+    const preferredPayment = "ETH";
+    const skills = ["Solidity", "JavaScript"];
+
+    await kaziKrypto.addNewFreelancer(fullName, hourlyRate, profession, preferredPayment, skills);
+
+    const initialProfileVisibility = await kaziKrypto.freelancers(accounts[0]).isProfilePublic;
+    expect(initialProfileVisibility).to.be.true;
+
+    const newProfileVisibility = false;
+    await kaziKrypto.setProfileVisibility(newProfileVisibility);
+
+    const updatedProfileVisibility = await kaziKrypto.freelancers(accounts[0]).isProfilePublic;
+    expect(updatedProfileVisibility).to.equal(newProfileVisibility);
+  });
+
   it("should add a new experience to freelancer", async () => {
     const fromDate = "2022-01-01";
     const toDate = "2022-12-31";

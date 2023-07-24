@@ -39,6 +39,7 @@ contract KaziKrypto {
         string paymentPreference;
         string[] skills;
         uint profileRating;
+        bool isProfilePublic;
     }
 
     /// @title freelancer portfolio
@@ -190,7 +191,7 @@ contract KaziKrypto {
     * @notice after logging in for the first time update details here
      */
 
-    function addNewFreelancer(string memory _fullName,string memory _profileImage, uint _hourlyRate,string memory _profession, string memory _preferredPayment, string[] memory _skill)public{
+    function addNewFreelancer(string memory _fullName,string memory _profileImage, uint _hourlyRate,string memory _profession, string memory _preferredPayment, string[] memory _skill, bool _isProfilePublic)public{
         /// @dev validate inputs
         // require(_fullName.length > 0, "enter_name");
         // require(_profession.length > 0, "enter_profession");
@@ -198,7 +199,32 @@ contract KaziKrypto {
         // require(_skill.length > 0, "enter_one_skill");
 
         /// @dev make the storage
-        freelancers[msg.sender] = Freelancer(payable(msg.sender),_profileImage, _fullName,_hourlyRate,  _profession, _preferredPayment, _skill, 0); 
+        freelancers[msg.sender] = Freelancer(payable(msg.sender),_profileImage, _fullName,_hourlyRate,  _profession, _preferredPayment, _skill, 0, _isProfilePublic); 
+    }
+
+    /**
+     * @notice Allows freelancers to update their profile information
+     * @param _fullName Updated full names for freelancer
+     * @param _hourlyRate Updated hourly rate
+     * @param _profession Updated profession
+     * @param _preferredPayment Updated preferred payment
+     * @param _skills Updated skills
+     */
+    function editFreelancerProfile(string memory _fullName, uint _hourlyRate, string memory _profession, string memory _preferredPayment, string[] memory _skills) public {
+        Freelancer storage freelancer = freelancers[msg.sender];
+        freelancer.fullName = _fullName;
+        freelancer.hourlyRate = _hourlyRate;
+        freelancer.profession = _profession;
+        freelancer.paymentPreference = _preferredPayment;
+        freelancer.skills = _skills;
+    }
+
+    /**
+     * @notice Allows freelancers to set their profile visibility status
+     * @param _isProfilePublic Boolean indicating if the profile is public (true) or private (false)
+     */
+    function setProfileVisibility(bool _isProfilePublic) public {
+        freelancers[msg.sender].isProfilePublic = _isProfilePublic;
     }
 
     function getFreelancer(address _freelancerAddress) public view returns (Freelancer memory) {
