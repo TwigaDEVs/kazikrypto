@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       ganache:
-        image: trufflesuite/ganache-cli:v7.3.2
+        image: trufflesuite/ganache-cli
         ports:
           - 8545:8545
     steps: 
