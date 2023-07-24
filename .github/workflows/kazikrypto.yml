@@ -2,7 +2,27 @@ name: CI
 on: push
 
 jobs:
-
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 12.x
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: '**/node_modules'
+          key: npm-v2-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: npm-v2-
+      - run: npm ci
+        if: steps.cache.outputs.cache-hit != 'true'
+      - run: npm run coverage
+        env:
+          NODE_OPTIONS: --max_old_space_size=4096
+      - uses: codecov/codecov-action@v3
   test:
     runs-on: ubuntu-latest
 
@@ -18,19 +38,17 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: "16.x"
-    - name: Install Truffle and Ganache
+    - name: Install Truffle and solidity coverage 
     
-      run: npm install -g truffle 
+      run: npm install -g truffle solidity-coverage
     - name: install packages
       run: cd contract && npm install
 
     # - run: pwd
 
-    - name: install truffle coverage 
-      run: npm install -g solidity-coverage
 
     - name: Check Test Coverage
-      id: coverage
+      # id: coverage
       run: |
         cd contract
         truffle run coverage

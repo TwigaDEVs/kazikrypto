@@ -42,6 +42,7 @@ module.exports = {
     host: "localhost",
     port: 8545 // Standard Ethereum port
    },
+   
    coverage: {
     host: "localhost",
     network_id: "*",
@@ -64,9 +65,7 @@ module.exports = {
     //   chain_id: 5
     // }
   },
-  plugins: [
-    'solidity-coverage',
-   ],
+ 
   // Set default mocha options here, use special reporters etc.
   mocha: {
     // timeout: 100000
@@ -83,5 +82,8 @@ module.exports = {
         },
       }
     }
-  }
+  },
+  plugins: [
+    'solidity-coverage',
+   ]
 };
