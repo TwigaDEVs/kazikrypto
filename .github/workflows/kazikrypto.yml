@@ -15,12 +15,15 @@ jobs:
     
       run: npm install -g truffle solidity-coverage
     - name: install packages
-      run: cd contract && npm install
+      run: |
+        cd contract 
+        npm install
+        npm install --save-dev solidity-coverage
     - name: Check Test Coverage
       id: coverage
       run: |
         cd contract
-        truffle run coverage --configfile ./truffle-config.js coverage
+        truffle run coverage 
      
   test:
     needs: coverage
