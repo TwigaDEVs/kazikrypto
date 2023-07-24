@@ -17,12 +17,13 @@ jobs:
     - name: install packages
       run: cd contract && npm install
     - name: Check Test Coverage
-      # id: coverage
-      run: |
-        cd contract
-        truffle run coverage
+      id: coverage
+      run: truffle run coverage
      
   test:
+    needs: coverage
+    if: ${{ success() }}
+
     runs-on: ubuntu-latest
 
     services:
