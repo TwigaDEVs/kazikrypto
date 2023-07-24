@@ -26,8 +26,8 @@ jobs:
 
     # - run: pwd
 
-    # - name: test for ruffle
-    #   run: npx truffle run --configfile truffle-config.js coverage
+    - name: install truffle coverage 
+      run: npm install -g solidity-coverage
 
     - name: Check Test Coverage
       id: coverage
