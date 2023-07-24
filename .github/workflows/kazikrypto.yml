@@ -45,7 +45,7 @@ jobs:
         node-version: "16.x"
     - name: Install Truffle and solidity coverage 
     
-      run: npm install -g truffle  solidity-coverage@0.8.2
+      run: npm install -g truffle  solidity-coverage@0.7.22
     - name: install packages
       run: cd contract && npm install
 
