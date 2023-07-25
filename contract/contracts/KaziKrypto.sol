@@ -97,12 +97,15 @@ contract KaziKrypto {
 
     struct ProjectMilestones {
         uint bidId;
+        uint mileStoneId;
         string milestoneName;
         string milestoneDescription;
-        string milestoneBudget;
-        string milestoneDuration;
+        uint milestoneBudget;
+        uint milestoneDuration;
         bool milestoneWorkApproved;
     }
+
+    uint private mileStoneId;
 
     /// @title Chats
     /// @dev chat from intended sender to intended receiver
@@ -367,9 +370,95 @@ contract KaziKrypto {
         return freelancerChats[_receiver];
     }
 
+    function acceptBid(uint _jobId, uint _bidId) public {
+        for(uint i = 0; i < allBidsForClientJobs[_jobId].length; i++){
+            if(allBidsForClientJobs[_jobId][i].bidId  == _bidId){
+                if(allBidsForClientJobs[_jobId][i].bidApproved == true){
+                    revert("bid_allready_approved");
+                }else{
+                    allBidsForClientJobs[_jobId][i].bidApproved = true;
+                }
+            }
+        }
+        for(uint i = 0; i < allClientJobs.length; i++){
+            if(allClientJobs[i].jobId == _jobId){
 
-    
+                if(allClientJobs[i].bidAvailable == false){
+                    revert("bid not available");
+                }else{
+                    allClientJobs[i].bidAvailable = false;
+                }
+            }
+        }
+    }
 
+    function addProjectMileStone(uint _jobId, uint _bidId, string memory _milestoneName, string memory _mileStoneDescription, uint _mileStoneBudget, uint _mileStoneDuration) public {
+        uint remaining_budget;
+        uint dataPosition;
+         for(uint i = 0; i < allBidsForClientJobs[_jobId].length; i++){
+           if(allBidsForClientJobs[_jobId][i].bidId == _bidId && allBidsForClientJobs[_jobId][i].bidApproved == true){
+            remaining_budget = allBidsForClientJobs[_jobId][i].budget;
+            dataPosition = i;
+           }
+        }
 
-    
+        if(remaining_budget < _mileStoneBudget){
+            revert('budget_overpriced');
+        }else if(allBidsForClientJobs[_jobId][dataPosition].bidApproved == false){
+            revert('bid_not_approved');
+        }
+        else{
+            mileStoneId++;
+            allBidsForClientJobs[_jobId][dataPosition].budget -= _mileStoneBudget;
+            ///@dev will be used for freelancer rating purposes
+            milestonesInAccount[msg.sender].push(ProjectMilestones(_bidId,mileStoneId, _milestoneName, _mileStoneDescription, _mileStoneBudget, _mileStoneDuration, false));
+
+            ///@dev will be used for client project management
+            projectMilestonesForAcceptedBids[_bidId].push(ProjectMilestones(_bidId,mileStoneId, _milestoneName, _mileStoneDescription, _mileStoneBudget, _mileStoneDuration, false));
+        }
+    }
+
+    function approveProjectMilestone(address payable _freelancer, uint _mileStoneId)public {
+        uint bidId;
+        for(uint i = 0; i < milestonesInAccount[_freelancer].length; i++){
+            if(milestonesInAccount[_freelancer][i].mileStoneId == _mileStoneId && milestonesInAccount[_freelancer][i].milestoneWorkApproved == false) {
+                bidId = milestonesInAccount[_freelancer][i].bidId;
+                address payable contractAddress = payable(address(this));
+                milestonesInAccount[_freelancer][i].milestoneWorkApproved = true;
+                _freelancer.transfer(milestonesInAccount[_freelancer][i].milestoneBudget);
+                transactions[address(this)].push(Transaction(contractAddress, _freelancer, "Approval",milestonesInAccount[_freelancer][i].milestoneBudget , block.timestamp, "settled"));
+            }
+        }
+
+        for(uint i = 0; i < projectMilestonesForAcceptedBids[bidId].length; i++){
+            if(projectMilestonesForAcceptedBids[bidId][i].mileStoneId == _mileStoneId){
+                projectMilestonesForAcceptedBids[bidId][i].milestoneWorkApproved = true;
+            }
+        } 
+    }
+
+    /// @dev displays a freelancer milestone at profile Mode
+    function getFreelancerMileStones(address _accountId) public view returns(ProjectMilestones[] memory){
+        return milestonesInAccount[_accountId];
+    }
+
+    /// @dev displays freelancer milestone in Project mode
+    function getProjectMileStones(uint _bidId) public view returns (ProjectMilestones[] memory){
+        return projectMilestonesForAcceptedBids[_bidId];
+    }
+
+    /// @dev display freelancer transaction at profile Mode
+    function getFreelancerTransactions(address _accountId) public view returns(Transaction[] memory){
+        return transactions[_accountId];
+    }
+
+    /// @dev rate a freelancer
+    function rateAfreelancer(address _accountId, uint _bidId) public {
+
+    }
+    /// @dev view freelancer rating
+
+    function viewFreelancerRating(address _accountId) public view returns(uint){
+        
+    }
 }
