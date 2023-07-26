@@ -68,25 +68,27 @@ contract("KaziKrypto", (accounts) => {
 
   it("should allow freelancers to update their profile information", async () => {
     const fullName = "John Doe";
-    const hourlyRate = 25;
+    const image = "path_to_image";
+    const hourlyRate = new BN(25);
     const profession = "Developer";
     const preferredPayment = "ETH";
     const skills = ["Solidity", "JavaScript"];
 
-    await kaziKrypto.addNewFreelancer(fullName, hourlyRate, profession, preferredPayment, skills);
+    await instance.addNewFreelancer(fullName,image, hourlyRate, profession, preferredPayment, skills,{ from: accounts[0] });
 
     const newFullName = "Jane Doe";
-    const newHourlyRate = 30;
+    const newHourlyRate = new BN(30);
     const newProfession = "Software Engineer";
     const newPreferredPayment = "BTC";
     const newSkills = ["Solidity", "Python"];
+  
 
-    await kaziKrypto.editFreelancerProfile(newFullName, newHourlyRate, newProfession, newPreferredPayment, newSkills);
+    await instance.editFreelancerProfile(newFullName, newHourlyRate, newProfession, newPreferredPayment, newSkills);
 
-    const freelancer = await kaziKrypto.freelancers(accounts[0]);
+    const freelancer = await instance.getFreelancer(accounts[0]);
 
     expect(freelancer.fullName).to.equal(newFullName);
-    expect(freelancer.hourlyRate.toNumber()).to.equal(newHourlyRate);
+    expect(freelancer.hourlyRate).to.be.bignumber.equal(newHourlyRate);
     expect(freelancer.profession).to.equal(newProfession);
     expect(freelancer.paymentPreference).to.equal(newPreferredPayment);
     expect(freelancer.skills).to.deep.equal(newSkills);
@@ -94,21 +96,22 @@ contract("KaziKrypto", (accounts) => {
 
   it("should allow freelancers to set their profile visibility status", async () => {
     const fullName = "John Doe";
+    const image = "path_to_image";
     const hourlyRate = 25;
     const profession = "Developer";
     const preferredPayment = "ETH";
     const skills = ["Solidity", "JavaScript"];
 
-    await kaziKrypto.addNewFreelancer(fullName, hourlyRate, profession, preferredPayment, skills);
+    await instance.addNewFreelancer(fullName,image, hourlyRate, profession, preferredPayment, skills,{ from: accounts[0]});
 
-    const initialProfileVisibility = await kaziKrypto.freelancers(accounts[0]).isProfilePublic;
-    expect(initialProfileVisibility).to.be.true;
+    const initialProfileVisibility = await instance.getFreelancer(accounts[0]);
+    expect(initialProfileVisibility.isProfilePublic).to.be.true;
 
     const newProfileVisibility = false;
-    await kaziKrypto.setProfileVisibility(newProfileVisibility);
+    await instance.setProfileVisibility(newProfileVisibility);
 
-    const updatedProfileVisibility = await kaziKrypto.freelancers(accounts[0]).isProfilePublic;
-    expect(updatedProfileVisibility).to.equal(newProfileVisibility);
+    const updatedProfileVisibility = await instance.getFreelancer(accounts[0]);
+    expect(updatedProfileVisibility.isProfilePublic).to.equal(newProfileVisibility);
   });
 
   it("should add a new experience to freelancer", async () => {
@@ -272,5 +275,158 @@ contract("KaziKrypto", (accounts) => {
     expect(allChats[2].sender).to.equal(accounts[2]);
     expect(allChats[3].sender).to.equal(accounts[0]);
     expect(allChats[4].sender).to.equal(accounts[2]);
+  });
+
+ 
+  it('should accept a bid for a job', async () => {
+    // Define the job details
+    const projectTitle = 'Project Title';
+    const projectDescription = 'Project Description';
+    const projectDuration = '2 weeks';
+    const projectBudget = web3.utils.toWei('100', 'ether');
+    const skillRequirements = ['Skill 1', 'Skill 2'];
+    const images = ['Image 1', 'Image 2'];
+    const jobId = new BN(3); 
+
+
+    // Create a sample client job
+    await instance.postAClientJob(
+      projectTitle,
+      projectDescription,
+      projectDuration,
+      projectBudget,
+      skillRequirements,
+      images,
+      { from: accounts[0] }
+    );
+
+    // Retrieve the client job details
+    const jobget = await instance.getClientJob(jobId);
+
+    // Assert that bid is initially available for the job
+    assert.isTrue(jobget.bidAvailable, 'Bid should be available');
+
+    // Place a bid by a freelancer for the job
+   
+    const bidDescription = 'Bid Description';
+    const bidBudget = web3.utils.toWei('50', 'ether');
+    const relevantFiles = ['File 1', 'File 2'];
+
+    await instance.makeABidding(
+      jobId,
+      bidDescription,
+      bidBudget,
+      relevantFiles,
+      { from: accounts[1] }
+    );
+
+    const bidId = new BN(2);
+
+    // Accept the bid
+    await instance.acceptBid(jobId, bidId, { from: accounts[0] });
+
+    // Retrieve the updated bid details
+    const bid = await instance.getBid(jobId, bidId);
+    assert.isTrue(bid.bidApproved, 'Bid should be approved');
+
+    // Retrieve the updated client job details
+    const updatedJob = await instance.getClientJob(jobId);
+    assert.isFalse(updatedJob.bidAvailable, 'Bid should not be available after acceptance');
+  });
+
+  it('should revert if bid is already approved', async () => {
+    // Define the job details
+    const jobId = 4;
+
+    const projectTitle = 'Another Project';
+    const projectDescription = 'Another Description';
+    const projectDuration = '1 month';
+    const projectBudget = web3.utils.toWei('200', 'ether');
+    const skillRequirements = ['Skill 3', 'Skill 4'];
+    const images = ['Image 3', 'Image 4'];
+
+
+    // Create another client job
+    await instance.postAClientJob(
+
+      projectTitle,
+      projectDescription,
+      projectDuration,
+      projectBudget,
+      skillRequirements,
+      images,
+      { from: accounts[0] }
+    );
+
+    // Place a bid by a freelancer for the job
+    const bidId = 3;
+    const bidDescription = 'Another Bid Description';
+    const bidBudget = web3.utils.toWei('80', 'ether');
+    const relevantFiles = ['File 5', 'File 6'];
+
+    await instance.makeABidding(
+      jobId,
+      bidDescription,
+      bidBudget,
+      relevantFiles,
+      { from: accounts[2] }
+    );
+
+    // Accept the bid for the first time
+    await instance.acceptBid(jobId, bidId, { from: accounts[0] });
+
+    // Try to accept the bid again (should revert)
+    try {
+      await instance.acceptBid(jobId, bidId, { from: accounts[0] });
+      assert.fail('Expected revert, but the transaction was successful');
+    } catch (error) {
+      assert(error.message.includes('bid_allready_approved'), 'Expected revert due to bid already approved');
+    }
+  });
+
+  it('should revert if bid is not available for the job', async () => {
+    // Define the job details
+    const jobId = 3;
+    const projectTitle = 'Third Project';
+    const projectDescription = 'Description of the Third Project';
+    const projectDuration = '3 weeks';
+    const projectBudget = web3.utils.toWei('150', 'ether');
+    const skillRequirements = ['Skill 5', 'Skill 6'];
+    const images = ['Image 7', 'Image 8'];
+// Bid not available for this job
+
+    // Create a client job with bidAvailable set to false
+    await instance.postAClientJob(
+
+      projectTitle,
+      projectDescription,
+      projectDuration,
+      projectBudget,
+      skillRequirements,
+      images,
+      { from: accounts[0] }
+    );
+
+    // Place a bid by a freelancer for the job
+    const bidId = 3;
+    const bidDescription = 'Bid for Third Project';
+    const bidBudget = web3.utils.toWei('120', 'ether');
+    const relevantFiles = ['File 9', 'File 10'];
+
+    await instance.makeABidding(
+      jobId,
+      bidDescription,
+      bidBudget,
+      relevantFiles,
+      { from: accounts[3] }
+    );
+
+    // Try to accept the bid (should revert)
+    try {
+      await instance.acceptBid(jobId, bidId, { from: accounts[0] });
+      assert.fail('Expected revert, but the transaction was successful');
+    } catch (error) {
+      assert(error.message.includes('bid not available'), 'Expected revert due to bid not available');
+    }
   });
 });
