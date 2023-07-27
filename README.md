@@ -46,6 +46,26 @@ Description: The use case involves building a freelancing platform on the Ethere
 
 The above use case outlines a freelancing platform on the Ethereum blockchain, leveraging React Native for Android development, Infura for blockchain connectivity, MetaMask SDK and MetaMask Snap for wallet integration, and Linia for cross-chain functionality. The platform aims to provide a secure, decentralized, and transparent environment for freelancers and clients to connect, collaborate, and transact with ease while benefiting from the advantages offered by blockchain technology.
 
+## KaziKrypto Details 
+
+```mermaid
+graph LR;
+  A[Profile Update] --> 1[Registration];
+  1 --> A;
+  A --> 2[Freelancer];
+  A --> 3[Clients];
+  3 --> 4[Job Posting];
+  2 --> 5[Biddings];
+  5 --> 6[Smart Contract Escrow];
+  6 --> 7[Messaging and Collaboration];
+  6 --> 8[Reputation and Reviews];
+  4 --- 6;
+  7 --- 10;
+  8 --> 10[Close-Out];
+  10 --> End[End];
+
+```
+
 ## Installation and Setup
 
 ...
