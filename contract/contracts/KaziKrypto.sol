@@ -413,6 +413,8 @@ contract KaziKrypto {
            }
         }
 
+
+
         if(remaining_budget < _mileStoneBudget){
             revert('budget_overpriced');
         }else if(allBidsForClientJobs[_jobId][dataPosition].bidApproved == false){
@@ -429,14 +431,28 @@ contract KaziKrypto {
         }
     }
 
+    
    
 
     function approveProjectMilestone(address payable _freelancer, uint _mileStoneId)public {
         uint bidId;
+        address jobOwner;
         /// @dev making sure only the project owner can make the approval
 
+
+        for(uint i = 0; i < allClientJobs.length; i++){
+            if(allClientJobs[i].accountId == msg.sender){
+                jobOwner = msg.sender;
+            }
+        }
+
+        if(jobOwner != msg.sender){
+            revert("only_job_owner");
+        }
+        
+
         for(uint i = 0; i < milestonesInAccount[_freelancer].length; i++){
-            if(milestonesInAccount[_freelancer][i].mileStoneId == _mileStoneId && milestonesInAccount[_freelancer][i].milestoneWorkApproved == false) {
+            if(milestonesInAccount[_freelancer][i].mileStoneId == _mileStoneId && milestonesInAccount[_freelancer][i].milestoneWorkApproved == false && jobOwner == msg.sender) {
                 bidId = milestonesInAccount[_freelancer][i].bidId;
                 address payable contractAddress = payable(address(this));
                 milestonesInAccount[_freelancer][i].milestoneWorkApproved = true;
@@ -444,6 +460,8 @@ contract KaziKrypto {
                 transactions[address(this)].push(Transaction(contractAddress, _freelancer, "Approval",milestonesInAccount[_freelancer][i].milestoneBudget , block.timestamp, "settled"));
             }
         }
+
+
 
         for(uint i = 0; i < projectMilestonesForAcceptedBids[bidId].length; i++){
             if(projectMilestonesForAcceptedBids[bidId][i].mileStoneId == _mileStoneId){
