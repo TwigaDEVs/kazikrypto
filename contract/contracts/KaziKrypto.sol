@@ -23,8 +23,9 @@ contract KaziKrypto {
     /**
     * @dev allow smart contract to receive payments
     */
-    constructor() public payable{
-
+    address owner;
+    constructor() payable{
+        owner == msg.sender;
     }
 
 
@@ -41,6 +42,16 @@ contract KaziKrypto {
         uint profileRating;
         bool isProfilePublic;
     }
+
+    struct Disputes {
+        string disputeName;
+        string description;
+        address disputor;
+        address clientInvolved;
+        bool resolved;
+    }
+
+    Disputes[] disputes;
 
     /// @title freelancer portfolio
     /// @notice all portfolios mapped to the specific freelancer Id
@@ -418,8 +429,12 @@ contract KaziKrypto {
         }
     }
 
+   
+
     function approveProjectMilestone(address payable _freelancer, uint _mileStoneId)public {
         uint bidId;
+        /// @dev making sure only the project owner can make the approval
+
         for(uint i = 0; i < milestonesInAccount[_freelancer].length; i++){
             if(milestonesInAccount[_freelancer][i].mileStoneId == _mileStoneId && milestonesInAccount[_freelancer][i].milestoneWorkApproved == false) {
                 bidId = milestonesInAccount[_freelancer][i].bidId;
@@ -453,12 +468,46 @@ contract KaziKrypto {
     }
 
     /// @dev rate a freelancer
-    function rateAfreelancer(address _accountId, uint _bidId) public {
+    function rateAfreelancer(address _accountId, uint _bidId,string memory _projectName, string memory _feedBack, uint _ratingForCompletedProjects, uint _ratingForCommunicationSkills) public {
+        uint isRated = 0;
+        for(uint i = 0; i < freelancerRatings[_accountId].length; i++){
+            if(freelancerRatings[_accountId][i].bidId == _bidId){
+                isRated += 1;
+            }
+        }
 
+        if(isRated == 0){
+            freelancerRatings[_accountId].push(FreelancerRatings(_bidId, _projectName, _accountId, _feedBack, _ratingForCompletedProjects, _ratingForCommunicationSkills));
+        }else{
+            revert("allready rated");
+        }
     }
     /// @dev view freelancer rating
 
-    function viewFreelancerRating(address _accountId) public view returns(uint){
-        
+    function viewFreelancerRating(address _accountId) public view returns(FreelancerRatings[] memory){
+        return freelancerRatings[_accountId];
+    }
+
+    /// @dev disputes handling
+    function createDispute(string memory _disputeName, string memory _description, address _clientInvolved) public {
+        for(uint i = 0; i < disputes.length; i++){
+            if(disputes[i].disputor == msg.sender && disputes[i].resolved == false){
+                revert("solve_your_dispute_first");
+            }
+        }
+        disputes.push(Disputes(_disputeName, _description, msg.sender, _clientInvolved, false));
+    }
+
+    modifier onlyOwner {
+        require(owner == msg.sender, "only_owner");
+        _;
+    }
+
+    function markDisputeAsResolved(address _disputor) public onlyOwner {
+        for(uint i = 0; i < disputes.length; i++){
+            if(disputes[i].disputor == _disputor && disputes[i].resolved == false){
+                disputes[i].resolved = true;
+            }
+        }
     }
 }
