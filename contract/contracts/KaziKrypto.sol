@@ -528,4 +528,14 @@ contract KaziKrypto {
             }
         }
     }
+
+
+    function getDispute(uint index) public view returns (Disputes memory) {
+        require(index < disputes.length, "Invalid index");
+        return disputes[index];
+    }
+
+    function getAllDisputes() public view returns (Disputes[] memory) {
+        return disputes;
+    }
 }

@@ -6,6 +6,11 @@ chai.use(chaiBN);
 const { expect } = chai;
 
 contract("KaziKrypto", (accounts) => {
+
+  const owner = accounts[0];
+  const client = accounts[1];
+  const disputor = accounts[2];
+  
   let instance;
 
   before(async () => {
@@ -523,5 +528,102 @@ it("should return an empty array for a new freelancer account", async () => {
   assert.equal(transactions.length, 2, "Transaction history should be empty");
 });
 
+
+it('should rate a freelancer', async () => {
+  const client = accounts[0];
+  const freelancer = accounts[1];
+  // Rate the freelancer
+  const projectName = "Sample Project";
+  const feedBack = "Great work!";
+  const ratingForCompletedProjects = 4;
+  const ratingForCommunicationSkills = 5;
+  await instance.rateAfreelancer(freelancer, 1, projectName, feedBack, ratingForCompletedProjects, ratingForCommunicationSkills, { from: client });
+
+  // Check if the rating is added correctly
+  const freelancerRatings = await instance.viewFreelancerRating(freelancer);
+  assert.equal(freelancerRatings.length, 1, "Incorrect number of freelancer ratings");
+  assert.equal(freelancerRatings[0].bidId, 1, "Incorrect bid ID");
+  assert.equal(freelancerRatings[0].ProjectName, projectName, "Incorrect project name");
+  assert.equal(freelancerRatings[0].accountId, freelancer, "Incorrect freelancer account ID");
+  assert.equal(freelancerRatings[0].feedback, feedBack, "Incorrect feedback");
+  assert.equal(freelancerRatings[0].ratingForCompletedProjects, ratingForCompletedProjects, "Incorrect rating for completed projects");
+  assert.equal(freelancerRatings[0].ratingForCommunicationSkills, ratingForCommunicationSkills, "Incorrect rating for communication skills");
+});
+
+it('should revert when trying to rate a freelancer who was already rated for the same bid', async () => {
+  const client = accounts[0];
+  const freelancer = accounts[1];
+  // Rate the freelancer for the first time
+  const projectName = "Sample Project";
+  const feedBack = "Great work!";
+  const ratingForCompletedProjects = 4;
+  const ratingForCommunicationSkills = 5;
+  // Try to rate the freelancer again for the same bid
+  try {
+    await instance.rateAfreelancer(freelancer, 1, projectName, feedBack, ratingForCompletedProjects, ratingForCommunicationSkills, { from: client });
+    assert.fail("Should have reverted");
+  } catch (error) {
+    assert(error.message.includes("allready rated"), "Expected revert message not received");
+  }
+});
+
+
+it("should create a dispute", async () => {
+  const disputeName = "Dispute 1";
+  const description = "This is a dispute";
+  const clientInvolved = client;
+
+  await instance.createDispute(disputeName, description, clientInvolved, { from: disputor });
+
+  const dispute = await instance.getDispute(0);
+  assert.equal(dispute.disputeName, disputeName, "Dispute name is incorrect");
+  assert.equal(dispute.description, description, "Description is incorrect");
+  assert.equal(dispute.disputor, disputor, "Disputor address is incorrect");
+  assert.equal(dispute.clientInvolved, clientInvolved, "Client involved address is incorrect");
+  assert.equal(dispute.resolved, false, "Dispute should not be resolved");
+});
+
+it("should mark a dispute as resolved by owner", async () => {
+  const disputeName = "Dispute 1";
+  const description = "This is a dispute";
+  const clientInvolved = client;
+
+  await instance.markDisputeAsResolved(disputor, { from: disputor });
+
+  const dispute = await instance.getDispute(0);
+  assert.equal(dispute.resolved, true, "Dispute should be marked as resolved");
+});
+
+it("should revert when disputor tries to mark a dispute as resolved", async () => {
+  const disputeName = "Dispute 1";
+  const description = "This is a dispute";
+  const clientInvolved = client;
+
+  try {
+    await instance.markDisputeAsResolved(disputor, { from: disputor });
+    assert.fail("Should have reverted");
+  } catch (error) {
+    assert(error.message.includes("only_owner"), "Expected revert message not received");
+  }
+});
+
+it("should get all disputes", async () => {
+  const disputeName1 = "Dispute 1";
+  const description1 = "This is dispute 1";
+  const clientInvolved1 = client;
+
+  await instance.createDispute(disputeName1, description1, clientInvolved1, { from: disputor });
+
+  const disputeName2 = "Dispute 2";
+  const description2 = "This is dispute 2";
+  const clientInvolved2 = client;
+
+  await instance.createDispute(disputeName2, description2, clientInvolved2, { from: disputor });
+
+  const allDisputes = await instance.getAllDisputes();
+  assert.equal(allDisputes.length, 2, "Incorrect number of disputes");
+  assert.equal(allDisputes[0].disputeName, disputeName1, "Dispute 1 name is incorrect");
+  assert.equal(allDisputes[1].disputeName, disputeName2, "Dispute 2 name is incorrect");
+});
 
 });
