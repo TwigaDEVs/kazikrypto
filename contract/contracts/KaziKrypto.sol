@@ -185,7 +185,7 @@ contract KaziKrypto {
     /// @dev store Client Jobs
     /// @dev not everybody is a client
     uint internal clientJobId;
-    ClientJobs[] allClientJobs;
+    ClientJobs[] public allClientJobs;
     mapping(uint => FreelancerBids[]) allBidsForClientJobs;
 
     /// @dev acceptedBidDetail
@@ -296,10 +296,14 @@ contract KaziKrypto {
         transactions[msg.sender].push(Transaction(payable(msg.sender), contractAddress, "Project posting", msg.value, block.timestamp, "on_escrow"));
      }
 
+    //  function getAllClientJobs() public view returns (ClientJobs[] memory){
+    //     return allClientJobs;
+    //  } 
 
-    function getClientJob(uint256 _jobId) public view returns (ClientJobs memory) {
-        require(_jobId > 0 && _jobId <= clientJobId, "Invalid job ID");
-        return allClientJobs[_jobId - 1];
+
+    function getClientJob() public view returns (ClientJobs[] memory) {
+       
+        return allClientJobs;
     }
 
     /**
@@ -457,7 +461,7 @@ contract KaziKrypto {
                 address payable contractAddress = payable(address(this));
                 milestonesInAccount[_freelancer][i].milestoneWorkApproved = true;
                 _freelancer.transfer(milestonesInAccount[_freelancer][i].milestoneBudget);
-                transactions[address(this)].push(Transaction(contractAddress, _freelancer, "Approval",milestonesInAccount[_freelancer][i].milestoneBudget , block.timestamp, "settled"));
+                transactions[_freelancer].push(Transaction(contractAddress, _freelancer, "Approval",milestonesInAccount[_freelancer][i].milestoneBudget , block.timestamp, "settled"));
             }
         }
 
