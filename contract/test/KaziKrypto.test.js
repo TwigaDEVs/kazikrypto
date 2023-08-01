@@ -4,16 +4,19 @@ const BN = require("bn.js");
 const chaiBN = require("chai-bn")(BN);
 chai.use(chaiBN);
 const { expect } = chai;
+const { default: Web3 } = require("web3");
+
+// import "../contracts/Opeations.sol";
+const web3 = new Web3("HTTP://127.0.0.1:7545");
 
 contract("KaziKrypto", (accounts) => {
-
   const owner = accounts[0];
   const client = accounts[1];
   const disputor = accounts[2];
-  
+
   let instance;
 
-  before(async () => {
+  beforeEach(async () => {
     instance = await KaziKrypto.deployed();
   });
 
@@ -71,7 +74,7 @@ contract("KaziKrypto", (accounts) => {
     expect(portfolio.description).to.equal(description);
   });
 
-  it("should allow freelancers to update their profile information", async () => {
+  it("should allow getFreelancer to update their profile information", async () => {
     const fullName = "John Doe";
     const image = "path_to_image";
     const hourlyRate = new BN(25);
@@ -79,16 +82,29 @@ contract("KaziKrypto", (accounts) => {
     const preferredPayment = "ETH";
     const skills = ["Solidity", "JavaScript"];
 
-    await instance.addNewFreelancer(fullName,image, hourlyRate, profession, preferredPayment, skills,{ from: accounts[0] });
+    await instance.addNewFreelancer(
+      fullName,
+      image,
+      hourlyRate,
+      profession,
+      preferredPayment,
+      skills,
+      { from: accounts[0] }
+    );
 
     const newFullName = "Jane Doe";
     const newHourlyRate = new BN(30);
     const newProfession = "Software Engineer";
     const newPreferredPayment = "BTC";
     const newSkills = ["Solidity", "Python"];
-  
 
-    await instance.editFreelancerProfile(newFullName, newHourlyRate, newProfession, newPreferredPayment, newSkills);
+    await instance.editFreelancerProfile(
+      newFullName,
+      newHourlyRate,
+      newProfession,
+      newPreferredPayment,
+      newSkills
+    );
 
     const freelancer = await instance.getFreelancer(accounts[0]);
 
@@ -99,7 +115,7 @@ contract("KaziKrypto", (accounts) => {
     expect(freelancer.skills).to.deep.equal(newSkills);
   });
 
-  it("should allow freelancers to set their profile visibility status", async () => {
+  it("should allow getFreelancer to set their profile visibility status", async () => {
     const fullName = "John Doe";
     const image = "path_to_image";
     const hourlyRate = 25;
@@ -107,7 +123,15 @@ contract("KaziKrypto", (accounts) => {
     const preferredPayment = "ETH";
     const skills = ["Solidity", "JavaScript"];
 
-    await instance.addNewFreelancer(fullName,image, hourlyRate, profession, preferredPayment, skills,{ from: accounts[0]});
+    await instance.addNewFreelancer(
+      fullName,
+      image,
+      hourlyRate,
+      profession,
+      preferredPayment,
+      skills,
+      { from: accounts[0] }
+    );
 
     const initialProfileVisibility = await instance.getFreelancer(accounts[0]);
     expect(initialProfileVisibility.isProfilePublic).to.be.true;
@@ -116,7 +140,9 @@ contract("KaziKrypto", (accounts) => {
     await instance.setProfileVisibility(newProfileVisibility);
 
     const updatedProfileVisibility = await instance.getFreelancer(accounts[0]);
-    expect(updatedProfileVisibility.isProfilePublic).to.equal(newProfileVisibility);
+    expect(updatedProfileVisibility.isProfilePublic).to.equal(
+      newProfileVisibility
+    );
   });
 
   it("should add a new experience to freelancer", async () => {
@@ -282,17 +308,15 @@ contract("KaziKrypto", (accounts) => {
     expect(allChats[4].sender).to.equal(accounts[2]);
   });
 
- 
-  it('should accept a bid for a job', async () => {
+  it("should accept a bid for a job", async () => {
     // Define the job details
-    const projectTitle = 'Project Title';
-    const projectDescription = 'Project Description';
-    const projectDuration = '2 weeks';
-    const projectBudget = web3.utils.toWei('100', 'ether');
-    const skillRequirements = ['Skill 1', 'Skill 2'];
-    const images = ['Image 1', 'Image 2'];
-    const jobId = new BN(3); 
-
+    const projectTitle = "Project Title";
+    const projectDescription = "Project Description";
+    const projectDuration = "2 weeks";
+    const projectBudget = web3.utils.toWei("100", "ether");
+    const skillRequirements = ["Skill 1", "Skill 2"];
+    const images = ["Image 1", "Image 2"];
+    const jobId = new BN(3);
 
     // Create a sample client job
     await instance.postAClientJob(
@@ -309,13 +333,13 @@ contract("KaziKrypto", (accounts) => {
     const jobget = await instance.getClientJob(jobId);
 
     // Assert that bid is initially available for the job
-    assert.isTrue(jobget.bidAvailable, 'Bid should be available');
+    assert.isTrue(jobget.bidAvailable, "Bid should be available");
 
     // Place a bid by a freelancer for the job
-   
-    const bidDescription = 'Bid Description';
-    const bidBudget = web3.utils.toWei('50', 'ether');
-    const relevantFiles = ['File 1', 'File 2'];
+
+    const bidDescription = "Bid Description";
+    const bidBudget = web3.utils.toWei("50", "ether");
+    const relevantFiles = ["File 1", "File 2"];
 
     await instance.makeABidding(
       jobId,
@@ -332,28 +356,29 @@ contract("KaziKrypto", (accounts) => {
 
     // Retrieve the updated bid details
     const bid = await instance.getBid(jobId, bidId);
-    assert.isTrue(bid.bidApproved, 'Bid should be approved');
+    assert.isTrue(bid.bidApproved, "Bid should be approved");
 
     // Retrieve the updated client job details
     const updatedJob = await instance.getClientJob(jobId);
-    assert.isFalse(updatedJob.bidAvailable, 'Bid should not be available after acceptance');
+    assert.isFalse(
+      updatedJob.bidAvailable,
+      "Bid should not be available after acceptance"
+    );
   });
 
-  it('should revert if bid is already approved', async () => {
+  it("should revert if bid is already approved", async () => {
     // Define the job details
     const jobId = 4;
 
-    const projectTitle = 'Another Project';
-    const projectDescription = 'Another Description';
-    const projectDuration = '1 month';
-    const projectBudget = web3.utils.toWei('200', 'ether');
-    const skillRequirements = ['Skill 3', 'Skill 4'];
-    const images = ['Image 3', 'Image 4'];
-
+    const projectTitle = "Another Project";
+    const projectDescription = "Another Description";
+    const projectDuration = "1 month";
+    const projectBudget = web3.utils.toWei("200", "ether");
+    const skillRequirements = ["Skill 3", "Skill 4"];
+    const images = ["Image 3", "Image 4"];
 
     // Create another client job
     await instance.postAClientJob(
-
       projectTitle,
       projectDescription,
       projectDuration,
@@ -365,9 +390,9 @@ contract("KaziKrypto", (accounts) => {
 
     // Place a bid by a freelancer for the job
     const bidId = 3;
-    const bidDescription = 'Another Bid Description';
-    const bidBudget = web3.utils.toWei('80', 'ether');
-    const relevantFiles = ['File 5', 'File 6'];
+    const bidDescription = "Another Bid Description";
+    const bidBudget = web3.utils.toWei("80", "ether");
+    const relevantFiles = ["File 5", "File 6"];
 
     await instance.makeABidding(
       jobId,
@@ -383,26 +408,28 @@ contract("KaziKrypto", (accounts) => {
     // Try to accept the bid again (should revert)
     try {
       await instance.acceptBid(jobId, bidId, { from: accounts[0] });
-      assert.fail('Expected revert, but the transaction was successful');
+      assert.fail("Expected revert, but the transaction was successful");
     } catch (error) {
-      assert(error.message.includes('bid_allready_approved'), 'Expected revert due to bid already approved');
+      assert(
+        error.message.includes("bid_allready_approved"),
+        "Expected revert due to bid already approved"
+      );
     }
   });
 
-  it('should revert if bid is not available for the job', async () => {
+  it("should revert if bid is not available for the job", async () => {
     // Define the job details
     const jobId = 4;
-    const projectTitle = 'Third Project';
-    const projectDescription = 'Description of the Third Project';
-    const projectDuration = '3 weeks';
-    const projectBudget = web3.utils.toWei('150', 'ether');
-    const skillRequirements = ['Skill 5', 'Skill 6'];
-    const images = ['Image 7', 'Image 8'];
-// Bid not available for this job
+    const projectTitle = "Third Project";
+    const projectDescription = "Description of the Third Project";
+    const projectDuration = "3 weeks";
+    const projectBudget = web3.utils.toWei("150", "ether");
+    const skillRequirements = ["Skill 5", "Skill 6"];
+    const images = ["Image 7", "Image 8"];
+    // Bid not available for this job
 
     // Create a client job with bidAvailable set to false
     await instance.postAClientJob(
-
       projectTitle,
       projectDescription,
       projectDuration,
@@ -414,9 +441,9 @@ contract("KaziKrypto", (accounts) => {
 
     // Place a bid by a freelancer for the job
     const bidId = 2;
-    const bidDescription = 'Bid for Third Project';
-    const bidBudget = web3.utils.toWei('120', 'ether');
-    const relevantFiles = ['File 9', 'File 10'];
+    const bidDescription = "Bid for Third Project";
+    const bidBudget = web3.utils.toWei("120", "ether");
+    const relevantFiles = ["File 9", "File 10"];
 
     await instance.makeABidding(
       jobId,
@@ -429,16 +456,18 @@ contract("KaziKrypto", (accounts) => {
     // Try to accept the bid (should revert)
     try {
       await instance.acceptBid(jobId, bidId, { from: accounts[0] });
-      assert.fail('Expected revert, but the transaction was successful');
+      assert.fail("Expected revert, but the transaction was successful");
     } catch (error) {
-      assert(error.message.includes('bid not available'), 'Expected revert due to bid not available');
+      assert(
+        error.message.includes("bid not available"),
+        "Expected revert due to bid not available"
+      );
     }
   });
 
-
-  it('should add project milestones and approve them', async () => {
+  it("should add project milestones and approve them", async () => {
     const client = accounts[0];
-    const freelancer = accounts[1];
+    const freelancer = accounts[8];
 
     // Post a new client job
     const projectTitle = "Sample Project";
@@ -446,16 +475,24 @@ contract("KaziKrypto", (accounts) => {
     const projectDuration = "2 weeks";
     const projectBudget = new BN(1000);
     const skillRequirements = ["JavaScript", "Web Development"];
-    await instance.postAClientJob(projectTitle, projectDescription, projectDuration, projectBudget, skillRequirements, [], { from: client });
+    await instance.postAClientJob(
+      projectTitle,
+      projectDescription,
+      projectDuration,
+      projectBudget,
+      skillRequirements,
+      [],
+      { from: client, value: projectBudget }
+    );
 
-    const jobId =new BN(5);
+    const jobId = 1;
     // Make a bid on the client job
-    const bidId = 5;
+    const bidId = 1;
     const bidDescription = "This is my bid";
     const bidBudget = new BN(800);
-    await instance.makeABidding(jobId, bidDescription, bidBudget, [], { from: freelancer });
-
-    
+    await instance.makeABidding(jobId, bidDescription, bidBudget, [], {
+      from: freelancer,
+    });
 
     // Accept the bid
     await instance.acceptBid(jobId, bidId, { from: client });
@@ -465,16 +502,36 @@ contract("KaziKrypto", (accounts) => {
     const milestoneDescription1 = "This is milestone 1";
     const milestoneBudget1 = new BN(300);
     const milestoneDuration1 = 7;
-    await instance.addProjectMileStone(jobId, bidId, milestoneName1, milestoneDescription1, milestoneBudget1, milestoneDuration1, { from: freelancer });
+    await instance.addProjectMileStone(
+      jobId,
+      bidId,
+      milestoneName1,
+      milestoneDescription1,
+      milestoneBudget1,
+      milestoneDuration1,
+      { from: freelancer }
+    );
 
     const milestoneName2 = "Milestone 2";
     const milestoneDescription2 = "This is milestone 2";
     const milestoneBudget2 = new BN(500);
     const milestoneDuration2 = 14;
-    await instance.addProjectMileStone(jobId, bidId, milestoneName2, milestoneDescription2, milestoneBudget2, milestoneDuration2, { from: freelancer });
+    await instance.addProjectMileStone(
+      jobId,
+      bidId,
+      milestoneName2,
+      milestoneDescription2,
+      milestoneBudget2,
+      milestoneDuration2,
+      { from: freelancer }
+    );
+
+    //------------------
 
     // Check if the milestones were added correctly
-    const freelancerMilestones = await instance.getFreelancerMileStones(freelancer);
+    const freelancerMilestones = await instance.getFreelancerMileStones(
+      freelancer
+    );
     expect(freelancerMilestones.length).to.equal(2);
     expect(freelancerMilestones[0].milestoneName).to.equal(milestoneName1);
     expect(freelancerMilestones[1].milestoneName).to.equal(milestoneName2);
@@ -489,7 +546,9 @@ contract("KaziKrypto", (accounts) => {
     await instance.approveProjectMilestone(freelancer, 2, { from: client });
 
     // Check if the milestones are marked as approved
-    const updatedFreelancerMilestones = await instance.getFreelancerMileStones(freelancer);
+    const updatedFreelancerMilestones = await instance.getFreelancerMileStones(
+      freelancer
+    );
     expect(updatedFreelancerMilestones[0].milestoneWorkApproved).to.be.true;
     expect(updatedFreelancerMilestones[1].milestoneWorkApproved).to.be.true;
 
@@ -497,133 +556,296 @@ contract("KaziKrypto", (accounts) => {
     expect(updatedProjectMilestones[0].milestoneWorkApproved).to.be.true;
     expect(updatedProjectMilestones[1].milestoneWorkApproved).to.be.true;
 
-     // Check the transaction history for the freelancer
-  const freelancerTransactions = await instance.getFreelancerTransactions(freelancer);
-  assert.equal(freelancerTransactions.length, 2, "Incorrect number of transactions");
+    // Check the transaction history for the freelancer
+    const freelancerTransactions = await instance.getFreelancerTransactions(
+      freelancer
+    );
+    assert.equal(
+      freelancerTransactions.length,
+      2,
+      "Incorrect number of transactions"
+    );
 
-  // Check the details of the transactions
-  const transaction1 = freelancerTransactions[0];
-  assert.equal(transaction1.from, freelancer, "Incorrect 'from' address");
-  assert.equal(transaction1.to, instance.address, "Incorrect 'to' address");
-  assert.equal(transaction1.transactionPurpose, "Project posting", "Incorrect transaction purpose");
-  assert.equal(transaction1.transactionAmount.toString(), projectBudget, "Incorrect transaction amount");
-  assert.equal(transaction1.transactionStatus, "on_escrow", "Incorrect transaction status");
+    // Check the details of the transactions
+    const transaction1 = freelancerTransactions[0];
+    assert.equal(transaction1.from, freelancer, "Incorrect 'from' address");
+    assert.equal(transaction1.to, instance.address, "Incorrect 'to' address");
+    assert.equal(
+      transaction1.transactionPurpose,
+      "Project posting",
+      "Incorrect transaction purpose"
+    );
+    assert.equal(
+      transaction1.transactionAmount.toString(),
+      projectBudget,
+      "Incorrect transaction amount"
+    );
+    assert.equal(
+      transaction1.transactionStatus,
+      "on_escrow",
+      "Incorrect transaction status"
+    );
 
-  const transaction2 = freelancerTransactions[1];
-  assert.equal(transaction2.from, instance.address, "Incorrect 'from' address");
-  assert.equal(transaction2.to, freelancer, "Incorrect 'to' address");
-  assert.equal(transaction2.transactionPurpose, "Approval", "Incorrect transaction purpose");
-  assert.equal(transaction2.transactionAmount.toString(), milestoneBudget1, "Incorrect transaction amount");
-  assert.equal(transaction2.transactionStatus, "settled", "Incorrect transaction status");
-});
+    const transaction2 = freelancerTransactions[1];
+    assert.equal(
+      transaction2.from,
+      instance.address,
+      "Incorrect 'from' address"
+    );
+    assert.equal(transaction2.to, freelancer, "Incorrect 'to' address");
+    assert.equal(
+      transaction2.transactionPurpose,
+      "Approval",
+      "Incorrect transaction purpose"
+    );
+    assert.equal(
+      transaction2.transactionAmount.toString(),
+      milestoneBudget1,
+      "Incorrect transaction amount"
+    );
+    assert.equal(
+      transaction2.transactionStatus,
+      "settled",
+      "Incorrect transaction status"
+    );
+  });
 
-it("should return an empty array for a new freelancer account", async () => {
-  const freelancer = accounts[1];
+  it("should return an empty array for a new freelancer account", async () => {
+    const freelancer = accounts[5];
 
-  // Get the transaction history for the freelancer
-  const transactions = await instance.getFreelancerTransactions(freelancer);
+    // Get the transaction history for the freelancer
+    const transactions = await instance.getFreelancerTransactions(freelancer);
 
-  // Ensure that the returned array is empty
-  assert(Array.isArray(transactions), "Transactions should be an array");
-  assert.equal(transactions.length, 2, "Transaction history should be empty");
-});
+    // Ensure that the returned array is empty
+    assert(Array.isArray(transactions), "Transactions should be an array");
+    assert.equal(transactions.length, 0, "Transaction history should be empty");
+  });
 
+  it("should rate a freelancer", async () => {
+    const client = accounts[0];
+    const freelancer = accounts[1];
+    // Rate the freelancer
+    const projectName = "Sample Project";
+    const feedBack = "Great work!";
+    const ratingForCompletedProjects = 4;
+    const ratingForCommunicationSkills = 5;
+    await instance.rateAfreelancer(
+      freelancer,
+      1,
+      projectName,
+      feedBack,
+      ratingForCompletedProjects,
+      ratingForCommunicationSkills,
+      { from: client }
+    );
 
-it('should rate a freelancer', async () => {
-  const client = accounts[0];
-  const freelancer = accounts[1];
-  // Rate the freelancer
-  const projectName = "Sample Project";
-  const feedBack = "Great work!";
-  const ratingForCompletedProjects = 4;
-  const ratingForCommunicationSkills = 5;
-  await instance.rateAfreelancer(freelancer, 1, projectName, feedBack, ratingForCompletedProjects, ratingForCommunicationSkills, { from: client });
+    // Check if the rating is added correctly
+    const freelancerRatings = await instance.viewFreelancerRating(freelancer);
+    assert.equal(
+      freelancerRatings.length,
+      1,
+      "Incorrect number of freelancer ratings"
+    );
+    assert.equal(freelancerRatings[0].bidId, 1, "Incorrect bid ID");
+    assert.equal(
+      freelancerRatings[0].ProjectName,
+      projectName,
+      "Incorrect project name"
+    );
+    assert.equal(
+      freelancerRatings[0].accountId,
+      freelancer,
+      "Incorrect freelancer account ID"
+    );
+    assert.equal(freelancerRatings[0].feedback, feedBack, "Incorrect feedback");
+    assert.equal(
+      freelancerRatings[0].ratingForCompletedProjects,
+      ratingForCompletedProjects,
+      "Incorrect rating for completed projects"
+    );
+    assert.equal(
+      freelancerRatings[0].ratingForCommunicationSkills,
+      ratingForCommunicationSkills,
+      "Incorrect rating for communication skills"
+    );
+  });
 
-  // Check if the rating is added correctly
-  const freelancerRatings = await instance.viewFreelancerRating(freelancer);
-  assert.equal(freelancerRatings.length, 1, "Incorrect number of freelancer ratings");
-  assert.equal(freelancerRatings[0].bidId, 1, "Incorrect bid ID");
-  assert.equal(freelancerRatings[0].ProjectName, projectName, "Incorrect project name");
-  assert.equal(freelancerRatings[0].accountId, freelancer, "Incorrect freelancer account ID");
-  assert.equal(freelancerRatings[0].feedback, feedBack, "Incorrect feedback");
-  assert.equal(freelancerRatings[0].ratingForCompletedProjects, ratingForCompletedProjects, "Incorrect rating for completed projects");
-  assert.equal(freelancerRatings[0].ratingForCommunicationSkills, ratingForCommunicationSkills, "Incorrect rating for communication skills");
-});
+  it("should revert when trying to rate a freelancer who was already rated for the same bid", async () => {
+    const client = accounts[0];
+    const freelancer = accounts[1];
+    // Rate the freelancer for the first time
+    const projectName = "Sample Project";
+    const feedBack = "Great work!";
+    const ratingForCompletedProjects = 4;
+    const ratingForCommunicationSkills = 5;
+    // Try to rate the freelancer again for the same bid
+    try {
+      await instance.rateAfreelancer(
+        freelancer,
+        1,
+        projectName,
+        feedBack,
+        ratingForCompletedProjects,
+        ratingForCommunicationSkills,
+        { from: client }
+      );
+      assert.fail("Should have reverted");
+    } catch (error) {
+      assert(
+        error.message.includes("allready rated"),
+        "Expected revert message not received"
+      );
+    }
+  });
 
-it('should revert when trying to rate a freelancer who was already rated for the same bid', async () => {
-  const client = accounts[0];
-  const freelancer = accounts[1];
-  // Rate the freelancer for the first time
-  const projectName = "Sample Project";
-  const feedBack = "Great work!";
-  const ratingForCompletedProjects = 4;
-  const ratingForCommunicationSkills = 5;
-  // Try to rate the freelancer again for the same bid
-  try {
-    await instance.rateAfreelancer(freelancer, 1, projectName, feedBack, ratingForCompletedProjects, ratingForCommunicationSkills, { from: client });
-    assert.fail("Should have reverted");
-  } catch (error) {
-    assert(error.message.includes("allready rated"), "Expected revert message not received");
-  }
-});
+  it("should create a dispute", async () => {
+    const disputeName = "Dispute 1";
+    const description = "This is a dispute";
+    const clientInvolved = client;
 
+    await instance.createDispute(disputeName, description, clientInvolved, {
+      from: disputor,
+    });
 
-it("should create a dispute", async () => {
-  const disputeName = "Dispute 1";
-  const description = "This is a dispute";
-  const clientInvolved = client;
+    const dispute = await instance.getDispute(0);
+    assert.equal(dispute.disputeName, disputeName, "Dispute name is incorrect");
+    assert.equal(dispute.description, description, "Description is incorrect");
+    assert.equal(dispute.disputor, disputor, "Disputor address is incorrect");
+    assert.equal(
+      dispute.clientInvolved,
+      clientInvolved,
+      "Client involved address is incorrect"
+    );
+    assert.equal(dispute.resolved, false, "Dispute should not be resolved");
+  });
 
-  await instance.createDispute(disputeName, description, clientInvolved, { from: disputor });
+  it("should mark a dispute as resolved by owner", async () => {
+    const disputeName = "Dispute 1";
+    const description = "This is a dispute";
+    const clientInvolved = client;
 
-  const dispute = await instance.getDispute(0);
-  assert.equal(dispute.disputeName, disputeName, "Dispute name is incorrect");
-  assert.equal(dispute.description, description, "Description is incorrect");
-  assert.equal(dispute.disputor, disputor, "Disputor address is incorrect");
-  assert.equal(dispute.clientInvolved, clientInvolved, "Client involved address is incorrect");
-  assert.equal(dispute.resolved, false, "Dispute should not be resolved");
-});
+    await instance.markDisputeAsResolved(disputor, { from: owner });
 
-it("should mark a dispute as resolved by owner", async () => {
-  const disputeName = "Dispute 1";
-  const description = "This is a dispute";
-  const clientInvolved = client;
+    const dispute = await instance.getDispute(0);
+    assert.equal(
+      dispute.resolved,
+      true,
+      "Dispute should be marked as resolved"
+    );
+  });
 
-  await instance.markDisputeAsResolved(disputor, { from: disputor });
+  it("should revert when disputor tries to mark a dispute as resolved", async () => {
+    const disputeName = "Dispute 1";
+    const description = "This is a dispute";
+    const clientInvolved = client;
 
-  const dispute = await instance.getDispute(0);
-  assert.equal(dispute.resolved, true, "Dispute should be marked as resolved");
-});
+    try {
+      await instance.markDisputeAsResolved(disputor, { from: disputor });
+      assert.fail("Should have reverted");
+    } catch (error) {
+      assert(
+        error.message.includes("only_owner"),
+        "Expected revert message not received"
+      );
+    }
+  });
 
-it("should revert when disputor tries to mark a dispute as resolved", async () => {
-  const disputeName = "Dispute 1";
-  const description = "This is a dispute";
-  const clientInvolved = client;
+  it("should get all disputes", async () => {
+    const disputeName1 = "Dispute 1";
+    const description1 = "This is dispute 1";
+    const clientInvolved1 = client;
 
-  try {
-    await instance.markDisputeAsResolved(disputor, { from: disputor });
-    assert.fail("Should have reverted");
-  } catch (error) {
-    assert(error.message.includes("only_owner"), "Expected revert message not received");
-  }
-});
+    await instance.createDispute(disputeName1, description1, clientInvolved1, {
+      from: disputor,
+    });
 
-it("should get all disputes", async () => {
-  const disputeName1 = "Dispute 1";
-  const description1 = "This is dispute 1";
-  const clientInvolved1 = client;
+    const disputeName2 = "Dispute 2";
+    const description2 = "This is dispute 2";
+    const clientInvolved2 = client;
 
-  await instance.createDispute(disputeName1, description1, clientInvolved1, { from: disputor });
+    // await instance.createDispute(disputeName2, description2, clientInvolved2, {
+    //   from: disputor,
+    // });
 
-  const disputeName2 = "Dispute 2";
-  const description2 = "This is dispute 2";
-  const clientInvolved2 = client;
+    const allDisputes = await instance.getAllDisputes();
+    assert.equal(allDisputes.length, 1, "Incorrect number of disputes");
+    assert.equal(
+      allDisputes[0].disputeName,
+      disputeName1,
+      "Dispute 1 name is incorrect"
+    );
+    // assert.equal(
+    //   allDisputes[1].disputeName,
+    //   disputeName2,
+    //   "Dispute 2 name is incorrect"
+    // );
+  });
 
-  await instance.createDispute(disputeName2, description2, clientInvolved2, { from: disputor });
+  it("should console them", async () => {
+    const client = accounts[0];
+    const freelancer = accounts[6];
 
-  const allDisputes = await instance.getAllDisputes();
-  assert.equal(allDisputes.length, 2, "Incorrect number of disputes");
-  assert.equal(allDisputes[0].disputeName, disputeName1, "Dispute 1 name is incorrect");
-  assert.equal(allDisputes[1].disputeName, disputeName2, "Dispute 2 name is incorrect");
-});
+    // Post a new client job
+    const projectTitle = "Sample Project";
+    const projectDescription = "This is a test project";
+    const projectDuration = "2 weeks";
+    const projectBudget = new BN(1000);
+    const skillRequirements = ["JavaScript", "Web Development"];
+    await instance.postAClientJob(
+      projectTitle,
+      projectDescription,
+      projectDuration,
+      projectBudget,
+      skillRequirements,
+      [],
+      { from: client, value: projectBudget }
+    );
 
+    const a = await instance.getAllClientJobs();
+    console.log(a);
+
+    // const jobId = 1;
+    // // Make a bid on the client job
+    // const bidId = 2;
+    // const bidDescription = "This is my bid";
+    // const bidBudget = new BN(800);
+    // await instance.makeABidding(jobId, bidDescription, bidBudget, [], {
+    //   from: freelancer,
+    // });
+
+    // // Accept the bid
+    // await instance.acceptBid(jobId, bidId, { from: client });
+
+    // // Add project milestones for the accepted bid
+    // const milestoneName1 = "Milestone 1";
+    // const milestoneDescription1 = "This is milestone 1";
+    // const milestoneBudget1 = new BN(300);
+    // const milestoneDuration1 = 7;
+    // await instance.addProjectMileStone(
+    //   jobId,
+    //   bidId,
+    //   milestoneName1,
+    //   milestoneDescription1,
+    //   milestoneBudget1,
+    //   milestoneDuration1,
+    //   { from: freelancer }
+    // );
+
+    // const milestoneName2 = "Milestone 2";
+    // const milestoneDescription2 = "This is milestone 2";
+    // const milestoneBudget2 = new BN(500);
+    // const milestoneDuration2 = 14;
+    // await instance.addProjectMileStone(
+    //   jobId,
+    //   bidId,
+    //   milestoneName2,
+    //   milestoneDescription2,
+    //   milestoneBudget2,
+    //   milestoneDuration2,
+    //   { from: freelancer }
+    // );
+
+    // const t = await instance.milestonesInAccount(freelancer);
+    // console.log(t);
+  });
 });
