@@ -20,12 +20,13 @@ transparent transactions while leveraging the benefits of blockchain technology
 
 contract KaziKrypto {
 
+    address owner;
     /**
     * @dev allow smart contract to receive payments
     */
-    address owner;
-    constructor() payable{
-        owner == msg.sender;
+    
+    constructor() payable {
+        owner == msg.sender;  
     }
 
 
