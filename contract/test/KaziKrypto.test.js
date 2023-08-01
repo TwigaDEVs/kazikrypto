@@ -192,7 +192,7 @@ contract("KaziKrypto", (accounts) => {
 
     // Retrieve the added client job using the getClientJob function
     const jobId = new BN(1); // Assuming it's the first job posted
-    const clientJob = await instance.getClientJob(jobId);
+    const clientJob = await instance.getClientJobById(jobId);
 
     // Check if the data is correct
     expect(clientJob.jobId).to.be.bignumber.equal(jobId);
@@ -330,7 +330,7 @@ contract("KaziKrypto", (accounts) => {
     );
 
     // Retrieve the client job details
-    const jobget = await instance.getClientJob(jobId);
+    const jobget = await instance.getClientJobById(jobId);
 
     // Assert that bid is initially available for the job
     assert.isTrue(jobget.bidAvailable, "Bid should be available");
@@ -359,7 +359,7 @@ contract("KaziKrypto", (accounts) => {
     assert.isTrue(bid.bidApproved, "Bid should be approved");
 
     // Retrieve the updated client job details
-    const updatedJob = await instance.getClientJob(jobId);
+    const updatedJob = await instance.getClientJobById(jobId);
     assert.isFalse(
       updatedJob.bidAvailable,
       "Bid should not be available after acceptance"
@@ -485,9 +485,9 @@ contract("KaziKrypto", (accounts) => {
       { from: client, value: projectBudget }
     );
 
-    const jobId = 1;
+    const jobId = 6;
     // Make a bid on the client job
-    const bidId = 1;
+    const bidId = 4;
     const bidDescription = "This is my bid";
     const bidBudget = new BN(800);
     await instance.makeABidding(jobId, bidDescription, bidBudget, [], {
@@ -724,7 +724,7 @@ contract("KaziKrypto", (accounts) => {
     const description = "This is a dispute";
     const clientInvolved = client;
 
-    await instance.markDisputeAsResolved(disputor, { from: owner });
+    await instance.markDisputeAsResolved(disputor, { from: client });
 
     const dispute = await instance.getDispute(0);
     assert.equal(
