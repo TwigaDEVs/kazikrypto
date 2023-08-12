@@ -188,7 +188,7 @@ contract KaziKrypto {
     uint internal clientJobId;
     ClientJobs[] public allClientJobs;
 
-    // mapping(uint => ClientJobs) public clientJobsById;
+    mapping(uint => ClientJobs) public clientJobsById;
     mapping(uint => FreelancerBids[]) allBidsForClientJobs;
 
     /// @dev acceptedBidDetail
@@ -296,8 +296,8 @@ contract KaziKrypto {
         (bool sent, bytes memory data) = contractAddress.call{value: msg.value}("");
         clientJobId++;
         allClientJobs.push(ClientJobs(clientJobId, msg.sender, _projectTitle, _projectDescription, _projectDuration, _projectBudget, _skillRequirements, _images, true));
-        // ClientJobs memory newClientJob = ClientJobs(clientJobId, msg.sender, _projectTitle, _projectDescription, _projectDuration, _projectBudget, _skillRequirements, _images, true);
-        // clientJobsById[clientJobId] = newClientJob;
+        ClientJobs memory newClientJob = ClientJobs(clientJobId, msg.sender, _projectTitle, _projectDescription, _projectDuration, _projectBudget, _skillRequirements, _images, true);
+        clientJobsById[clientJobId] = newClientJob;
         transactions[msg.sender].push(Transaction(payable(msg.sender), contractAddress, "Project posting", msg.value, block.timestamp, "on_escrow"));
      }
 
@@ -312,9 +312,9 @@ contract KaziKrypto {
     }
 
     // Function to get a client job by its jobId
-    // function getClientJobById(uint jobId) public view returns (ClientJobs memory) {
-    //     return clientJobsById[jobId];
-    // }
+    function getClientJobById(uint jobId) public view returns (ClientJobs memory) {
+        return clientJobsById[jobId];
+    }
     /**
     * @dev makeAbidding
     * @dev only occurs on existing project id

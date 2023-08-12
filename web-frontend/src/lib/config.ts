@@ -1,3 +1,4 @@
+
 export const config = {
     '0x13881': {
       name: 'Mumbai',
@@ -34,5 +35,5 @@ export const config = {
     const isHexChain = id.startsWith('0x')
     const networkId = isHexChain ? id : `0x${Number(id).toString(16)}` // if not hexstring transform to hexString
     // Make sure that networkId is in our supported network and is the current network set in .env
-    return !!(networkId in config && process.env.VITE_PUBLIC_NETWORK_ID === networkId)
+    return !!(networkId in config && import.meta.env.VITE_PUBLIC_NETWORK_ID === networkId)
   }

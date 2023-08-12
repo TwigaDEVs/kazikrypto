@@ -1,10 +1,10 @@
 import { useSwitchNetwork } from '~/hooks/useSwitchNetwork'
-import styles from './SwitchNetwork.module.css'
+// import styles from './SwitchNetwork.module.css'
 
 const SwitchNetwork = () => {
   const { switchNetwork } = useSwitchNetwork()
   return (
-    <button className={styles.switchNetwork} onClick={switchNetwork}>
+    <button onClick={switchNetwork}>
       Switch Chain
     </button>
   )

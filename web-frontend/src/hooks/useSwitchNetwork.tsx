@@ -1,7 +1,7 @@
 import { config, isSupportedNetwork } from '../lib/config'
 
 export const useSwitchNetwork = () => {
-  const networkId = process.env.VITE_PUBLIC_NETWORK_ID
+  const networkId = import.meta.env.VITE_PUBLIC_NETWORK_ID
 
   const switchNetwork = async () => {
     if(!isSupportedNetwork(networkId)) {

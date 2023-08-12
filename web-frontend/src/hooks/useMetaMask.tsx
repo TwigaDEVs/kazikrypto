@@ -1,12 +1,21 @@
 import React, { type PropsWithChildren } from 'react'
 
-type ConnectAction = { type: 'connect'; wallet: string; balance: string; chainId: string }
+interface WalletState {
+  accounts: any[],
+  balance: string,
+  chainId: string,
+  address: string
+}
+
+type ConnectAction = { type: 'connect'; wallet: string; balance: string; chainId: string; walletContainer:WalletState }
 type DisconnectAction = { type: 'disconnect' }
 type PageLoadedAction = {
   type: 'pageLoaded'
   isMetaMaskInstalled: boolean
   wallet: string | null
   balance: string | null
+  chainId: string | null
+  walletContainer:WalletState
 }
 type LoadingAction = { type: 'loading' }
 type IdleAction = { type: 'idle' }
@@ -22,13 +31,20 @@ type Dispatch = (action: Action) => void
 
 type Status = 'loading' | 'idle' | 'pageNotLoaded'
 
+// const disconnectedState: WalletState = { accounts: [], balance: '', chainId: '', address: '' }
+
+
+
 type State = {
   wallet: string | null
   isMetaMaskInstalled: boolean
   status: Status
   balance: string | null
   chainId: string | null
+  walletContainer:WalletState
 }
+
+
 
 const initialState: State = {
   wallet: null,
@@ -36,7 +52,11 @@ const initialState: State = {
   status: 'loading',
   balance: null,
   chainId:null,
+  walletContainer:null,
 } as const
+
+
+console.log(initialState);
 
 /**
  * It takes in a state and an action, and returns a new state
@@ -47,8 +67,10 @@ const initialState: State = {
 function metamaskReducer(state: State, action: Action): State {
   switch (action.type) {
     case 'connect': {
-      const { wallet, balance } = action
-      const newState = { ...state, wallet, balance, status: 'idle' } as State
+      const { wallet, balance, chainId , walletContainer } = action
+      console.log(wallet, balance, chainId , walletContainer)
+      const newState = { ...state, wallet, balance, status: 'idle' ,chainId , walletContainer } as State
+
       const info = JSON.stringify(newState)
       window.localStorage.setItem('metamaskState', info)
 
@@ -59,11 +81,12 @@ function metamaskReducer(state: State, action: Action): State {
       if (typeof window.ethereum !== undefined) {
         window.ethereum.removeAllListeners('accountsChanged')
       }
-      return { ...state, wallet: null, balance: null }
+      return { ...state, wallet: null, balance: null , chainId : null , walletContainer : null }
     }
     case 'pageLoaded': {
-      const { isMetaMaskInstalled, balance, wallet } = action
-      return { ...state, isMetaMaskInstalled, status: 'idle', wallet, balance }
+      const { isMetaMaskInstalled, balance, wallet , chainId , walletContainer } = action
+      console.log(isMetaMaskInstalled, balance, wallet , chainId , walletContainer)
+      return { ...state, isMetaMaskInstalled, status: 'idle', wallet, balance, chainId , walletContainer }
     }
     case 'loading': {
       return { ...state, status: 'loading' }
@@ -92,7 +115,7 @@ function MetaMaskProvider({ children }: PropsWithChildren) {
   const value = { state, dispatch }
 
   return (
-    <MetaMaskContext.Provider value={value}>
+    <MetaMaskContext.Provider value={value} >
       {children}
     </MetaMaskContext.Provider>
   )

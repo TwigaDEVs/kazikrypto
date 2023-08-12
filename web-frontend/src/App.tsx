@@ -8,6 +8,7 @@ import { formatAddress, formatChainAsNum } from './utils'
 import { config, isSupportedNetwork } from './lib/config'
 import SwitchNetwork from './SwitchNetwork/SwitchNetwork'
 import './App.css'
+import { useState, useEffect, createContext, PropsWithChildren, useContext, useCallback } from 'react'
 
 export default function App() {
   return (
@@ -20,9 +21,19 @@ export default function App() {
 }
 
 function Explainer() {
+
+  interface WalletState {
+    accounts: any[],
+    balance: string,
+    chainId: string,
+    address: string
+  }
+
+ 
+
   const {
     dispatch,
-    state: { status, isMetaMaskInstalled, wallet,balance,chainId },
+    state: { status, isMetaMaskInstalled, wallet,balance,chainId,walletContainer },
   } = useMetaMask()
   const listen = useListen()
 
@@ -39,6 +50,7 @@ function Explainer() {
 
   // can be passed to an onclick handler
   const handleConnect = async () => {
+
     dispatch({ type: 'loading' })
     const accounts = (await window.ethereum.request({
       method: 'eth_requestAccounts',
@@ -52,7 +64,12 @@ function Explainer() {
       const chainId: string = await window.ethereum?.request({
         method: 'eth_chainId',
       }) as string
-      dispatch({ type: 'connect', wallet: accounts[0], balance, chainId })
+
+      const address: string = accounts[0]
+
+      const connectedState: WalletState = { accounts: accounts, balance: balance, chainId: chainId, address: address }
+ 
+      dispatch({ type: 'connect', wallet: accounts[0], balance, chainId,walletContainer:connectedState })
 
       // we can register an event listener for changes to the users wallet
       listen()
@@ -66,6 +83,23 @@ function Explainer() {
   const handleDisconnect = () => {
     dispatch({ type: 'disconnect' })
   }
+
+
+  const networkId = import.meta.env.VITE_PUBLIC_NETWORK_ID
+  const walletChainSupported = isSupportedNetwork(chainId)
+
+  
+
+  const getAccounts = async () => {
+
+  const accounts = (await window.ethereum.request({
+    method: 'eth_requestAccounts',
+  }))
+
+  return accounts;
+  }
+  // now chainInfo is strongly typed or fallback to linea if not a valid chain
+  const chainInfo = isSupportedNetwork(networkId) ? config[networkId] : config['0xe704']
 
   return (
     <ExplainerLayout
@@ -90,6 +124,36 @@ function Explainer() {
           <button onClick={handleDisconnect}>Disconnect</button>
         </div>
       )}
+
+
+{isConnected && (
+  <div>
+    {isConnected ? "MOBILE" : "EXTENSION"}
+    {walletContainer.accounts.length > 0 && !isSupportedNetwork(walletContainer.chainId) && <SwitchNetwork />}
+    {walletChainSupported && (
+      <>
+        <a
+          href={`${chainInfo?.blockExplorer}/address/${chainInfo?.contractAddress}`}
+          target="_blank"
+          title="Open in Block Explorer"
+        >
+          {chainInfo.name}:{formatChainAsNum(walletContainer.chainId)}
+        </a>
+        &nbsp;|&nbsp;
+        <a
+          href={`https://etherscan.io/address/${wallet}`}
+          target="_blank"
+          title="Open in Block Explorer"
+        >
+          {formatAddress(walletContainer.address)}
+        </a>
+        <div>{walletContainer.balance} ETH</div>
+      </>
+    )}
+  </div>
+)}
+
+
 
       </p>
 
