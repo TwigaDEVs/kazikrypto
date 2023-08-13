@@ -116,20 +116,14 @@ function Explainer() {
         <button onClick={handleConnect}>Connect to MetaMask</button>
       )}
 
-      {isConnected && (
-        <div>
-          <p>Connected Wallet: {wallet}</p>
-          <p>Balance: {balance} ETH</p>
-          <p>Chain ID: {chainId}</p>
-          <button onClick={handleDisconnect}>Disconnect</button>
-        </div>
-      )}
-
-
 {isConnected && (
   <div>
-    {isConnected ? "MOBILE" : "EXTENSION"}
-    {walletContainer.accounts.length > 0 && !isSupportedNetwork(walletContainer.chainId) && <SwitchNetwork />}
+
+    {isConnected ? "MOBILE" : "EXTENSION"} | <div>{balance} ETH</div> | 
+
+
+    {walletContainer.accounts.length > 0 && !isSupportedNetwork(chainId) && <SwitchNetwork />}
+    
     {walletChainSupported && (
       <>
         <a
@@ -147,8 +141,15 @@ function Explainer() {
         >
           {formatAddress(walletContainer.address)}
         </a>
-        <div>{walletContainer.balance} ETH</div>
+
+
+        <>
+        <button onClick={handleDisconnect}>  Disconnect</button>
+        </>
+        
       </>
+
+      
     )}
   </div>
 )}

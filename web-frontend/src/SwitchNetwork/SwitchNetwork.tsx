@@ -1,4 +1,5 @@
 import { useSwitchNetwork } from '~/hooks/useSwitchNetwork'
+
 // import styles from './SwitchNetwork.module.css'
 
 const SwitchNetwork = () => {

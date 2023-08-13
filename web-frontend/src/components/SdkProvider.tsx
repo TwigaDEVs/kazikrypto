@@ -2,10 +2,29 @@ import { PropsWithChildren, useEffect } from 'react'
 import { useListen } from '../hooks/useListen'
 import { useMetaMask } from '../hooks/useMetaMask'
 import { instantiateSdk } from '../lib/metamaskSDK'
+import { useSwitchNetwork } from '~/hooks/useSwitchNetwork'
+
+function isAccountList(accounts: unknown): accounts is string[] {
+  return (
+    Array.isArray(accounts) &&
+    accounts.every((account) => typeof account === 'string')
+  )
+}
 
 export const SdkLayout: React.FC<PropsWithChildren> = ({ children }) => {
+  const networkId = import.meta.env.VITE_PUBLIC_NETWORK_ID
   const { dispatch } = useMetaMask()
   const listen = useListen()
+  const { switchNetwork } = useSwitchNetwork()
+  interface WalletState {
+    accounts: any[],
+    balance: string,
+    chainId: string,
+    address: string
+  }
+
+  const disconnectedState: WalletState = { accounts: [], balance: '', chainId: '', address: '' }
+
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -18,6 +37,32 @@ export const SdkLayout: React.FC<PropsWithChildren> = ({ children }) => {
         ethereumProviderInjected && Boolean(window.ethereum.isMetaMask)
 
       const local = window.localStorage.getItem('metamaskState')
+
+
+
+      window.ethereum.on('chainChanged', async (newChain: any) => {
+      
+        if (networkId == newChain > 0) {
+         // console.log(newAccounts);
+         instantiateSdk()
+         dispatch({ type: 'connect', wallet, balance,chainId:newChain,walletContainer })
+        listen()
+        }
+        else{
+          
+
+          instantiateSdk()
+          dispatch({ type: 'connect', wallet, balance,chainId:newChain,walletContainer })
+          listen()
+        }
+        // For example, you might want to update UI components that display the network ID.
+      });
+
+
+      
+
+
+      
 
       // user was previously connected, start listening to MM
       if (local) {
@@ -35,5 +80,8 @@ export const SdkLayout: React.FC<PropsWithChildren> = ({ children }) => {
     }
   }, [])
 
-  return <div>{children}</div>
+  return <div>
+    
+    {children}
+    </div>
 }

@@ -17,6 +17,14 @@ type PageLoadedAction = {
   chainId: string | null
   walletContainer:WalletState
 }
+type AccountChanged = {
+  type: 'accountChanged'
+  isMetaMaskInstalled: boolean
+  wallet: string | null
+  balance: string | null
+  chainId: string | null
+  walletContainer:WalletState
+}
 type LoadingAction = { type: 'loading' }
 type IdleAction = { type: 'idle' }
 
@@ -26,6 +34,7 @@ type Action =
   | PageLoadedAction
   | LoadingAction
   | IdleAction
+  | AccountChanged
 
 type Dispatch = (action: Action) => void
 
@@ -87,6 +96,12 @@ function metamaskReducer(state: State, action: Action): State {
       const { isMetaMaskInstalled, balance, wallet , chainId , walletContainer } = action
       console.log(isMetaMaskInstalled, balance, wallet , chainId , walletContainer)
       return { ...state, isMetaMaskInstalled, status: 'idle', wallet, balance, chainId , walletContainer }
+    }
+    case 'accountChanged': {
+      const { isMetaMaskInstalled, balance, wallet , chainId , walletContainer } = action
+      console.log(isMetaMaskInstalled, balance, wallet , chainId , walletContainer)
+      return { ...state, isMetaMaskInstalled, status: 'idle', wallet, balance, chainId , walletContainer }
+      
     }
     case 'loading': {
       return { ...state, status: 'loading' }

@@ -10,6 +10,9 @@ function isAccountList(accounts: unknown): accounts is string[] {
 export const useListen = () => {
   const { dispatch } = useMetaMask()
 
+
+  console.log('hellooooooo')
+
   interface WalletState {
     accounts: any[],
     balance: string,
@@ -21,7 +24,7 @@ export const useListen = () => {
 
 
   return () => {
-    window.ethereum.on('accountsChanged', async (newAccounts: any) => {
+    window.ethereum?.on('accountsChanged', async (newAccounts: any) => {
       if (isAccountList(newAccounts) && newAccounts.length > 0) {
         // upon receiving a new wallet, we'll request the balance to synchronize the UI again.
         
@@ -66,6 +69,7 @@ export const useListen = () => {
         })
       } else {
         // if the length is 0, then the user has disconnected from the wallet UI
+     
         dispatch({ type: 'disconnect' })
       }
     })
