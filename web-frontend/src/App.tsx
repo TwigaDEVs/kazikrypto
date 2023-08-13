@@ -1,6 +1,7 @@
 import { Layout } from "./components/Layout";
 import { useListen } from "./hooks/useListen";
 import { type MetaMaskInpageProvider } from "@metamask/providers";
+import { BrowserRouter as Router,Routes, Route } from "react-router-dom";
 import { MetaMaskProvider, useMetaMask } from "./hooks/useMetaMask";
 import { SdkLayout } from "./components/SdkProvider";
 import { SiEthereum } from "react-icons/si";
@@ -14,7 +15,9 @@ import AddFreelancerComponent from "./components/forms/AddFreeLancer";
 import GetFreelancerComponent from "./components/display/DisplayFreelancer";
 import AddPortfolioComponent from "./components/forms/AddPortfolio";
 import GetPortfolioComponent from "./components/display/DisplayPortfolio";
-
+import PostClientJobComponent from "./components/forms/AddClientJob";
+import ViewClientJobsComponent from "./components/display/DisplayJobs";
+import Navbar from "./navbar/navbar";
 import {
   useState,
   useEffect,
@@ -26,11 +29,17 @@ import {
 
 export default function App() {
   return (
-    <MetaMaskProvider>
-      <SdkLayout>
-        <Home />
-      </SdkLayout>
-    </MetaMaskProvider>
+    <Router>
+      <MetaMaskProvider>
+        <Navbar />
+        <SdkLayout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            {/* Add more routes for other pages */}
+          </Routes>
+        </SdkLayout>
+      </MetaMaskProvider>
+    </Router>
   );
 }
 
@@ -195,6 +204,8 @@ function Home() {
         freelancerAddress={freelancerAddress}
         index={portfolioIndex}
       />
+      <PostClientJobComponent />
+      <ViewClientJobsComponent />
     </Layout>
   );
 }
