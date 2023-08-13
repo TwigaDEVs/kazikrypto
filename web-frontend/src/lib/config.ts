@@ -21,6 +21,14 @@ export const config = {
       blockExplorer: 'https://goerli.etherscan.io',
       rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
     }
+    ,
+    '0x539': {
+      name: 'localhost',
+      contractAddress: '0xfF0Dd91559818707029f0644357318b634753486',
+      symbol: 'ETH',
+      blockExplorer: '',
+      rpcUrl: 'HTTP://127.0.0.1:7545',
+    }
   }
   
   /**

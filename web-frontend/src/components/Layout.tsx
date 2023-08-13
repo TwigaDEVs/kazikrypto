@@ -6,7 +6,7 @@ type Props = {
   caption: string | React.ReactNode
 }
 
-export const ExplainerLayout: React.FC<PropsWithChildren<Props>> = ({
+export const Layout: React.FC<PropsWithChildren<Props>> = ({
   children,
   title,
   caption,
@@ -18,7 +18,7 @@ export const ExplainerLayout: React.FC<PropsWithChildren<Props>> = ({
           <h1>
             <span className="heading">{title}</span>
           </h1>
-          <p className="caption">{caption}</p>
+          <div className="caption">{caption}</div>
         </div>
         <div className="content-wrapper">{children}</div>
       </div>
