@@ -1,4 +1,14 @@
 import React, { useState, useEffect } from "react";
+import {
+  Card,
+  Image,
+  Text,
+  Badge,
+  Button,
+  Anchor,
+  Group,
+  Container,
+} from "@mantine/core";
 import { ethers } from "ethers";
 import { config, isSupportedNetwork } from "../../lib/config";
 import KaziKrypto from "../../../../contract/build/contracts/KaziKrypto.json"; // Replace with the actual path to your config file
@@ -43,10 +53,38 @@ const GetPortfolioComponent: React.FC<GetPortfolioProps> = ({
 
   return (
     <div>
-      <h2>Get Portfolio Entry</h2>
+      {/* <h2>Get Portfolio Entry</h2>
       <p>Freelancer Address: {freelancerAddress}</p>
-      <p>Portfolio Index: {index}</p>
+      <p>Portfolio Index: {index}</p> */}
 
+      {portfolio && (
+        <Container size="30rem">
+          <Card shadow="sm" padding="lg" radius="md" withBorder>
+            <Card.Section>
+              <Text weight={300} size="sm">
+                {portfolio.images.join(", ")}
+              </Text>
+              <Text weight={300} size="sm">
+                {portfolio.videos.join(", ")}
+              </Text>
+            </Card.Section>
+            <h4>Portfolio {index}</h4>
+            <Group position="apart" mt="md" mb="xs">
+              <Text weight={300} size="sm">
+                Task url
+              </Text>
+              <Anchor>{portfolio.taskUrl}</Anchor>
+            </Group>
+            <Text weight={600} size="md">
+              Description
+            </Text>
+            <Text weight={300} size="sm">
+              {portfolio.description}
+            </Text>
+          </Card>
+        </Container>
+      )}
+      {/* 
       {portfolio && (
         <div>
           <h3>Portfolio Details</h3>
@@ -55,7 +93,7 @@ const GetPortfolioComponent: React.FC<GetPortfolioProps> = ({
           <p>Images: {portfolio.images.join(", ")}</p>
           <p>Videos: {portfolio.videos.join(", ")}</p>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

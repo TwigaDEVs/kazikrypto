@@ -1,4 +1,14 @@
 import React, { useState, useEffect } from "react";
+import {
+  Card,
+  Image,
+  Text,
+  Badge,
+  Button,
+  Group,
+  Container,
+  Rating,
+} from "@mantine/core";
 import { ethers } from "ethers";
 import { config, isSupportedNetwork } from "../../lib/config";
 import KaziKrypto from "../../../../contract/build/contracts/KaziKrypto.json"; // Replace with the actual path to your config file
@@ -38,22 +48,73 @@ const GetFreelancerComponent: React.FC<GetFreelancerProps> = ({
 
   return (
     <div>
-      <h2>Get Freelancer Details</h2>
-      <p>Freelancer Address: {freelancerAddress}</p>
+      <Container size="30rem">
+        <Card shadow="sm" padding="lg" radius="md" withBorder>
+          <Card.Section>
+            <Text weight={300} size="sm">
+              {freelancer && freelancer.profileImage}
+            </Text>
+          </Card.Section>
+          <Text size="md">{freelancer && freelancer.fullName}</Text>
+          {freelancer && (
+            <Group position="apart" mt="md" mb="xs">
+              <Text weight={300} size="sm">
+                {`${freelancerAddress.substr(
+                  0,
+                  9
+                )}......${freelancerAddress.slice(-6)}`}
+              </Text>
+              <Badge color="black" variant="light">
+                {freelancer && freelancer.isProfilePublic
+                  ? "Public"
+                  : "Private"}
+              </Badge>
+            </Group>
+          )}
 
-      {freelancer && (
-        <div>
-          <h3>Freelancer Details</h3>
-          <p>Full Name: {freelancer.fullName}</p>
-          <p>Profile Image: {freelancer.profileImage}</p>
-          <p>Hourly Rate: {freelancer.hourlyRate.toNumber()}</p>
-          <p>Profession: {freelancer.profession}</p>
-          <p>Payment Preference: {freelancer.paymentPreference}</p>
-          <p>Skills: {freelancer.skills.join(", ")}</p>
-          <p>Profile Rating: {freelancer.profileRating.toNumber()}</p>
-          <p>Is Profile Public: {freelancer.isProfilePublic ? "Yes" : "No"}</p>
-        </div>
-      )}
+          {freelancer && (
+            <>
+              <Group>
+                <Text weight={300} size="sm">
+                  Hourly Rate
+                </Text>
+                <Text>{freelancer.hourlyRate.toNumber()}</Text>
+              </Group>
+              <Group>
+                <Text weight={300} size="sm">
+                  Profession
+                </Text>
+                <Text>{freelancer.profession}</Text>
+              </Group>
+              <Group>
+                <Text weight={300} size="sm">
+                  Payment Preference:
+                </Text>
+                <Text>{freelancer.paymentPreference}</Text>
+              </Group>
+              <Group>
+                <Rating readOnly value={freelancer.profileRating.toNumber()} />
+              </Group>
+              <br />
+              {freelancer.skills.map((skill) => (
+                <Badge color="blue">{skill}</Badge>
+              ))}
+            </>
+
+            // <div>
+            //   <h3>Freelancer Details</h3>
+            //   <p>Full Name: </p>
+            //   <p>Profile Image: {}</p>
+            //   <p>Hourly Rate: {}</p>
+            //   <p>Profession: {}</p>
+            //   <p>Payment Preference: {}</p>
+            //   <p>Skills: {}</p>
+            //   <p>Profile Rating: {}</p>
+            //   <p>Is Profile Public: {freelancer.isProfilePublic ? "Yes" : "No"}</p>
+            // </div>
+          )}
+        </Card>
+      </Container>
     </div>
   );
 };

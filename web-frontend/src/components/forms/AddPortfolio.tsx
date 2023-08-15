@@ -1,5 +1,17 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
+import {
+  Input,
+  TextInput,
+  NumberInput,
+  MultiSelect,
+  Paper,
+  Button,
+  Container,
+  Textarea,
+  Checkbox,
+} from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { config, isSupportedNetwork } from "../../lib/config";
 import KaziKrypto from "../../../../contract/build/contracts/KaziKrypto.json"; // Replace with the actual path to your config file
 
@@ -50,37 +62,39 @@ const AddPortfolioComponent: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Add Portfolio</h2>
-      <label>Images (comma-separated):</label>
-      <input
-        type="text"
-        value={images.join(",")}
-        onChange={(e) => setImages(e.target.value.split(","))}
-      />
+    <Container size="30rem">
+      <h4>Add Portfolio</h4>
+      <Paper sx={{ padding: 10 }}>
+        <TextInput
+          label="Images"
+          value={images.join(",")}
+          onChange={(e) => setImages(e.target.value.split(","))}
+        />
 
-      <label>Videos (comma-separated):</label>
-      <input
-        type="text"
-        value={videos.join(",")}
-        onChange={(e) => setVideos(e.target.value.split(","))}
-      />
+        <TextInput
+          label="Videos"
+          value={videos.join(",")}
+          onChange={(e) => setVideos(e.target.value.split(","))}
+        />
 
-      <label>Task URL:</label>
-      <input
-        type="text"
-        value={taskUrl}
-        onChange={(e) => setTaskUrl(e.target.value)}
-      />
+        <TextInput
+          label="Task Url"
+          value={taskUrl}
+          onChange={(e) => setTaskUrl(e.target.value)}
+        />
 
-      <label>Description:</label>
-      <textarea
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
+        <Textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="your work description here..."
+          label="description"
+        />
 
-      <button onClick={handleAddPortfolio}>Add Portfolio</button>
-    </div>
+        <br />
+
+        <Button onClick={handleAddPortfolio}>Add Portfolio</Button>
+      </Paper>
+    </Container>
   );
 };
 

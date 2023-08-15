@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
+import {
+  Card,
+  Image,
+  Text,
+  Badge,
+  Button,
+  Group,
+  Container,
+  Rating,
+} from "@mantine/core";
 import { config, isSupportedNetwork } from "../../lib/config";
 import KaziKrypto from "../../../../contract/build/contracts/KaziKrypto.json"; // Replace with the actual path to your config file
 
@@ -33,35 +43,48 @@ const ViewClientJobsComponent: React.FC = () => {
 
   return (
     <div>
-      <h2>View Client Jobs</h2>
       {clientJobs.length > 0 ? (
-        <div>
-          <h3>Client Jobs</h3>
-          <ul>
-            {clientJobs.map((job, index) => (
-              <li key={index}>
-                Job ID: {job.jobId.toString()}
+        <Container size="40rem">
+          <h4>Client Jobs</h4>
+
+          {clientJobs.map((job, index) => (
+            <Card
+              key={index}
+              shadow="sm"
+              sx={{ marginBottom: 20 }}
+              padding="lg"
+              radius="md"
+              withBorder
+            >
+              <Group position="apart" mt="md" mb="xs">
+                <Text weight={300} size="sm">
+                  #{job.jobId.toString()}
+                </Text>
+                <Button>Bid</Button>
+              </Group>
+              <Text size="lg" weight={600}>
+                {job.projectTitle}
+              </Text>
+              <Text weight={300} size="md">
+                {job.projectDescription}
                 <br />
-                Account ID: {job.accountId}
-                <br />
-                Project Title: {job.projectTitle}
-                <br />
-                Project Description: {job.projectDescription}
-                <br />
-                Project Duration: {job.projectDuration}
-                <br />
-                Project Budget (ETH): {job.projectBudget.toString()}
-                <br />
-                Skill Requirements: {job.skillRequirements.join(", ")}
-                <br />
-                Images: {job.images.join(", ")}
-                <br />
-                Bid Available: {job.bidAvailable ? "Yes" : "No"}
-                <br />
-              </li>
-            ))}
-          </ul>
-        </div>
+                {job.images.join(", ")}
+              </Text>
+              <br />
+              <Text weight={300} size="md">
+                Budget {job.projectDuration} ETH
+              </Text>
+              <br />
+              <Text weight={300} size="md">
+                {job.skillRequirements.map((skill) => (
+                  <Badge>{skill}</Badge>
+                ))}
+              </Text>
+              <br />
+              Account ID: {job.accountId}
+            </Card>
+          ))}
+        </Container>
       ) : (
         <p>No client jobs available.</p>
       )}
