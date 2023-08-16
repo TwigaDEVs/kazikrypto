@@ -9,6 +9,7 @@ import {
   Group,
   Container,
   Rating,
+  Box,
 } from "@mantine/core";
 import { config, isSupportedNetwork } from "../../lib/config";
 import { useMetaMask } from "~/hooks/useMetaMask";
@@ -76,11 +77,17 @@ const ViewClientJobsComponent: React.FC = () => {
               <Text size="lg" weight={600}>
                 {job.projectTitle}
               </Text>
-              <Text weight={300} size="md">
-                {job.projectDescription}
-                <br />
-                {job.images.join(", ")}
-              </Text>
+              <br />
+              <Group position="center">
+                {job.images.map((imageURL, index) => (
+                  <Image
+                    maw={240}
+                    mx="auto"
+                    src={imageURL}
+                    alt="Without placeholder"
+                  />
+                ))}
+              </Group>
               <br />
               <Text weight={300} size="md">
                 Budget {job.projectDuration} ETH

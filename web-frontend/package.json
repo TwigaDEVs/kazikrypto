@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
+    "@helia/json": "^1.0.0",
     "@mantine/carousel": "^6.0.19",
     "@mantine/core": "^6.0.19",
     "@mantine/dates": "^6.0.19",
@@ -29,6 +30,7 @@
     "@tiptap/extension-link": "^2.0.4",
     "@tiptap/react": "^2.0.4",
     "@tiptap/starter-kit": "^2.0.4",
+    "buffer": "^6.0.3",
     "dayjs": "^1.11.9",
     "dotenv": "^16.3.1",
     "embla-carousel-react": "^7.1.0",

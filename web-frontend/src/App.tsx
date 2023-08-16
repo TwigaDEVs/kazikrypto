@@ -20,7 +20,6 @@ import ViewClientJobsComponent from "./components/display/DisplayJobs";
 import FreelancerJobs from "./components/jobs/FreelancerJobs";
 import CustomNavbar from "./navbar/navbar";
 import Profile from "./components/profile/Profile";
-
 import {
   AppShell,
   Anchor,

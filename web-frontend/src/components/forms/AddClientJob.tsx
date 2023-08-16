@@ -12,11 +12,13 @@ import {
   Container,
   Checkbox,
   Textarea,
+  FileInput,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useDisclosure } from "@mantine/hooks";
 import { config, isSupportedNetwork } from "../../lib/config";
 import KaziKrypto from "../../../../contract/build/contracts/KaziKrypto.json";
+import { uploadToIPFS } from "~/Infura";
 
 import { MetaMaskProvider, useMetaMask } from "~/hooks/useMetaMask";
 
@@ -30,7 +32,10 @@ const PostClientJobComponent: React.FC = () => {
   const [projectDuration, setProjectDuration] = useState("");
   const [projectBudget, setProjectBudget] = useState(0);
   const [skillRequirements, setSkillRequirements] = useState<string[]>([]);
+  const [fileURL, setFileURL] = useState(null);
+  const [fileURLs, setFileURLs] = useState(null);
   const [images, setImages] = useState("");
+  const [imagesValue, setImagesValue] = useState<File[]>([]);
   const [opened, { open, close }] = useDisclosure(false);
   const contractAddress = config["0x539"].contractAddress;
   const contractABI = KaziKrypto.abi;
@@ -51,6 +56,22 @@ const PostClientJobComponent: React.FC = () => {
   if (!isSupportedNetwork(networkId)) {
     throw new Error("unsurported network , tafadhali nani fuata maelekezo");
   }
+
+
+
+  const OnChangeMFile = async (selectedFiles: File[]) => {
+    // Placeholder logic: Upload files to IPFS
+    const uploadedUrls: string[] = [];
+
+    for (const file of selectedFiles) {
+      const response = await uploadToIPFS(file); // Your actual IPFS upload function
+      uploadedUrls.push(response);
+    }
+
+    // Placeholder logic: Handle changes, such as updating URLs
+    console.log("Uploaded URLs:", uploadedUrls);
+    setFileURLs(uploadedUrls); // Assuming you have a state to store the URLs
+  };
 
   const handlePostClientJob = async () => {
     if (!isMetaMaskInstalled) {
@@ -81,7 +102,7 @@ const PostClientJobComponent: React.FC = () => {
         projectDuration,
         projectBudget,
         skillRequirementsArray,
-        imagesArray
+        fileURLs
       );
 
       await tx.wait();
@@ -106,25 +127,21 @@ const PostClientJobComponent: React.FC = () => {
     <div>
       <Modal opened={opened} onClose={close} title="Post A task">
         {/* Modal content */}
-
         <TextInput
           label="Project title"
           value={projectTitle}
           onChange={(e) => setProjectTitle(e.target.value)}
         />
-
         <Textarea
           label="Project Description"
           value={projectDescription}
           onChange={(e) => setProjectDescription(e.target.value)}
         />
-
         <TextInput
           label="Project Duration"
           value={projectDuration}
           onChange={(e) => setProjectDuration(e.target.value)}
         />
-
         <NumberInput
           label="Hourly Rate"
           precision={6}
@@ -136,7 +153,6 @@ const PostClientJobComponent: React.FC = () => {
           }
           onChange={(value: number) => setProjectBudget(value)}
         />
-
         <MultiSelect
           label="Skills"
           data={data}
@@ -154,11 +170,20 @@ const PostClientJobComponent: React.FC = () => {
             console.log(skillRequirements);
           }}
         />
-
         <TextInput
           label="Images (comma separated)"
           value={images}
           onChange={(e) => setImages(e.target.value)}
+        />
+        <FileInput
+          label="Images"
+          withAsterisk
+          multiple
+          value={imagesValue}
+          onChange={(selectedFiles) => {
+            setImagesValue(selectedFiles); // Update the state with selected files
+            OnChangeMFile(selectedFiles); // Call the OnChangeFile function
+          }}
         />
         <br />
         <Button onClick={handlePostClientJob} uppercase>

@@ -61,7 +61,6 @@ const CustomNavbar: React.FC = () => {
     },
   } = useMetaMask();
 
-  
   const useStyles = createStyles((theme) => ({
     button: {
       borderTopRightRadius: 0,
@@ -88,10 +87,8 @@ const CustomNavbar: React.FC = () => {
 
   const listen = useListen();
 
-
-
-const showConnectButton =
-      status !== "pageNotLoaded" && isMetaMaskInstalled && !wallet;
+  const showConnectButton =
+    status !== "pageNotLoaded" && isMetaMaskInstalled && !wallet;
 
   const isConnected = status !== "pageNotLoaded" && typeof wallet === "string";
   const walletChainSupported = isSupportedNetwork(chainId);
@@ -146,11 +143,9 @@ const showConnectButton =
 
   const formatedBalance = formatBalance(balance);
 
-
-    const { classes, theme } = useStyles();
-    const menuIconColor =
-      theme.colors[theme.primaryColor][theme.colorScheme === "dark" ? 5 : 6];
-
+  const { classes, theme } = useStyles();
+  const menuIconColor =
+    theme.colors[theme.primaryColor][theme.colorScheme === "dark" ? 5 : 6];
 
   return (
     <header>
@@ -166,7 +161,9 @@ const showConnectButton =
             />
           </MediaQuery>
 
-          <Title order={4}>Kazi Krypto</Title>
+          <Title order={4}>
+              Kazi Krypto
+          </Title>
           <div
             style={{
               display: "flex",
