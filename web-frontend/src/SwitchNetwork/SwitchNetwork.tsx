@@ -1,14 +1,20 @@
-import { useSwitchNetwork } from '~/hooks/useSwitchNetwork'
+import { useSwitchNetwork } from "~/hooks/useSwitchNetwork";
+import { Button } from "@mantine/core";
 
 // import styles from './SwitchNetwork.module.css'
 
 const SwitchNetwork = () => {
-  const { switchNetwork } = useSwitchNetwork()
+  const { switchNetwork } = useSwitchNetwork();
   return (
-    <button onClick={switchNetwork}>
+    <Button
+      onClick={switchNetwork}
+      color="dark"
+      radius="md"
+      sx={{ marginLeft: 10 }}
+    >
       Switch Chain
-    </button>
-  )
-}
+    </Button>
+  );
+};
 
-export default SwitchNetwork
+export default SwitchNetwork;

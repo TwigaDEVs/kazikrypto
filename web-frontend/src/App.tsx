@@ -1,7 +1,7 @@
 import { Layout } from "./components/Layout";
 import { useListen } from "./hooks/useListen";
 import { type MetaMaskInpageProvider } from "@metamask/providers";
-import { BrowserRouter as Router,Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { MetaMaskProvider, useMetaMask } from "./hooks/useMetaMask";
 import { SdkLayout } from "./components/SdkProvider";
 import { SiEthereum } from "react-icons/si";
@@ -17,7 +17,26 @@ import AddPortfolioComponent from "./components/forms/AddPortfolio";
 import GetPortfolioComponent from "./components/display/DisplayPortfolio";
 import PostClientJobComponent from "./components/forms/AddClientJob";
 import ViewClientJobsComponent from "./components/display/DisplayJobs";
-import Navbar from "./navbar/navbar";
+import FreelancerJobs from "./components/jobs/FreelancerJobs";
+import CustomNavbar from "./navbar/navbar";
+import Profile from "./components/profile/Profile";
+
+import {
+  AppShell,
+  Anchor,
+  Navbar,
+  Header,
+  Footer,
+  Aside,
+  Text,
+  MediaQuery,
+  Title,
+  NavLink,
+  Burger,
+  useMantineTheme,
+  Button,
+  Paper,
+} from "@mantine/core";
 import {
   useState,
   useEffect,
@@ -27,16 +46,53 @@ import {
   useCallback,
 } from "react";
 
+
+function AppShellDemo() {
+  const theme = useMantineTheme();
+  const [opened, setOpened] = useState(false);
+  return (
+    <AppShell
+      styles={{
+        main: {
+          background:
+            theme.colorScheme === "dark"
+              ? theme.colors.dark[8]
+              : theme.colors.gray[0],
+        },
+      }}
+      navbarOffsetBreakpoint="sm"
+      asideOffsetBreakpoint="sm"
+      header={<CustomNavbar />}
+    >
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/jobs" element={<FreelancerJobs />} />
+        <Route path="/profile" element={<Profile />} />
+      </Routes>
+      {/* <CustomNavbar></CustomNavbar> */}
+    </AppShell>
+  );
+}
+
 export default function App() {
   return (
     <Router>
       <MetaMaskProvider>
-        <Navbar />
+        <AppShellDemo />
+        {/* First section with normal height (depends on section content) */}
+        {/* <Navbar.Section>First section</Navbar.Section> */}
+
+        {/* Grow section will take all available space that is not taken by first and last sections */}
+        {/* <Navbar.Section grow>Grow section</Navbar.Section> */}
+
+        {/* Last section with normal height (depends on section content) */}
+        {/* <Navbar.Section>Last section</Navbar.Section> */}
+        {/* </Navbar> */}
         <SdkLayout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            {/* Add more routes for other pages */}
-          </Routes>
+          {/* <Routes> */}
+          {/* <Route path="/" element={<Home />} /> */}
+          {/* Add more routes for other pages */}
+          {/* </Routes> */}
         </SdkLayout>
       </MetaMaskProvider>
     </Router>
@@ -51,7 +107,7 @@ function Home() {
     address: string;
   }
 
-  const freelancerAddress = "0xea538CD7F3F3813C978D8407370C8D2669548914";
+  const freelancerAddress = "0x92c0006526349e48419e1e66bd3bb048d4e6033f";
   const portfolioIndex = 0;
 
   const {
@@ -168,8 +224,8 @@ if (isMetaMaskInstalled) {
   console.log("this looks for in app", !isMetaMaskInstalled);
 
   return (
-    <Layout title="" caption={<>Kazi Krypto</>}>
-      <p>
+    <>
+      {/*<p>
         {showConnectButton && (
           <button onClick={handleConnect}>Connect to MetaMask</button>
         )}
@@ -203,16 +259,15 @@ if (isMetaMaskInstalled) {
             )}
           </div>
         )}
-      </p>
-      {/* <AddFreelancerComponent /> */}
-      {/* <GetFreelancerComponent freelancerAddress={freelancerAddress} /> */}
+      </p> */}
+
       {/* <AddPortfolioComponent /> */}
       {/* <GetPortfolioComponent
         freelancerAddress={freelancerAddress}
         index={portfolioIndex}
       /> */}
       {/* <PostClientJobComponent /> */}
-      <ViewClientJobsComponent />
-    </Layout>
+      {/* <ViewClientJobsComponent /> */}
+    </>
   );
 }

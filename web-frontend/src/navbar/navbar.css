@@ -9,17 +9,15 @@ li {
 
 a {
   text-decoration: none;
-  color: #fff;
-  font-size: 1rem;
+  color: #2e5ce6;
+
 }
 
-.logo a{
+.logo a {
   color: rgb(35, 35, 57);
 }
 
-
-
-.links a{
+.links a {
   color: rgb(35, 35, 57);
 }
 
@@ -34,6 +32,12 @@ header {
   /* Add more styling as needed */
 }
 
+.balance{
+  font-size: 15px;
+  font-weight: 600;
+  padding-left: 5px;
+  padding-right: 5px;
+}
 .navbar {
   width: 100%;
   height: 60px;
@@ -54,7 +58,7 @@ header {
   gap: 2rem;
 }
 .navbar .toggle_btn {
-  color: #fff;
+  color: #ffffff;
   font-size: 1.5rem;
   cursor: pointer;
   display: none;
