@@ -39,24 +39,39 @@ export const SdkLayout: React.FC<PropsWithChildren> = ({ children }) => {
       const local = window.localStorage.getItem('metamaskState')
 
 
+    if (ethereumProviderInjected) {
+      // Check if the Ethereum provider is MetaMask
+      const isMetaMaskInstalled = Boolean(window.ethereum.isMetaMask);
 
-      window.ethereum.on('chainChanged', async (newChain: any) => {
-      
-        if (networkId == newChain > 0) {
-         // console.log(newAccounts);
-         instantiateSdk()
-         dispatch({ type: 'connect', wallet, balance,chainId:newChain,walletContainer })
-        listen()
-        }
-        else{
-          
+      const local = window.localStorage.getItem("metamaskState");
 
-          instantiateSdk()
-          dispatch({ type: 'connect', wallet, balance,chainId:newChain,walletContainer })
-          listen()
-        }
-        // For example, you might want to update UI components that display the network ID.
-      });
+      if (isMetaMaskInstalled) {
+        window.ethereum.on("chainChanged", async (newChain: any) => {
+          if (networkId == newChain > 0) {
+            instantiateSdk();
+            dispatch({
+              type: "connect",
+              wallet,
+              balance,
+              chainId: newChain,
+              walletContainer,
+            });
+            listen();
+          } else {
+            instantiateSdk();
+            dispatch({
+              type: "connect",
+              wallet,
+              balance,
+              chainId: newChain,
+              walletContainer,
+            });
+            listen();
+          }
+          // For example, you might want to update UI components that display the network ID.
+        });
+      }
+    }
 
 
       

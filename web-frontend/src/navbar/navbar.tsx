@@ -36,7 +36,11 @@ const Navbar: React.FC = () => {
 
   const listen = useListen();
 
-  const showConnectButton = status !== "pageNotLoaded" && !isMetaMaskInstalled;
+
+
+const showConnectButton =
+      status !== "pageNotLoaded" && isMetaMaskInstalled && !wallet;
+
   const isConnected = status !== "pageNotLoaded" && typeof wallet === "string";
   const walletChainSupported = isSupportedNetwork(chainId);
   
@@ -110,11 +114,14 @@ const Navbar: React.FC = () => {
             <Link to="/contact">Contact</Link>
           </li>
         </ul>
+
         <p className="action_btn">
           {showConnectButton && (
-            <button onClick={handleConnect} className="connect-button">
-              Connect to MetaMask
-            </button>
+            <>
+              <button onClick={handleConnect} className="connect-button">
+                Connect to MetaMask
+              </button>
+            </>
           )}
 
           {isConnected && (

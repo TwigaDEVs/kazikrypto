@@ -1,35 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { config, isSupportedNetwork } from "../../lib/config";
-import KaziKrypto from "../../../../contract/build/contracts/KaziKrypto.json"; // Replace with the actual path to your config file
+import { useMetaMask } from "~/hooks/useMetaMask";
+import KaziKrypto from "../../../../contract/build/contracts/KaziKrypto.json";
+import { type MetaMaskInpageProvider } from "@metamask/providers"; // Replace with the actual path to your config file
+
 
 const ViewClientJobsComponent: React.FC = () => {
-  const [clientJobs, setClientJobs] = useState<any[]>([]); // Use the appropriate type
 
+
+  const [clientJobs, setClientJobs] = useState<any[]>([]); // Use the appropriate type
   const contractAddress = config["0x539"].contractAddress;
   const contractABI = KaziKrypto.abi;
-  const provider = new ethers.providers.Web3Provider(
-    window.ethereum as unknown as ethers.providers.ExternalProvider
-  );
-  const contractInstance = new ethers.Contract(
-    contractAddress,
-    contractABI,
-    provider
-  );
-
-  async function callViewFunction() {
-    try {
-      const result = await contractInstance.getClientJob();
-      setClientJobs(result);
-      console.log("View function result:", result);
-    } catch (error) {
-      console.error("Error calling view function:", error);
-    }
-  }
 
   useEffect(() => {
-    callViewFunction();
-  }, []); // Call the function when the component mounts
+    const ethereumProviderInjected = typeof window.ethereum !== "undefined";
+    const isMetaMaskInstalled =
+      ethereumProviderInjected && Boolean(window.ethereum.isMetaMask);
+
+    if (isMetaMaskInstalled) {
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum as unknown as ethers.providers.ExternalProvider
+      );
+      const contractInstance = new ethers.Contract(
+        contractAddress,
+        contractABI,
+        provider
+      );
+
+      async function callViewFunction() {
+        try {
+          const result = await contractInstance.getClientJob();
+          setClientJobs(result);
+          console.log("View function result:", result);
+        } catch (error) {
+          console.error("Error calling view function:", error);
+        }
+      }
+
+      callViewFunction();
+    }
+  }, [contractAddress, contractABI]);
 
   return (
     <div>

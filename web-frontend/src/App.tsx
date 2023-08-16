@@ -125,28 +125,33 @@ function Home() {
   const networkId = import.meta.env.VITE_PUBLIC_NETWORK_ID;
   const walletChainSupported = isSupportedNetwork(chainId);
 
-  const provider = new ethers.providers.Web3Provider(
-    window.ethereum as unknown as ethers.providers.ExternalProvider
-  );
-  // Define the name of the view function you want to call
+if (isMetaMaskInstalled) {
+  useEffect(() => {
+    const provider = new ethers.providers.Web3Provider(
+      window.ethereum as unknown as ethers.providers.ExternalProvider
+    );
 
-  const contractInstance = new ethers.Contract(
-    config["0x539"].contractAddress,
-    KaziKrypto.abi,
-    provider
-  );
+    const contractInstance = new ethers.Contract(
+      config["0x539"].contractAddress,
+      KaziKrypto.abi,
+      provider
+    );
 
-  async function callViewFunction() {
-    try {
-      const result = await contractInstance.getClientJob(); // Replace with the actual function name
-      console.log("View function result:", result);
-    } catch (error) {
-      console.error("Error calling view function:", error);
+    async function callViewFunction() {
+      try {
+        const result = await contractInstance.getClientJob();
+        console.log("View function result:", result);
+      } catch (error) {
+        console.error("Error calling view function:", error);
+      }
     }
-  }
+
+    callViewFunction();
+  }, []); // Empty dependency array means this effect runs once after initial render
+}
 
   // Call the function whenever needed
-  callViewFunction();
+
 
   const getAccounts = async () => {
     const accounts = await window.ethereum.request({
@@ -159,6 +164,8 @@ function Home() {
   const chainInfo = isSupportedNetwork(networkId)
     ? config[networkId]
     : config["0x539"];
+
+  console.log("this looks for in app", !isMetaMaskInstalled);
 
   return (
     <Layout title="" caption={<>Kazi Krypto</>}>
@@ -197,14 +204,14 @@ function Home() {
           </div>
         )}
       </p>
-      <AddFreelancerComponent />
-      <GetFreelancerComponent freelancerAddress={freelancerAddress} />
-      <AddPortfolioComponent />
-      <GetPortfolioComponent
+      {/* <AddFreelancerComponent /> */}
+      {/* <GetFreelancerComponent freelancerAddress={freelancerAddress} /> */}
+      {/* <AddPortfolioComponent /> */}
+      {/* <GetPortfolioComponent
         freelancerAddress={freelancerAddress}
         index={portfolioIndex}
-      />
-      <PostClientJobComponent />
+      /> */}
+      {/* <PostClientJobComponent /> */}
       <ViewClientJobsComponent />
     </Layout>
   );
