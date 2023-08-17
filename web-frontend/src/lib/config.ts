@@ -22,7 +22,7 @@ export const config = {
   },
   "0x539": {
     name: "localhost",
-    contractAddress: "0x771E51084A01C822D8B34F6c3AFccD11C87f0126",
+    contractAddress: "0x7e49BA7a35Fb1C0183151e5e68a3c67Fca7b5BbE",
     symbol: "ETH",
     blockExplorer: "",
     rpcUrl: "HTTP://127.0.0.1:7545",
