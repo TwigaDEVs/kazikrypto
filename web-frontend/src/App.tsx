@@ -20,12 +20,14 @@ import ViewClientJobsComponent from "./components/display/DisplayJobs";
 import FreelancerJobs from "./components/jobs/FreelancerJobs";
 import CustomNavbar from "./navbar/navbar";
 import Profile from "./components/profile/Profile";
+import Content from "./components/HomeContent";
+import Footer from "./components/home/Footer";
+
 import {
   AppShell,
   Anchor,
   Navbar,
   Header,
-  Footer,
   Aside,
   Text,
   MediaQuery,
@@ -34,6 +36,8 @@ import {
   Burger,
   useMantineTheme,
   Button,
+  Container,
+  Flex,
   Paper,
 } from "@mantine/core";
 import {
@@ -224,49 +228,8 @@ if (isMetaMaskInstalled) {
 
   return (
     <>
-      {/*<p>
-        {showConnectButton && (
-          <button onClick={handleConnect}>Connect to MetaMask</button>
-        )}
-
-        {isConnected && (
-          <div>
-            {isConnected ? "MOBILE" : "EXTENSION"} | <div>{balance} ETH</div> |
-            {walletContainer.accounts.length > 0 &&
-              !isSupportedNetwork(chainId) && <SwitchNetwork />}
-            {walletChainSupported && (
-              <>
-                <a
-                  href={`${chainInfo?.blockExplorer}/address/${chainInfo?.contractAddress}`}
-                  target="_blank"
-                  title="Open in Block Explorer"
-                >
-                  {chainInfo.name}:{formatChainAsNum(walletContainer.chainId)}
-                </a>
-                &nbsp;|&nbsp;
-                <a
-                  href={`https://etherscan.io/address/${wallet}`}
-                  target="_blank"
-                  title="Open in Block Explorer"
-                >
-                  {formatAddress(walletContainer.address)}
-                </a>
-                <>
-                  <button onClick={handleDisconnect}> Disconnect</button>
-                </>
-              </>
-            )}
-          </div>
-        )}
-      </p> */}
-
-      {/* <AddPortfolioComponent /> */}
-      {/* <GetPortfolioComponent
-        freelancerAddress={freelancerAddress}
-        index={portfolioIndex}
-      /> */}
-      {/* <PostClientJobComponent /> */}
-      {/* <ViewClientJobsComponent /> */}
+      <Content />
+      <Footer />
     </>
   );
 }
