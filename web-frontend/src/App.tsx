@@ -18,6 +18,7 @@ import GetPortfolioComponent from "./components/display/DisplayPortfolio";
 import PostClientJobComponent from "./components/forms/AddClientJob";
 import ViewClientJobsComponent from "./components/display/DisplayJobs";
 import FreelancerJobs from "./components/jobs/FreelancerJobs";
+import { ViewDescriptionAndBidPage } from "./components/display/DisplayJobs";
 import CustomNavbar from "./navbar/navbar";
 import Profile from "./components/profile/Profile";
 import Content from "./components/HomeContent";
@@ -49,7 +50,6 @@ import {
   useCallback,
 } from "react";
 
-
 function AppShellDemo() {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
@@ -70,6 +70,7 @@ function AppShellDemo() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/jobs" element={<FreelancerJobs />} />
+        <Route path="/jobs/:jobId" element={<ViewDescriptionAndBidPage />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
       {/* <CustomNavbar></CustomNavbar> */}
@@ -184,33 +185,32 @@ function Home() {
   const networkId = import.meta.env.VITE_PUBLIC_NETWORK_ID;
   const walletChainSupported = isSupportedNetwork(chainId);
 
-if (isMetaMaskInstalled) {
-  useEffect(() => {
-    const provider = new ethers.providers.Web3Provider(
-      window.ethereum as unknown as ethers.providers.ExternalProvider
-    );
+  if (isMetaMaskInstalled) {
+    useEffect(() => {
+      const provider = new ethers.providers.Web3Provider(
+        window.ethereum as unknown as ethers.providers.ExternalProvider
+      );
 
-    const contractInstance = new ethers.Contract(
-      config["0x539"].contractAddress,
-      KaziKrypto.abi,
-      provider
-    );
+      const contractInstance = new ethers.Contract(
+        config["0x539"].contractAddress,
+        KaziKrypto.abi,
+        provider
+      );
 
-    async function callViewFunction() {
-      try {
-        const result = await contractInstance.getClientJob();
-        console.log("View function result:", result);
-      } catch (error) {
-        console.error("Error calling view function:", error);
+      async function callViewFunction() {
+        try {
+          const result = await contractInstance.getClientJob();
+          console.log("View function result:", result);
+        } catch (error) {
+          console.error("Error calling view function:", error);
+        }
       }
-    }
 
-    callViewFunction();
-  }, []); // Empty dependency array means this effect runs once after initial render
-}
+      callViewFunction();
+    }, []); // Empty dependency array means this effect runs once after initial render
+  }
 
   // Call the function whenever needed
-
 
   const getAccounts = async () => {
     const accounts = await window.ethereum.request({
