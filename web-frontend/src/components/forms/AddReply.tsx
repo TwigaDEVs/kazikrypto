@@ -14,17 +14,6 @@ import {
   Textarea,
   FileInput,
 } from "@mantine/core";
-import {
-  IconTrash,
-  IconBookmark,
-  IconCalendar,
-  IconChevronDown,
-  IconWallet,
-  IconCurrencyEthereum,
-  IconInfoCircle,
-  IconAddressBook,
-  IconMessage2,
-} from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import { useDisclosure } from "@mantine/hooks";
 import { config, isSupportedNetwork } from "../../lib/config";
@@ -33,7 +22,7 @@ import { uploadToIPFS } from "~/Infura";
 
 import { MetaMaskProvider, useMetaMask } from "~/hooks/useMetaMask";
 
-const PostChatComponent: React.FC = () => {
+const PostReplyComponent: React.FC = () => {
   const [data, setData] = useState([
     { value: "react", label: "React" },
     { value: "ng", label: "Angular" },
@@ -45,8 +34,6 @@ const PostChatComponent: React.FC = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const contractAddress = config["0x539"].contractAddress;
   const contractABI = KaziKrypto.abi;
-
-      
 
   const {
     dispatch,
@@ -80,7 +67,7 @@ const PostChatComponent: React.FC = () => {
     setFileURLs(uploadedUrls); // Assuming you have a state to store the URLs
   };
 
-  const handlePostChat= async () => {
+  const handlePostReply = async () => {
     if (!isMetaMaskInstalled) {
       // MetaMask not installed, show a message or prompt the user to install/connect
       console.error("Hitilafu kwenye kutuma meseji ya mteja");
@@ -98,12 +85,7 @@ const PostChatComponent: React.FC = () => {
     );
 
     try {
-
-      const tx = await contractInstance.chat(
-        receiver,
-        message,
-        fileURLs
-      );
+      const tx = await contractInstance.chat(receiver, message, fileURLs);
 
       await tx.wait();
       console.log("Chat posted successfully!");
@@ -149,21 +131,15 @@ const PostChatComponent: React.FC = () => {
           }}
         />
         <br />
-        <Button onClick={handlePostChat} uppercase>
+        <Button onClick={handlePostReply} uppercase>
           Send
         </Button>
       </Modal>
-      <Group position="center">
-        <Button onClick={open}>
-          <IconMessage2
-            size="1rem"
-            stroke={1.5}
-          />
-           new message
-        </Button>
+      <Group position="left">
+        <Button onClick={open} variant="outline">Reply</Button>
       </Group>
     </div>
   );
 };
 
-export default PostChatComponent;
+export default PostReplyComponent;

@@ -49737,12 +49737,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xD8958A2f8F9B8A5Db209BE4cf6c2b4145fE8ccC9",
-      "transactionHash": "0xae4197c1f116c10a7217628346165c6ff82861496f64162611ae6721f61409d3"
+      "address": "0xE1CBBDddb415F6ac3aa4e510fc8E368a1294DA8E",
+      "transactionHash": "0xcf7f4bfd8ef99db61ab621c1525a408e59f2966077b9496f41a518e80ae8ae76"
     }
   },
   "schemaVersion": "3.4.14",
-  "updatedAt": "2023-08-18T12:10:12.552Z",
+  "updatedAt": "2023-08-18T19:04:47.678Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "user Registration and profilesJob posting and biddingSmart contract escrowmessaging and collaborationreputation and reviewspayment and escrow releasetransaction history and analyticsconflict resolution",

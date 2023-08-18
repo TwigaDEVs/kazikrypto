@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
+import { formatAddress, formatChainAsNum } from "~/utils";
 import {
   Card,
   Anchor,
@@ -16,7 +17,21 @@ import {
   TextInput,
   NumberInput,
   Textarea,
+  Notification,
+  Paper,
 } from "@mantine/core";
+import {
+  IconTrash,
+  IconBookmark,
+  IconCalendar,
+  IconChevronDown,
+  IconWallet,
+  IconCurrencyEthereum,
+  IconInfoCircle,
+  IconAddressBook,
+  IconMessage2,
+  IconCheck,
+} from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import { useNavigate, useParams } from "react-router-dom";
 import { config, isSupportedNetwork } from "../../lib/config";
@@ -26,6 +41,7 @@ import { type MetaMaskInpageProvider } from "@metamask/providers"; // Replace wi
 import { uploadToIPFS } from "~/Infura";
 import { useAccountId } from "~/hooks/UseAccount";
 import PostChatComponent from "../forms/AddChat";
+import PostReplyComponent from "../forms/AddReply";
 
 
 const ViewChatsComponent: React.FC = () => {
@@ -77,61 +93,54 @@ const ViewChatsComponent: React.FC = () => {
   }, [contractAddress, contractABI,wallet]);
 
   return (
-    <div>
-      <Text>
-        <Anchor component="button" align="center" sx={{ padding: 10 }}>
-          <PostChatComponent />
-        </Anchor>
-      </Text>
+    <div className="chat">
+      <Container>
+        <Text>
+          <Anchor component="button" align="center" sx={{ padding: 10 }}>
+            <PostChatComponent />
+          </Anchor>
+        </Text>
+      </Container>
       {chats.length > 0 ? (
         <Container>
           {chats.map((chat, index) => (
-            <Card
-              key={index}
-              shadow="sm"
-              sx={{ marginBottom: 20 }}
-              padding="lg"
-              radius="md"
-              withBorder
-            >
-              <Text weight={300} size="md">
-                chat from: {chat.sender}
-              </Text>
-              <br />
-              <Text weight={300} size="md">
-                time:{" "}
-                {new Date(
-                  parseInt(chat.timestamp._hex, 16) * 1000
-                ).toLocaleString()}
-              </Text>
-              <Text weight={300} size="md">
-                Mesage: {chat.message}
-              </Text>
-              <br />
+              <Paper key={index}  shadow="xs" p="md">
+                <Text weight={300} style={{ fontSize: 14 }} color="grey">
+                  from:{" "}
+                  <span style={{ color: "blue" }}>
+                    {" "}
+                    {formatAddress(chat.sender)}
+                  </span>
+                </Text>
+                <Text weight={300} style={{ fontSize: 12 }} color="grey">
+                  {new Date(
+                    parseInt(chat.timestamp._hex, 16) * 1000
+                  ).toLocaleString()}
+                </Text>
 
-              <Text weight={300} size="md">
-                {chat.seen ? (
-                  <Text weight={300} size="md" color="green">
-                    seen
-                  </Text>
-                ) : (
-                  <>
-                    <Text
-                      weight={300}
-                      size="md"
-                      color="red"
-                      style={{ fontSize: 14, fontWeight: 600 }}
-                    >
-                      Not seen
+                <Text>{chat.message}</Text>
+                <Text weight={300} size="md">
+                  {chat.seen ? (
+                    <Text weight={300} size="md" color="green">
+                      seen
                     </Text>
-                  </>
-                )}
-              </Text>
-              <Group position="apart" mt="md" mb="xs">
-                <Text weight={300} size="sm"></Text>
-                <Button>Reply</Button>
-              </Group>
-            </Card>
+                  ) : (
+                    <>
+                      <Text
+                        weight={300}
+                        size="md"
+                        color="red"
+                        style={{ fontSize: 14, fontWeight: 600 }}
+                      >
+                        Not seen
+                      </Text>
+                    </>
+                  )}
+                </Text>
+                <Anchor>
+                  <PostReplyComponent />
+                </Anchor>
+              </Paper>
           ))}
         </Container>
       ) : (

@@ -8,7 +8,7 @@ const SectionTwo = () => {
       <section id="section-two">
         <Container>
           <Grid justify="space-around">
-            <Grid.Col xs={6} sm={8} md={8} lg={12.5} >
+            <Grid.Col xs={12.5} sm={12.5} md={12.5} lg={12.5} >
               <div style={{ marginBottom: 20,borderRadius:10 }} className="callto">
                 <div className="calltoimage">
                   <Image
