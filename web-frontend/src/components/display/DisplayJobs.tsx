@@ -23,6 +23,7 @@ import { useMetaMask } from "~/hooks/useMetaMask";
 import KaziKrypto from "../../../../contract/build/contracts/KaziKrypto.json";
 import { type MetaMaskInpageProvider } from "@metamask/providers"; // Replace with the actual path to your config file
 import { uploadToIPFS } from "~/Infura";
+import { useAccountId } from "~/hooks/UseAccount";
 
 const ViewClientJobsComponent: React.FC = () => {
   const navigate = useNavigate();
@@ -97,6 +98,7 @@ const ViewClientJobsComponent: React.FC = () => {
               <Group position="center">
                 {job.images.map((imageURL, index) => (
                   <Image
+                    key={index}
                     maw={240}
                     mx="auto"
                     src={imageURL}
@@ -135,8 +137,9 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
   const [fileURLs, setFileURLs] = useState(null);
   const [budget, setBudget] = useState<number>();
   const [imagesValue, setImagesValue] = useState<File[]>([]);
-  const [description, setDescription] = useState(null);
+  const [description, setDescription] = useState("");
   const [bids, setBids] = useState<any[]>([]);
+  const { accountId } = useAccountId();
   const {
     dispatch,
     state: {
@@ -228,7 +231,40 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
     }
   }, [contractAddress, contractABI]);
 
-  console.log(bids);
+  console.log("am here",bids);
+  // console.log("haloooooooooooooooo")
+
+  async function approveBid(bidId) {
+    try {
+      const ethereumProviderInjected = typeof window.ethereum !== "undefined";
+      const isMetaMaskInstalled =
+        ethereumProviderInjected && Boolean(window.ethereum.isMetaMask);
+
+      if (isMetaMaskInstalled) {
+        const provider = new ethers.providers.Web3Provider(
+          window.ethereum as unknown as ethers.providers.ExternalProvider
+        );
+
+        const signer = provider.getSigner(); // Get the connected signer
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        const jobId = parseInt(params.jobId); // Make sure jobId is in the right format
+
+        const transaction = await contract.acceptBid(jobId, bidId);
+
+        await transaction.wait(); // Wait for the transaction to be mined
+        console.log("Bid accepted successfully!");
+
+        
+      }
+    } catch (error) {
+      console.error("Error approving bid:", error);
+    }
+  }
 
   useEffect(() => {
     const ethereumProviderInjected = typeof window.ethereum !== "undefined";
@@ -309,8 +345,8 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
             </Text>
             <br />
             <Text weight={300} size="md">
-              {singleJob.skillRequirements.map((skill) => (
-                <Badge>{skill}</Badge>
+              {singleJob.skillRequirements.map((skill, index) => (
+                <Badge key={index}>{skill}</Badge>
               ))}
             </Text>
             <br />
@@ -353,7 +389,7 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
               />
               <br />
               <Button onClick={handleMakeBidding} uppercase>
-                Post Client Job
+                Bid
               </Button>
               ;
             </Container>
@@ -363,17 +399,64 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
         "no Data"
       )}
       <br />
-      <Container>
-        <Card
-          shadow="sm"
-          sx={{ marginBottom: 20 }}
-          padding="lg"
-          radius="md"
-          withBorder
-        >
-          
-        </Card>
-      </Container>
+      {bids.length > 0 ? (
+        <Container>
+          {bids.map((bid, index) => (
+            <Card
+              key={index}
+              shadow="sm"
+              sx={{ marginBottom: 20 }}
+              padding="lg"
+              radius="md"
+              withBorder
+            >
+              <Text weight={300} size="md">
+                Bid from: {bid.accountId}
+              </Text>
+              <br />
+              <Text weight={300} size="md">
+                Amount: {bid.budget.toString()} ETH
+              </Text>
+              <Text weight={300} size="md">
+                Bid Mesage: {bid.bidDescription}
+              </Text>
+              <br />
+
+              <Text weight={300} size="md">
+                {bid.bidApproved ? (
+                  <Text weight={300} size="md" color="green">
+                    Approved
+                  </Text>
+                ) : (
+                  <>
+                    <Text
+                      weight={300}
+                      size="md"
+                      color="red"
+                      style={{ fontSize: 14, fontWeight: 600 }}
+                    >
+                      Not Approved
+                    </Text>
+                    {singleJob ? (
+                      bid.accountId === singleJob.accountId ? (
+                        <Button onClick={() => approveBid(bid.bidId)}>
+                          Approved Bid
+                        </Button>
+                      ) : (
+                        " "
+                      )
+                    ) : (
+                      <Text>No Single Job</Text>
+                    )}
+                  </>
+                )}
+              </Text>
+            </Card>
+          ))}
+        </Container>
+      ) : (
+        "No bids"
+      )}
     </>
   );
 };

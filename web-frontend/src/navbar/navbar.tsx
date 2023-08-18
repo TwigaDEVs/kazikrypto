@@ -40,6 +40,7 @@ import "./navbar.css";
 import { useListen } from "../hooks/useListen";
 import PostClientJobComponent from "../components/forms/AddClientJob";
 import { formatBalance } from "~/utils";
+import { useAccountId } from "~/hooks/UseAccount";
 
 const CustomNavbar: React.FC = () => {
   const navigate = useNavigate();
@@ -60,6 +61,8 @@ const CustomNavbar: React.FC = () => {
       walletContainer,
     },
   } = useMetaMask();
+
+  const { setAccountId } = useAccountId();
 
   const useStyles = createStyles((theme) => ({
     button: {
@@ -123,6 +126,8 @@ const CustomNavbar: React.FC = () => {
         address: address,
       };
 
+      setAccountId(address);
+
       dispatch({
         type: "connect",
         wallet: accounts[0],
@@ -161,9 +166,7 @@ const CustomNavbar: React.FC = () => {
             />
           </MediaQuery>
 
-          <Title order={4}>
-              Kazi Krypto
-          </Title>
+          <Title order={4}>Kazi Krypto</Title>
           <div
             style={{
               display: "flex",
@@ -188,6 +191,15 @@ const CustomNavbar: React.FC = () => {
               target="_blank"
             >
               Jobs
+            </Anchor>
+            <Anchor
+              onClick={() => {
+                navigate("/chats");
+              }}
+              sx={{ padding: 10 }}
+              target="_blank"
+            >
+              Chats
             </Anchor>
             <Anchor component="button" sx={{ padding: 10 }}>
               <PostClientJobComponent />

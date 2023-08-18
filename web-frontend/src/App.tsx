@@ -18,6 +18,7 @@ import GetPortfolioComponent from "./components/display/DisplayPortfolio";
 import PostClientJobComponent from "./components/forms/AddClientJob";
 import ViewClientJobsComponent from "./components/display/DisplayJobs";
 import FreelancerJobs from "./components/jobs/FreelancerJobs";
+import Chats from "./components/chats/Chats";
 import { ViewDescriptionAndBidPage } from "./components/display/DisplayJobs";
 import CustomNavbar from "./navbar/navbar";
 import Profile from "./components/profile/Profile";
@@ -70,6 +71,7 @@ function AppShellDemo() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/jobs" element={<FreelancerJobs />} />
+        <Route path="/chats" element={<Chats />} />
         <Route path="/jobs/:jobId" element={<ViewDescriptionAndBidPage />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
