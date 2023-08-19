@@ -24,6 +24,7 @@ import CustomNavbar from "./navbar/navbar";
 import Profile from "./components/profile/Profile";
 import Content from "./components/HomeContent";
 import Footer from "./components/home/Footer";
+import ViewClientJobsMilestonesComponent from "./components/display/DisplayJobsMilestones";
 
 import {
   AppShell,
@@ -73,6 +74,10 @@ function AppShellDemo() {
         <Route path="/jobs" element={<FreelancerJobs />} />
         <Route path="/chats" element={<Chats />} />
         <Route path="/jobs/:jobId" element={<ViewDescriptionAndBidPage />} />
+        <Route
+          path="/job/milestones/:jobId"
+          element={<ViewClientJobsMilestonesComponent />}
+        />
         <Route path="/profile" element={<Profile />} />
       </Routes>
       {/* <CustomNavbar></CustomNavbar> */}

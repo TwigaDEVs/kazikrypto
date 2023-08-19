@@ -84,16 +84,6 @@ const GetPortfolioComponent: React.FC<GetPortfolioProps> = ({
           </Card>
         </Container>
       )}
-      {/* 
-      {portfolio && (
-        <div>
-          <h3>Portfolio Details</h3>
-          <p>Task URL: {portfolio.taskUrl}</p>
-          <p>Description: {portfolio.description}</p>
-          <p>Images: {portfolio.images.join(", ")}</p>
-          <p>Videos: {portfolio.videos.join(", ")}</p>
-        </div>
-      )} */}
     </div>
   );
 };

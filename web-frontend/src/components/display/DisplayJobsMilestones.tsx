@@ -16,7 +16,7 @@ import {
   NumberInput,
   Textarea,
 } from "@mantine/core";
-import { IconFile,IconDownload } from "@tabler/icons-react";
+import { IconFile, IconDownload } from "@tabler/icons-react";
 import { formatAddress, formatChainAsNum } from "~/utils";
 import { notifications } from "@mantine/notifications";
 import { useNavigate, useParams } from "react-router-dom";
@@ -27,123 +27,12 @@ import { type MetaMaskInpageProvider } from "@metamask/providers"; // Replace wi
 import { uploadToIPFS } from "~/Infura";
 import { useAccountId } from "~/hooks/UseAccount";
 import { formatBalance } from "~/utils";
-import Bids from "../bids/Bids";
+import Milestones from "../milestones/milestones";
 
 
-const ViewClientJobsComponent: React.FC = () => {
-  const navigate = useNavigate();
-  const [clientJobs, setClientJobs] = useState<any[]>([]); // Use the appropriate type
-  const contractAddress = config["0x539"].contractAddress;
-  const contractABI = KaziKrypto.abi;
- 
 
-  useEffect(() => {
-    const ethereumProviderInjected = typeof window.ethereum !== "undefined";
-    const isMetaMaskInstalled =
-      ethereumProviderInjected && Boolean(window.ethereum.isMetaMask);
 
-    if (isMetaMaskInstalled) {
-      const provider = new ethers.providers.Web3Provider(
-        window.ethereum as unknown as ethers.providers.ExternalProvider
-      );
-      const contractInstance = new ethers.Contract(
-        contractAddress,
-        contractABI,
-        provider
-      );
-
-      
-
-      async function callViewFunction() {
-        try {
-          const result = await contractInstance.getClientJob();
-          setClientJobs(result);
-          console.log("View function result:", result);
-        } catch (error) {
-          console.error("Error calling view function:", error);
-        }
-      }
-
-      callViewFunction();
-    }
-  }, [contractAddress, contractABI]);
-
-  function goToDetailsPage(x) {
-    navigate(`/jobs/${x}`);
-  }
-
-  return (
-    <div>
-      {clientJobs.length > 0 ? (
-        <Container size="40rem">
-          <h4>Client Jobs</h4>
-
-          {clientJobs.map((job, index) => (
-            <Card
-              key={index}
-              shadow="sm"
-              sx={{ marginBottom: 20 }}
-              padding="lg"
-              radius="md"
-              withBorder
-            >
-              <Group position="apart" mt="md" mb="xs">
-                <Text weight={300} size="sm">
-                  #{job.jobId.toString()}
-                </Text>
-                <Button
-                  onClick={() => {
-                    goToDetailsPage(job.jobId.toString());
-                  }}
-                >
-                  Bid
-                </Button>
-              </Group>
-              <Text size="lg" weight={600}>
-                {job.projectTitle}
-              </Text>
-              <br />
-              <Group position="left">
-                {job.images.map((imageURL, index) => (
-                  <div key={index} className="image-card">
-                    <p className="file-filename">file {index + 1}</p>
-                    <IconFile color="blue" name="image" size={48} />{" "}
-                    {/* Replace "image" with the name of your image icon */}
-                    <a
-                      href={imageURL}
-                      download={`image-${index + 1}.jpg`} // Provide a unique download filename with extension
-                      className="download-icon"
-                      target="_blank"
-                    >
-                      <IconDownload color="black" name="download" size={24} />{" "}
-                      {/* Replace "download" with the name of your download icon */}
-                    </a>
-                  </div>
-                ))}
-              </Group>
-              <br />
-              <Text weight={300} size="md">
-                Budget {job.projectDuration} ETH
-              </Text>
-              <br />
-              <Text weight={300} size="md">
-                {job.skillRequirements.map((skill) => (
-                  <Badge>{skill}</Badge>
-                ))}
-              </Text>
-              <br />
-              Account ID: {job.accountId}
-            </Card>
-          ))}
-        </Container>
-      ) : (
-        <p>No client jobs available.</p>
-      )}
-    </div>
-  );
-};
-
-export const ViewDescriptionAndBidPage: React.FC = () => {
+export const ViewClientJobsMilestonesComponent: React.FC = () => {
   const params = useParams();
   const [clientJobs, setClientJobs] = useState<any[]>([]); // Use the appropriate type
   const [singleJob, setSingleJob] = useState<any>();
@@ -153,8 +42,20 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
   const [budget, setBudget] = useState<number>();
   const [imagesValue, setImagesValue] = useState<File[]>([]);
   const [description, setDescription] = useState("");
+  const [milestoneDuration, setMilestoneDuration] = useState("");
   const [bids, setBids] = useState<any[]>([]);
   const { accountId } = useAccountId();
+   const [milestoneName, setMilestoneName] = useState("");
+
+    //   await instance.addProjectMileStone(
+    //     jobId,
+    //     bidId,
+    //     milestoneName1,
+    //     milestoneDescription1,
+    //     milestoneBudget1,
+    //     milestoneDuration1,
+    //     { from: freelancer }
+    //   );
   const {
     dispatch,
     state: {
@@ -246,7 +147,7 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
     }
   }, [contractAddress, contractABI]);
 
-  console.log("am here",bids);
+  console.log("am here", bids);
   // console.log("haloooooooooooooooo")
 
   async function approveBid(bidId) {
@@ -273,8 +174,6 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
 
         await transaction.wait(); // Wait for the transaction to be mined
         console.log("Bid accepted successfully!");
-
-        
       }
     } catch (error) {
       console.error("Error approving bid:", error);
@@ -305,7 +204,6 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
               setSingleJob(result[i]);
             }
           }
-        
         } catch (error) {
           console.error("Error calling view function:", error);
         }
@@ -387,55 +285,68 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
             </span>
             <br />
             <br />
-            {singleJob.bidAvailable ? (
-              <>
-                <Text size="lg" weight={600}>
-                  Bid Now
-                </Text>
-                <Container size="30rem" sx={{ backgroundColor: "#ffffff" }}>
-                  <NumberInput
-                    label="Project Budget"
-                    precision={6}
-                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-                    formatter={(value) =>
-                      !Number.isNaN(parseFloat(value))
-                        ? `ETH ${value}`.replace(
-                            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
-                            ","
-                          )
-                        : "ETH "
-                    }
-                    onChange={(value: number) => setBudget(value)}
-                  />
-                  <Textarea
-                    label="Bid Description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                  <FileInput
-                    label="Upload relevant files"
-                    placeholder="Upload files"
-                    withAsterisk
-                    multiple
-                    value={imagesValue}
-                    onChange={(selectedFiles) => {
-                      setImagesValue(selectedFiles);
-                      OnChangeMFile(selectedFiles);
-                    }}
-                  />
-                  <br />
-                  <Button onClick={handleMakeBidding} uppercase>
-                    Bid
-                  </Button>
-                  ;
-                </Container>
-              </>
-            ) : (
-              <Text style={{ fontSize: 14 }} color="red">
-                {" "}
-                Job is no longer available{" "}
+            {/* await instance.addProjectMileStone(
+      jobId,
+      bidId,
+      milestoneName1,
+      milestoneDescription1,
+      milestoneBudget1,
+      milestoneDuration1,
+      { from: freelancer }
+    );
+          */}
+            <>
+              <Text size="lg" weight={600}>
+                New Milestone
               </Text>
-            )}
+              <Container size="30rem" sx={{ backgroundColor: "#ffffff" }}>
+                <TextInput
+                  label="Name"
+                  value={milestoneName}
+                  onChange={(e) => setMilestoneName(e.target.value)}
+                />
+                <NumberInput
+                  label="Milestone Budget"
+                  precision={6}
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                  formatter={(value) =>
+                    !Number.isNaN(parseFloat(value))
+                      ? `ETH ${value}`.replace(
+                          /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                          ","
+                        )
+                      : "ETH "
+                  }
+                  onChange={(value: number) => setBudget(value)}
+                />
+                <TextInput
+                  label="Duration"
+                  value={milestoneDuration}
+                  onChange={(e) => setMilestoneDuration(e.target.value)}
+                />
+                <Textarea
+                  label="Description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+                <FileInput
+                  label="Upload relevant files"
+                  placeholder="Upload files"
+                  withAsterisk
+                  multiple
+                  value={imagesValue}
+                  onChange={(selectedFiles) => {
+                    setImagesValue(selectedFiles);
+                    OnChangeMFile(selectedFiles);
+                  }}
+                />
+                <br />
+                <Button onClick={handleMakeBidding} uppercase>
+                  Add
+                </Button>
+                ;
+              </Container>
+            </>
           </Card>
         </Container>
       ) : (
@@ -443,8 +354,7 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
       )}
       <br />
       {bids.length > 0 ? (
-      <Bids jobId={params.jobId} singleJob={singleJob} />
-
+        <Milestones jobId={params.jobId} singleJob={singleJob} />
       ) : (
         "No bids"
       )}
@@ -452,4 +362,4 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
   );
 };
 
-export default ViewClientJobsComponent;
+export default ViewClientJobsMilestonesComponent;
