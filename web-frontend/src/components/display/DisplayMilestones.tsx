@@ -14,21 +14,25 @@ import { config, isSupportedNetwork } from "../../lib/config";
 import KaziKrypto from "../../../../contract/build/contracts/KaziKrypto.json"; // Replace with the actual path to your config file
 import { formatAddress } from "~/utils";
 
+
 interface GetMilestonesComponent {
   freelancerAddress: string;
   jobId: string;
   singleJob: any;
+  bidId:string;
 }
 
 const GetMilestonesComponent: React.FC<GetMilestonesComponent> = ({
   freelancerAddress,
   jobId,
   singleJob,
+  bidId,
 }) => {
-  const [bids, setBids] = useState<any[]>([]); // Use the appropriate type
-
+  const [milestones, setMilestones] = useState<any[]>([]); // Use the appropriate type
+    console.log("bidid",bidId)
   const contractAddress = config["0x539"].contractAddress;
   const contractABI = KaziKrypto.abi;
+
 
   async function approveBid(bidId) {
     try {
@@ -77,10 +81,11 @@ const GetMilestonesComponent: React.FC<GetMilestonesComponent> = ({
 
       async function callViewFunction() {
         try {
-          const result = await contractInstance.getBids(jobId);
+        const new_bidId = parseInt(bidId);
+          const result = await contractInstance.getProjectMileStones(new_bidId);
           // console.log(result);
           // console.log("holla");
-          setBids(result);
+          setMilestones(result);
         } catch (error) {
           console.error("Error calling view function:", error);
         }
@@ -89,14 +94,13 @@ const GetMilestonesComponent: React.FC<GetMilestonesComponent> = ({
     }
   }, [contractAddress, contractABI]);
 
-  console.log("am here", bids);
+  console.log("am here", milestones);
 
   return (
     <div>
-      {bids.length > 0 ?  (
+      {milestones.length > 0 ? (
         <Container>
-          
-          {bids.map((bid, index) => (
+          {milestones.map((milestone, index) => (
             <Card
               key={index}
               shadow="sm"
@@ -106,26 +110,26 @@ const GetMilestonesComponent: React.FC<GetMilestonesComponent> = ({
               withBorder
             >
               <Text weight={400} size="md" style={{ fontSize: 14 }}>
-                Bid from:
+                Duration:
                 <span style={{ color: "blue" }}>
-                  {""} {formatAddress(bid.accountId)}
+                  {""} {milestone.milestoneDuration.toString()}
                 </span>
               </Text>
               <br />
               <Text weight={400} size="md" style={{ fontSize: 14 }}>
                 Amount:{" "}
                 <span style={{ color: "green" }}>
-                  {bid.budget.toString()} ETH
+                  {milestone.milestoneBudget.toString()} ETH
                 </span>
               </Text>
               <br />
               <Text weight={300} size="md">
-                {bid.bidDescription}
+                {milestone.milestoneDescription}
               </Text>
               <br />
 
               <Text weight={300} size="md">
-                {bid.bidApproved ? (
+                {milestone.milestoneWorkApproved ? (
                   <Text weight={300} size="md" color="green">
                     Approved
                   </Text>
@@ -139,8 +143,8 @@ const GetMilestonesComponent: React.FC<GetMilestonesComponent> = ({
                     >
                       Not Approved
                     </Text>
-                    {singleJob ? (
-                      bid.accountId === singleJob.accountId ? (
+                    {/* {singleJob ? (
+                      milestone.accountId === singleJob.accountId ? (
                         <Button onClick={() => approveBid(bid.bidId)}>
                           Approved Bid
                         </Button>
@@ -149,7 +153,7 @@ const GetMilestonesComponent: React.FC<GetMilestonesComponent> = ({
                       )
                     ) : (
                       <Text>No Single Job</Text>
-                    )}
+                    )} */}
                   </>
                 )}
               </Text>
@@ -157,7 +161,7 @@ const GetMilestonesComponent: React.FC<GetMilestonesComponent> = ({
           ))}
         </Container>
       ) : (
-        "No bids"
+        "No milestones"
       )}
     </div>
   );

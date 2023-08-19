@@ -27,13 +27,14 @@ import { type MetaMaskInpageProvider } from "@metamask/providers"; // Replace wi
 import { uploadToIPFS } from "~/Infura";
 import { useAccountId } from "~/hooks/UseAccount";
 import { formatBalance } from "~/utils";
-import Milestones from "../milestones/milestones";
+import Milestones from "../milestones/Milestones";
 
 
 
 
 export const ViewClientJobsMilestonesComponent: React.FC = () => {
   const params = useParams();
+  console.log(params)
   const [clientJobs, setClientJobs] = useState<any[]>([]); // Use the appropriate type
   const [singleJob, setSingleJob] = useState<any>();
   const contractAddress = config["0x539"].contractAddress;
@@ -47,15 +48,7 @@ export const ViewClientJobsMilestonesComponent: React.FC = () => {
   const { accountId } = useAccountId();
    const [milestoneName, setMilestoneName] = useState("");
 
-    //   await instance.addProjectMileStone(
-    //     jobId,
-    //     bidId,
-    //     milestoneName1,
-    //     milestoneDescription1,
-    //     milestoneBudget1,
-    //     milestoneDuration1,
-    //     { from: freelancer }
-    //   );
+
   const {
     dispatch,
     state: {
@@ -148,37 +141,49 @@ export const ViewClientJobsMilestonesComponent: React.FC = () => {
   }, [contractAddress, contractABI]);
 
   console.log("am here", bids);
-  // console.log("haloooooooooooooooo")
+//  console.log("haloooooooooooooooo")
 
-  async function approveBid(bidId) {
-    try {
-      const ethereumProviderInjected = typeof window.ethereum !== "undefined";
-      const isMetaMaskInstalled =
-        ethereumProviderInjected && Boolean(window.ethereum.isMetaMask);
+ const handleAddMilestone = async () => {
+   if (!isMetaMaskInstalled) {
+     // MetaMask not installed, show a message or prompt the user to install/connect
+     console.error("Hitilafu kwenye kutuma kazi ya mteja");
+     return;
+   }
+   const provider = new ethers.providers.Web3Provider(
+     window.ethereum as unknown as ethers.providers.ExternalProvider
+   );
+   const signer = provider.getSigner();
 
-      if (isMetaMaskInstalled) {
-        const provider = new ethers.providers.Web3Provider(
-          window.ethereum as unknown as ethers.providers.ExternalProvider
-        );
+   const contractInstance = new ethers.Contract(
+     contractAddress,
+     contractABI,
+     signer
+   );
 
-        const signer = provider.getSigner(); // Get the connected signer
-        const contract = new ethers.Contract(
-          contractAddress,
-          contractABI,
-          signer
-        );
 
-        const jobId = parseInt(params.jobId); // Make sure jobId is in the right format
-
-        const transaction = await contract.acceptBid(jobId, bidId);
-
-        await transaction.wait(); // Wait for the transaction to be mined
-        console.log("Bid accepted successfully!");
-      }
-    } catch (error) {
-      console.error("Error approving bid:", error);
-    }
-  }
+   try {
+ 
+    const new_jobId = parseInt(params.jobId);
+    const new_bidId = parseInt(params.bidId);
+     
+     const tx = await contractInstance.addProjectMileStone(
+       ethers.BigNumber.from(new_jobId),
+       ethers.BigNumber.from(new_bidId),
+       milestoneName,
+       description,
+       ethers.BigNumber.from(budget),
+       ethers.BigNumber.from(milestoneDuration)
+     );
+     await tx.wait();
+     console.log("milestone addition successful");
+     notifications.show({
+       title: "Successful",
+       message: "milestone addition done successful",
+     });
+   } catch (e) {
+     console.error("Error posting milestone :", e);
+   }
+ };
 
   useEffect(() => {
     const ethereumProviderInjected = typeof window.ethereum !== "undefined";
@@ -329,19 +334,8 @@ export const ViewClientJobsMilestonesComponent: React.FC = () => {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
-                <FileInput
-                  label="Upload relevant files"
-                  placeholder="Upload files"
-                  withAsterisk
-                  multiple
-                  value={imagesValue}
-                  onChange={(selectedFiles) => {
-                    setImagesValue(selectedFiles);
-                    OnChangeMFile(selectedFiles);
-                  }}
-                />
                 <br />
-                <Button onClick={handleMakeBidding} uppercase>
+                <Button onClick={handleAddMilestone} uppercase>
                   Add
                 </Button>
                 ;
@@ -354,7 +348,7 @@ export const ViewClientJobsMilestonesComponent: React.FC = () => {
       )}
       <br />
       {bids.length > 0 ? (
-        <Milestones jobId={params.jobId} singleJob={singleJob} />
+        <Milestones jobId={params.jobId} singleJob={singleJob} bidId={params.bidId}/>
       ) : (
         "No bids"
       )}

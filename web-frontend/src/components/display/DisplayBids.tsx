@@ -94,8 +94,8 @@ const GetBidsComponent: React.FC<GetBidsComponent> = ({
 
   console.log("am here", bids);
 
-function goToMilestonesPage(x) {
-      navigate(`/job/milestones/${x}`);
+function goToMilestonesPage(x,y) {
+      navigate(`/job/${x}/milestones/${y}`);
     }
 
   return (
@@ -140,7 +140,10 @@ function goToMilestonesPage(x) {
                       bid.accountId === freelancerAddress ? (
                         <Button
                           onClick={() => {
-                            goToMilestonesPage(singleJob.jobId.toString());
+                            goToMilestonesPage(
+                              singleJob.jobId.toString(),
+                              bid.bidId.toString()
+                            );
                           }}
                         >
                           Milestones

@@ -14,6 +14,7 @@ import GetPortfolioComponent from "../display/DisplayPortfolio";
 import GetTransactionsComponent from "../display/DisplayTransactions";
 import GetBidsComponent from "../display/DisplayBids";
 import GetMilestonesComponent from "../display/DisplayMilestones";
+import { useNavigate, useParams } from "react-router-dom";
 
 const items: { title: string; linkTo: string }[] = [
   { title: "my Profile", linkTo: "view-profile" },
@@ -24,10 +25,13 @@ const items: { title: string; linkTo: string }[] = [
 interface Milestones {
   jobId: string;
   singleJob: any;
+  bidId:string;
 }
 
-const Milestones: React.FC<Milestones> = ({ jobId, singleJob }) => {
+const Milestones: React.FC<Milestones> = ({ jobId, singleJob, bidId }) => {
   const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
+  const { x, y } = useParams();
+  console.log(x, y);
   useEffect(() => {
     async function connectToWallet() {
       const provider = new ethers.providers.Web3Provider(
@@ -59,6 +63,7 @@ const Milestones: React.FC<Milestones> = ({ jobId, singleJob }) => {
               freelancerAddress={connectedAddress}
               jobId={jobId}
               singleJob={singleJob}
+              bidId={bidId}
             />
             <br />
           </Tabs.Panel>

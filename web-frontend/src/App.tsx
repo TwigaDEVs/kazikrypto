@@ -75,7 +75,7 @@ function AppShellDemo() {
         <Route path="/chats" element={<Chats />} />
         <Route path="/jobs/:jobId" element={<ViewDescriptionAndBidPage />} />
         <Route
-          path="/job/milestones/:jobId"
+          path="/job/:jobId/milestones/:bidId"
           element={<ViewClientJobsMilestonesComponent />}
         />
         <Route path="/profile" element={<Profile />} />
