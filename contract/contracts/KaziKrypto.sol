@@ -20,11 +20,13 @@ transparent transactions while leveraging the benefits of blockchain technology
 
 contract KaziKrypto {
 
+    address owner;
     /**
     * @dev allow smart contract to receive payments
     */
-    constructor() public payable{
-
+    
+    constructor() payable {
+        owner == msg.sender;  
     }
 
 
@@ -39,7 +41,18 @@ contract KaziKrypto {
         string paymentPreference;
         string[] skills;
         uint profileRating;
+        bool isProfilePublic;
     }
+
+    struct Disputes {
+        string disputeName;
+        string description;
+        address disputor;
+        address clientInvolved;
+        bool resolved;
+    }
+
+    Disputes[] disputes;
 
     /// @title freelancer portfolio
     /// @notice all portfolios mapped to the specific freelancer Id
@@ -96,12 +109,15 @@ contract KaziKrypto {
 
     struct ProjectMilestones {
         uint bidId;
+        uint mileStoneId;
         string milestoneName;
         string milestoneDescription;
-        string milestoneBudget;
-        string milestoneDuration;
+        uint milestoneBudget;
+        uint milestoneDuration;
         bool milestoneWorkApproved;
     }
+
+    uint private mileStoneId;
 
     /// @title Chats
     /// @dev chat from intended sender to intended receiver
@@ -170,7 +186,9 @@ contract KaziKrypto {
     /// @dev store Client Jobs
     /// @dev not everybody is a client
     uint internal clientJobId;
-    ClientJobs[] allClientJobs;
+    ClientJobs[] public allClientJobs;
+
+    // mapping(uint => ClientJobs) public clientJobsById;
     mapping(uint => FreelancerBids[]) allBidsForClientJobs;
 
     /// @dev acceptedBidDetail
@@ -190,7 +208,7 @@ contract KaziKrypto {
     * @notice after logging in for the first time update details here
      */
 
-    function addNewFreelancer(string memory _fullName,string memory _profileImage, uint _hourlyRate,string memory _profession, string memory _preferredPayment, string[] memory _skill)public{
+    function addNewFreelancer(string memory _fullName,string memory _profileImage, uint _hourlyRate,string memory _profession, string memory _preferredPayment, string[] memory _skill, bool _isProfilePublic)public{
         /// @dev validate inputs
         // require(_fullName.length > 0, "enter_name");
         // require(_profession.length > 0, "enter_profession");
@@ -198,7 +216,32 @@ contract KaziKrypto {
         // require(_skill.length > 0, "enter_one_skill");
 
         /// @dev make the storage
-        freelancers[msg.sender] = Freelancer(payable(msg.sender),_profileImage, _fullName,_hourlyRate,  _profession, _preferredPayment, _skill, 0); 
+        freelancers[msg.sender] = Freelancer(payable(msg.sender),_profileImage, _fullName,_hourlyRate,  _profession, _preferredPayment, _skill, 0, _isProfilePublic); 
+    }
+
+    /**
+     * @notice Allows freelancers to update their profile information
+     * @param _fullName Updated full names for freelancer
+     * @param _hourlyRate Updated hourly rate
+     * @param _profession Updated profession
+     * @param _preferredPayment Updated preferred payment
+     * @param _skills Updated skills
+     */
+    function editFreelancerProfile(string memory _fullName, uint _hourlyRate, string memory _profession, string memory _preferredPayment, string[] memory _skills) public {
+        Freelancer storage freelancer = freelancers[msg.sender];
+        freelancer.fullName = _fullName;
+        freelancer.hourlyRate = _hourlyRate;
+        freelancer.profession = _profession;
+        freelancer.paymentPreference = _preferredPayment;
+        freelancer.skills = _skills;
+    }
+
+    /**
+     * @notice Allows freelancers to set their profile visibility status
+     * @param _isProfilePublic Boolean indicating if the profile is public (true) or private (false)
+     */
+    function setProfileVisibility(bool _isProfilePublic) public {
+        freelancers[msg.sender].isProfilePublic = _isProfilePublic;
     }
 
     function getFreelancer(address _freelancerAddress) public view returns (Freelancer memory) {
@@ -253,15 +296,25 @@ contract KaziKrypto {
         (bool sent, bytes memory data) = contractAddress.call{value: msg.value}("");
         clientJobId++;
         allClientJobs.push(ClientJobs(clientJobId, msg.sender, _projectTitle, _projectDescription, _projectDuration, _projectBudget, _skillRequirements, _images, true));
+        // ClientJobs memory newClientJob = ClientJobs(clientJobId, msg.sender, _projectTitle, _projectDescription, _projectDuration, _projectBudget, _skillRequirements, _images, true);
+        // clientJobsById[clientJobId] = newClientJob;
         transactions[msg.sender].push(Transaction(payable(msg.sender), contractAddress, "Project posting", msg.value, block.timestamp, "on_escrow"));
      }
 
+    //  function getAllClientJobs() public view returns (ClientJobs[] memory){
+    //     return allClientJobs;
+    //  } 
 
-    function getClientJob(uint256 _jobId) public view returns (ClientJobs memory) {
-        require(_jobId > 0 && _jobId <= clientJobId, "Invalid job ID");
-        return allClientJobs[_jobId - 1];
+
+    function getClientJob() public view returns (ClientJobs[] memory) {
+       
+        return allClientJobs;
     }
 
+    // Function to get a client job by its jobId
+    // function getClientJobById(uint jobId) public view returns (ClientJobs memory) {
+    //     return clientJobsById[jobId];
+    // }
     /**
     * @dev makeAbidding
     * @dev only occurs on existing project id
@@ -341,9 +394,161 @@ contract KaziKrypto {
         return freelancerChats[_receiver];
     }
 
+    function acceptBid(uint _jobId, uint _bidId) public {
+        for(uint i = 0; i < allBidsForClientJobs[_jobId].length; i++){
+            if(allBidsForClientJobs[_jobId][i].bidId  == _bidId){
+                if(allBidsForClientJobs[_jobId][i].bidApproved == true){
+                    revert("bid_allready_approved");
+                }else{
+                    allBidsForClientJobs[_jobId][i].bidApproved = true;
+                }
+            }
+        }
+        for(uint i = 0; i < allClientJobs.length; i++){
+            if(allClientJobs[i].jobId == _jobId){
+
+                if(allClientJobs[i].bidAvailable == false){
+                    revert("bid not available");
+                }else{
+                    allClientJobs[i].bidAvailable = false;
+                }
+            }
+        }
+    }
+
+    function addProjectMileStone(uint _jobId, uint _bidId, string memory _milestoneName, string memory _mileStoneDescription, uint _mileStoneBudget, uint _mileStoneDuration) public {
+        uint remaining_budget;
+        uint dataPosition;
+         for(uint i = 0; i < allBidsForClientJobs[_jobId].length; i++){
+           if(allBidsForClientJobs[_jobId][i].bidId == _bidId && allBidsForClientJobs[_jobId][i].bidApproved == true){
+            remaining_budget = allBidsForClientJobs[_jobId][i].budget;
+            dataPosition = i;
+           }
+        }
+
+
+
+        if(remaining_budget < _mileStoneBudget){
+            revert('budget_overpriced');
+        }else if(allBidsForClientJobs[_jobId][dataPosition].bidApproved == false){
+            revert('bid_not_approved');
+        }
+        else{
+            mileStoneId++;
+            allBidsForClientJobs[_jobId][dataPosition].budget -= _mileStoneBudget;
+            ///@dev will be used for freelancer rating purposes
+            milestonesInAccount[msg.sender].push(ProjectMilestones(_bidId,mileStoneId, _milestoneName, _mileStoneDescription, _mileStoneBudget, _mileStoneDuration, false));
+
+            ///@dev will be used for client project management
+            projectMilestonesForAcceptedBids[_bidId].push(ProjectMilestones(_bidId,mileStoneId, _milestoneName, _mileStoneDescription, _mileStoneBudget, _mileStoneDuration, false));
+        }
+    }
 
     
+   
+
+    function approveProjectMilestone(address payable _freelancer, uint _mileStoneId)public {
+        uint bidId;
+        address jobOwner;
+        /// @dev making sure only the project owner can make the approval
 
 
-    
+        for(uint i = 0; i < allClientJobs.length; i++){
+            if(allClientJobs[i].accountId == msg.sender){
+                jobOwner = msg.sender;
+            }
+        }
+
+        if(jobOwner != msg.sender){
+            revert("only_job_owner");
+        }
+        
+
+        for(uint i = 0; i < milestonesInAccount[_freelancer].length; i++){
+            if(milestonesInAccount[_freelancer][i].mileStoneId == _mileStoneId && milestonesInAccount[_freelancer][i].milestoneWorkApproved == false && jobOwner == msg.sender) {
+                bidId = milestonesInAccount[_freelancer][i].bidId;
+                address payable contractAddress = payable(address(this));
+                milestonesInAccount[_freelancer][i].milestoneWorkApproved = true;
+                _freelancer.transfer(milestonesInAccount[_freelancer][i].milestoneBudget);
+                transactions[_freelancer].push(Transaction(contractAddress, _freelancer, "Approval",milestonesInAccount[_freelancer][i].milestoneBudget , block.timestamp, "settled"));
+            }
+        }
+
+
+
+        for(uint i = 0; i < projectMilestonesForAcceptedBids[bidId].length; i++){
+            if(projectMilestonesForAcceptedBids[bidId][i].mileStoneId == _mileStoneId){
+                projectMilestonesForAcceptedBids[bidId][i].milestoneWorkApproved = true;
+            }
+        } 
+    }
+
+    /// @dev displays a freelancer milestone at profile Mode
+    function getFreelancerMileStones(address _accountId) public view returns(ProjectMilestones[] memory){
+        return milestonesInAccount[_accountId];
+    }
+
+    /// @dev displays freelancer milestone in Project mode
+    function getProjectMileStones(uint _bidId) public view returns (ProjectMilestones[] memory){
+        return projectMilestonesForAcceptedBids[_bidId];
+    }
+
+    /// @dev display freelancer transaction at profile Mode
+    function getFreelancerTransactions(address _accountId) public view returns(Transaction[] memory){
+        return transactions[_accountId];
+    }
+
+    /// @dev rate a freelancer
+    function rateAfreelancer(address _accountId, uint _bidId,string memory _projectName, string memory _feedBack, uint _ratingForCompletedProjects, uint _ratingForCommunicationSkills) public {
+        uint isRated = 0;
+        for(uint i = 0; i < freelancerRatings[_accountId].length; i++){
+            if(freelancerRatings[_accountId][i].bidId == _bidId){
+                isRated += 1;
+            }
+        }
+
+        if(isRated == 0){
+            freelancerRatings[_accountId].push(FreelancerRatings(_bidId, _projectName, _accountId, _feedBack, _ratingForCompletedProjects, _ratingForCommunicationSkills));
+        }else{
+            revert("allready rated");
+        }
+    }
+    /// @dev view freelancer rating
+
+    function viewFreelancerRating(address _accountId) public view returns(FreelancerRatings[] memory){
+        return freelancerRatings[_accountId];
+    }
+
+    /// @dev disputes handling
+    function createDispute(string memory _disputeName, string memory _description, address _clientInvolved) public {
+        for(uint i = 0; i < disputes.length; i++){
+            if(disputes[i].disputor == msg.sender && disputes[i].resolved == false){
+                revert("solve_your_dispute_first");
+            }
+        }
+        disputes.push(Disputes(_disputeName, _description, msg.sender, _clientInvolved, false));
+    }
+
+    modifier onlyOwner {
+        require(owner == msg.sender, "only_owner");
+        _;
+    }
+
+    function markDisputeAsResolved(address _disputor) public onlyOwner {
+        for(uint i = 0; i < disputes.length; i++){
+            if(disputes[i].disputor == _disputor && disputes[i].resolved == false){
+                disputes[i].resolved = true;
+            }
+        }
+    }
+
+
+    function getDispute(uint index) public view returns (Disputes memory) {
+        require(index < disputes.length, "Invalid index");
+        return disputes[index];
+    }
+
+    function getAllDisputes() public view returns (Disputes[] memory) {
+        return disputes;
+    }
 }

@@ -36,18 +36,35 @@ module.exports = {
    */
 
   networks: {
-    // Useful for testing. The `development` name is special - truffle uses it by default
-    // if it's defined here and no other network is specified at the command line.
-    // You should run a client (like ganache, geth, or parity) in a separate terminal
-    // tab if you use this network and you must also set the `host`, `port` and `network_id`
-    // options below to some value.
-    //
-    development: {
-     host: "127.0.0.1",     // Localhost (default: none)
-     port: 7545,            // Standard Ethereum port (default: none)
-     network_id: "*",       // Any network (default: none)
-     gas: 5000000
-    },
+   
+    ganache: {
+    network_id: "*",
+    host: "localhost",
+    port: 8545 // Standard Ethereum port
+   },
+
+   coverage: {
+    host: "localhost",
+    network_id: "*",
+    port: 8545,
+    gas: 0xfffffffffff, 
+    gasPrice: 0x01,
+    ganacheOptions: {
+        host: "ganache",
+        port: 8545,
+        network_id: "*",
+       version: "7.3.2"
+    }       
+  },
+  
+
+ 
+   development: {
+    host: "127.0.0.1",     // Localhost (default: none)
+    port: 7545,            // Standard Ethereum port (default: none)
+    network_id: "*",       // Any network (default: none)
+    gas: 15000000
+   },
     //
     // goerli: {
     //   provider: () => new HDWalletProvider(mnemonic, `https://goerli.infura.io/v3/${infuraProjectId}`),
@@ -55,7 +72,7 @@ module.exports = {
     //   chain_id: 5
     // }
   },
-
+ 
   // Set default mocha options here, use special reporters etc.
   mocha: {
     // timeout: 100000
@@ -72,5 +89,8 @@ module.exports = {
         },
       }
     }
-  }
+  },
+  plugins: [
+    'solidity-coverage',
+   ]
 };
