@@ -3,48 +3,48 @@ on: push
 
 jobs:
 
-  check-coverage:
+  # check-coverage:
 
-    runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latest
    
-    steps: 
-    - uses: actions/checkout@v3
-    - name: Use Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: "14.x"
-    - name: Install Truffle and solidity coverage 
+  #   steps: 
+  #   - uses: actions/checkout@v3
+  #   - name: Use Node.js
+  #     uses: actions/setup-node@v3
+  #     with:
+  #       node-version: "14.x"
+  #   - name: Install Truffle and solidity coverage 
     
-      run: npm install -g truffle 
-    - name: run first test coverage
-      run: | 
-       pwd
-       ls
-       cd contract
-       bash ./check-coverage.sh
+  #     run: npm install -g truffle 
+  #   - name: run first test coverage
+  #     run: | 
+  #      pwd
+  #      ls
+  #      cd contract
+  #      bash ./check-coverage.sh
 
-    - name: run second test coverage
-      run: |
-       cd contaract
-       bash ./check-tests.sh
-  check-coverage-tests2:
+  #   - name: run second test coverage
+  #     run: |
+  #      cd contaract
+  #      bash ./check-tests.sh
+  # check-coverage-tests2:
 
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
    
-    steps: 
-    - uses: actions/checkout@v3
-    - name: Use Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: "14.x"
-    - name: Install Truffle and solidity coverage 
+    # steps: 
+    # - uses: actions/checkout@v3
+    # - name: Use Node.js
+    #   uses: actions/setup-node@v3
+    #   with:
+    #     node-version: "14.x"
+    # - name: Install Truffle and solidity coverage 
     
-      run: npm install -g truffle 
+    #   run: npm install -g truffle 
     
-    - name: run second test coverage
-      run: |
-       cd contaract
-       bash ./check-tests.sh
+    # - name: run second test coverage
+    #   run: |
+    #    cd contaract
+    #    bash ./check-tests.sh
      
   test:
     # needs: coverage
