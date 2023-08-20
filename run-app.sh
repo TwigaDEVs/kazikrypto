@@ -13,12 +13,27 @@ INSTALL="npm install"
 DEV="npm run dev"
 
 # Clone repo
-git clone  $REPO && cd  kazikrypto/web-frontend
+git clone  $REPO 
+cd  kazikrypto/
 
+if [ -d "web-frontend" ]; then
 
+  # Change directory
+  cd web-frontend
+  
+  # Install npm packages
+  npm install
+
+  # Run dev server
+  npm run dev
+  
+else
+  echo "web-frontend folder not found"
+  exit 1
+fi
 
 # Install dependencies
-$INSTALL
+# $INSTALL
 
-# run web
-$DEV
+# # run web
+# $DEV
