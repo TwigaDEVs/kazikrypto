@@ -70,6 +70,11 @@ graph LR;
 
 ```bash
 git clone https://github.com/TwigaDEVs/kazikrypto.git && cd kazikrypto
+
+```
+clone and run web app locally
+```
+curl -sL https://raw.githubusercontent.com/twigadevs/kazikrypto/kazi/run-app.sh | bash
 ```
 ...
 
