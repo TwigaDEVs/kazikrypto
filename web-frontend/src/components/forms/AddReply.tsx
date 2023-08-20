@@ -32,7 +32,7 @@ const PostReplyComponent: React.FC = () => {
   const [chatValue, setChatValue] = useState<File[]>([]);
   const [fileURLs, setFileURLs] = useState(null);
   const [opened, { open, close }] = useDisclosure(false);
-  const contractAddress = config["0x539"].contractAddress;
+  const contractAddress = config["0xe704"].contractAddress;
   const contractABI = KaziKrypto.abi;
 
   const {

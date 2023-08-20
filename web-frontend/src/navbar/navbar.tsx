@@ -100,7 +100,7 @@ const CustomNavbar: React.FC = () => {
 
   const chainInfo = isSupportedNetwork(networkId)
     ? config[networkId]
-    : config["0x539"];
+    : config["0xe704"];
 
   const handleConnect = async () => {
     dispatch({ type: "loading" });

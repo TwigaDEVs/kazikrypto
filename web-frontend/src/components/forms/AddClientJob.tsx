@@ -37,7 +37,7 @@ const PostClientJobComponent: React.FC = () => {
   const [images, setImages] = useState("");
   const [imagesValue, setImagesValue] = useState<File[]>([]);
   const [opened, { open, close }] = useDisclosure(false);
-  const contractAddress = config["0x539"].contractAddress;
+  const contractAddress = config["0xe704"].contractAddress;
   const contractABI = KaziKrypto.abi;
   const {
     dispatch,
@@ -102,7 +102,10 @@ const PostClientJobComponent: React.FC = () => {
         projectDuration,
         projectBudget,
         skillRequirementsArray,
-        fileURLs
+        fileURLs,
+        {
+          value: ethers.utils.parseEther(projectBudget.toString()), // Convert projectBudget to wei
+        }
       );
 
       await tx.wait();

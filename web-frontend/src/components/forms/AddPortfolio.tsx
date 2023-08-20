@@ -21,7 +21,7 @@ const AddPortfolioComponent: React.FC = () => {
   const [taskUrl, setTaskUrl] = useState("");
   const [description, setDescription] = useState("");
 
-  const contractAddress = config["0x539"].contractAddress;
+  const contractAddress = config["0xe704"].contractAddress;
   const contractABI = KaziKrypto.abi;
   const provider = new ethers.providers.Web3Provider(
     window.ethereum as unknown as ethers.providers.ExternalProvider

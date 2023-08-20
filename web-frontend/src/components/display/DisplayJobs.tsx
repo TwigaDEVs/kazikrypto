@@ -33,7 +33,7 @@ import Bids from "../bids/Bids";
 const ViewClientJobsComponent: React.FC = () => {
   const navigate = useNavigate();
   const [clientJobs, setClientJobs] = useState<any[]>([]); // Use the appropriate type
-  const contractAddress = config["0x539"].contractAddress;
+  const contractAddress = config["0xe704"].contractAddress;
   const contractABI = KaziKrypto.abi;
  
 
@@ -147,7 +147,7 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
   const params = useParams();
   const [clientJobs, setClientJobs] = useState<any[]>([]); // Use the appropriate type
   const [singleJob, setSingleJob] = useState<any>();
-  const contractAddress = config["0x539"].contractAddress;
+  const contractAddress = config["0xe704"].contractAddress;
   const contractABI = KaziKrypto.abi;
   const [fileURLs, setFileURLs] = useState(null);
   const [budget, setBudget] = useState<number>();
@@ -231,6 +231,15 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
         contractABI,
         provider
       );
+
+      // async function getContractBalance() {
+      //   const contractBalance = await provider.getBalance(contractAddress);
+      //   const balanceInEther = ethers.utils.formatEther(contractBalance);
+
+      //   console.log("Contract balance:", balanceInEther, "ETH");
+      // }
+
+      // getContractBalance();
 
       async function callViewFunction() {
         try {

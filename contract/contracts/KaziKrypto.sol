@@ -208,6 +208,8 @@ contract KaziKrypto {
     * @notice after logging in for the first time update details here
      */
 
+
+
     function addNewFreelancer(string memory _fullName,string memory _profileImage, uint _hourlyRate,string memory _profession, string memory _preferredPayment, string[] memory _skill, bool _isProfilePublic)public{
         /// @dev validate inputs
         // require(_fullName.length > 0, "enter_name");

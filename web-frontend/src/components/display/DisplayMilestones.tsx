@@ -9,7 +9,7 @@ import {
   Container,
   Rating,
 } from "@mantine/core";
-import { ethers } from "ethers";
+import { ethers,utils } from "ethers";
 import { config, isSupportedNetwork } from "../../lib/config";
 import KaziKrypto from "../../../../contract/build/contracts/KaziKrypto.json"; // Replace with the actual path to your config file
 import { formatAddress } from "~/utils";
@@ -31,7 +31,7 @@ const GetMilestonesComponent: React.FC<GetMilestonesComponent> = ({
 }) => {
   const [milestones, setMilestones] = useState<any[]>([]); // Use the appropriate type
   console.log("bidid", bidId);
-  const contractAddress = config["0x539"].contractAddress;
+  const contractAddress = config["0xe704"].contractAddress;
   const contractABI = KaziKrypto.abi;
   const [bid, setBid] = useState<any>();
   
@@ -56,9 +56,10 @@ const GetMilestonesComponent: React.FC<GetMilestonesComponent> = ({
 
         // Make sure jobId is in the right format
         const new_mileStoneId = parseInt(mileStoneId);
-        console.log("ciiiiiisaas",bid.accountId);
+        const payableAddress = utils.getAddress(bid.accountId);
+        console.log("ciiiiiisaas",payableAddress);
         const transaction = await contract.approveProjectMilestone(
-          bid.accountId,
+          payableAddress,
           new_mileStoneId
         );
 

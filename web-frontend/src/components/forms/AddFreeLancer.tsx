@@ -27,7 +27,7 @@ const AddFreelancerComponent: React.FC = () => {
   const [skills, setSkills] = useState<string[]>([]);
   const [isProfilePublic, setIsProfilePublic] = useState(false);
 
-  const contractAddress = config["0x539"].contractAddress;
+  const contractAddress = config["0xe704"].contractAddress;
 
   const provider = new ethers.providers.Web3Provider(
     window.ethereum as unknown as ethers.providers.ExternalProvider

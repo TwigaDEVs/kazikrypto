@@ -49737,8 +49737,8 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xf4da98e133B232ddC5644c71aB714E32455d7Df7",
-      "transactionHash": "0xc926b32e1943ebea8e068979166b89009f8098b278c891c804ccb7d7b932ba45"
+      "address": "0x679c8816DBfCA19054185323e54B687bBC1673e0",
+      "transactionHash": "0xd60d33d00694ed6a0f28de22d9958162c32b784e401583318be9a8abdbd6c0ad"
     },
     "59140": {
       "events": {},
@@ -49748,7 +49748,7 @@
     }
   },
   "schemaVersion": "3.4.14",
-  "updatedAt": "2023-08-19T23:25:54.399Z",
+  "updatedAt": "2023-08-20T13:10:28.869Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "user Registration and profilesJob posting and biddingSmart contract escrowmessaging and collaborationreputation and reviewspayment and escrow releasetransaction history and analyticsconflict resolution",

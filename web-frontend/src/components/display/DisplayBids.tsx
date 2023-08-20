@@ -28,7 +28,7 @@ const GetBidsComponent: React.FC<GetBidsComponent> = ({
 }) => {
   const [bids, setBids] = useState<any[]>([]); // Use the appropriate type
 
-  const contractAddress = config["0x539"].contractAddress;
+  const contractAddress = config["0xe704"].contractAddress;
   const contractABI = KaziKrypto.abi;
   const navigate = useNavigate();
   

@@ -34,7 +34,7 @@ export const ViewClientJobsMilestonesComponent: React.FC = () => {
   console.log(params);
   const [clientJobs, setClientJobs] = useState<any[]>([]); // Use the appropriate type
   const [singleJob, setSingleJob] = useState<any>();
-  const contractAddress = config["0x539"].contractAddress;
+  const contractAddress = config["0xe704"].contractAddress;
   const contractABI = KaziKrypto.abi;
   const [fileURLs, setFileURLs] = useState(null);
   const [budget, setBudget] = useState<number>();

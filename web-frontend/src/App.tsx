@@ -199,7 +199,7 @@ function Home() {
       );
 
       const contractInstance = new ethers.Contract(
-        config["0x539"].contractAddress,
+        config["0xe704"].contractAddress,
         KaziKrypto.abi,
         provider
       );
@@ -229,7 +229,7 @@ function Home() {
   // now chainInfo is strongly typed or fallback to linea if not a valid chain
   const chainInfo = isSupportedNetwork(networkId)
     ? config[networkId]
-    : config["0x539"];
+    : config["0xe704"];
 
   console.log("this looks for in app", !isMetaMaskInstalled);
 

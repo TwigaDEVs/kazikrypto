@@ -22,7 +22,7 @@ const GetFreelancerComponent: React.FC<GetFreelancerProps> = ({
 }) => {
   const [freelancer, setFreelancer] = useState<any>(null); // Use the appropriate type
 
-  const contractAddress = config["0x539"].contractAddress;
+  const contractAddress = config["0xe704"].contractAddress;
   const contractABI = KaziKrypto.abi;
   const provider = new ethers.providers.Web3Provider(
     window.ethereum as unknown as ethers.providers.ExternalProvider

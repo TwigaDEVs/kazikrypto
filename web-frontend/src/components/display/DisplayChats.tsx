@@ -47,7 +47,7 @@ import PostReplyComponent from "../forms/AddReply";
 const ViewChatsComponent: React.FC = () => {
   const navigate = useNavigate();
   const [chats, setChats] = useState<any[]>([]); // Use the appropriate type
-  const contractAddress = config["0x539"].contractAddress;
+  const contractAddress = config["0xe704"].contractAddress;
   const contractABI = KaziKrypto.abi;
     const {
       dispatch,
@@ -154,7 +154,7 @@ const ViewChatsComponent: React.FC = () => {
 //   const params = useParams();
 //   const [clientJobs, setClientJobs] = useState<any[]>([]); // Use the appropriate type
 //   const [chats, setChats] = useState<any>(null);
-//   const contractAddress = config["0x539"].contractAddress;
+//   const contractAddress = config["0xe704"].contractAddress;
 //   const contractABI = KaziKrypto.abi;
 //   const [fileURLs, setFileURLs] = useState(null);
 //   const [budget, setBudget] = useState<number>();
