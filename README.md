@@ -67,8 +67,10 @@ graph LR;
 ```
 
 ## Installation and Setup
-```
-git clone https://github.com/TwigaDEVs/kazikrypto.git
+
+```bash
+git clone https://github.com/TwigaDEVs/kazikrypto.git && \ 
+cd kazikrypto
 ```
 ...
 
@@ -85,7 +87,6 @@ npm run dev
 ## Technologies Used
 - solidity
 - metamask sdk
-- metamask snap
 - infura
 - truffle
 - vite
