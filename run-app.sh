@@ -4,7 +4,7 @@
 REPO="https://github.com/TwigaDEVs/kazikrypto.git" 
 
 # Branch name
-BRANCH="master"
+BRANCH="kazi"
 
 
 # Clone repo
