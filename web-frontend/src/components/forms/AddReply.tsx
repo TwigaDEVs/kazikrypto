@@ -121,7 +121,7 @@ const PostReplyComponent: React.FC = () => {
         />
 
         <FileInput
-          label="Images"
+          label="files"
           withAsterisk
           multiple
           value={chatValue}
@@ -131,12 +131,21 @@ const PostReplyComponent: React.FC = () => {
           }}
         />
         <br />
-        <Button onClick={handlePostReply} uppercase>
+        {/* <Button onClick={handlePostReply} uppercase>
           Send
-        </Button>
+        </Button> */}
+        {fileURLs !== null ? (
+          <Button onClick={handlePostReply} uppercase>
+            Send
+          </Button>
+        ) : (
+          <Button disabled>upload chat file(s) to Enable Posting</Button>
+        )}
       </Modal>
       <Group position="left">
-        <Button onClick={open} variant="outline">Reply</Button>
+        <Button onClick={open} variant="outline">
+          Reply
+        </Button>
       </Group>
     </div>
   );

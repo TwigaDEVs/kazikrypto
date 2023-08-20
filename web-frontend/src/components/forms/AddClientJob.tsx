@@ -173,13 +173,8 @@ const PostClientJobComponent: React.FC = () => {
             console.log(skillRequirements);
           }}
         />
-        <TextInput
-          label="Images (comma separated)"
-          value={images}
-          onChange={(e) => setImages(e.target.value)}
-        />
         <FileInput
-          label="Images"
+          label="project file"
           withAsterisk
           multiple
           value={imagesValue}
@@ -189,9 +184,16 @@ const PostClientJobComponent: React.FC = () => {
           }}
         />
         <br />
-        <Button onClick={handlePostClientJob} uppercase>
+        {/* <Button onClick={handlePostClientJob} uppercase>
           Post Client Job
-        </Button>
+        </Button> */}
+        {fileURLs !== null ? (
+          <Button onClick={handlePostClientJob} uppercase>
+            Post Client Job
+          </Button>
+        ) : (
+          <Button disabled>upload project file(s) to Enable Posting</Button>
+        )}
       </Modal>
       <Group position="center">
         <Button onClick={open}>Post a Job</Button>

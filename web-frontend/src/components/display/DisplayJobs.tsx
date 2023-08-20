@@ -433,10 +433,18 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
                     }}
                   />
                   <br />
-                  <Button onClick={handleMakeBidding} uppercase>
+                  {/* <Button onClick={handleMakeBidding} uppercase>
                     Bid
-                  </Button>
-                  ;
+                  </Button> */}
+                  {fileURLs !== null ? (
+                    <Button onClick={handleMakeBidding} uppercase>
+                      Bid
+                    </Button>
+                  ) : (
+                    <Button disabled>
+                      upload bid file(s) to Enable Posting
+                    </Button>
+                  )}
                 </Container>
               </>
             ) : (
@@ -452,8 +460,7 @@ export const ViewDescriptionAndBidPage: React.FC = () => {
       )}
       <br />
       {bids.length > 0 ? (
-      <Bids jobId={params.jobId} singleJob={singleJob} />
-
+        <Bids jobId={params.jobId} singleJob={singleJob} />
       ) : (
         "No bids"
       )}
