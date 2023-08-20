@@ -104,47 +104,58 @@ const ViewChatsComponent: React.FC = () => {
       {chats.length > 0 ? (
         <Container>
           {chats.map((chat, index) => (
-              <Paper key={index}  shadow="xs" p="md">
-                <Text weight={300} style={{ fontSize: 14 }} color="grey">
-                  from:{" "}
-                  <span style={{ color: "blue" }}>
-                    {" "}
-                    {formatAddress(chat.sender)}
-                  </span>
-                </Text>
-                <Text weight={300} style={{ fontSize: 12 }} color="grey">
-                  {new Date(
-                    parseInt(chat.timestamp._hex, 16) * 1000
-                  ).toLocaleString()}
-                </Text>
+            <Paper key={index} shadow="xs" p="md">
+              <Text weight={300} style={{ fontSize: 14 }} color="grey">
+                from:{" "}
+                <span style={{ color: "blue" }}>
+                  {" "}
+                  {formatAddress(chat.sender)}
+                </span>
+              </Text>
+              <Text weight={300} style={{ fontSize: 12 }} color="grey">
+                {new Date(
+                  parseInt(chat.timestamp._hex, 16) * 1000
+                ).toLocaleString()}
+              </Text>
 
-                <Text>{chat.message}</Text>
-                <Text weight={300} size="md">
-                  {chat.seen ? (
-                    <Text weight={300} size="md" color="green">
-                      seen
+              <Text>{chat.message}</Text>
+              <Text weight={300} size="md">
+                {chat.seen ? (
+                  <Text weight={300} size="md" color="green">
+                    seen
+                  </Text>
+                ) : (
+                  <>
+                    <Text
+                      weight={300}
+                      size="md"
+                      color="red"
+                      style={{ fontSize: 14, fontWeight: 600 }}
+                    >
+                      Not seen
                     </Text>
-                  ) : (
-                    <>
-                      <Text
-                        weight={300}
-                        size="md"
-                        color="red"
-                        style={{ fontSize: 14, fontWeight: 600 }}
-                      >
-                        Not seen
-                      </Text>
-                    </>
-                  )}
-                </Text>
-                <Anchor>
-                  <PostReplyComponent />
-                </Anchor>
-              </Paper>
+                  </>
+                )}
+              </Text>
+              <Anchor>
+                <PostReplyComponent />
+              </Anchor>
+            </Paper>
           ))}
         </Container>
       ) : (
-        <Text align="center">"No chats"</Text>
+        <>
+          <Text align="center">"No chats"</Text>
+          <Text align="center">
+            <small
+              style={{ color: "green", fontSize: 12, textAlign: "center" }}
+            >
+              {" "}
+              use this section to send tasks to your favourite freelancers, must
+              have their wallet adress{" "}
+            </small>
+          </Text>
+        </>
       )}
     </div>
   );

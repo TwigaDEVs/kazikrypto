@@ -130,6 +130,7 @@ const PostChatComponent: React.FC = () => {
         <TextInput
           label="to"
           value={receiver}
+          placeholder="adress"
           onChange={(e) => setReceiver(e.target.value)}
         />
         <Textarea
@@ -139,7 +140,7 @@ const PostChatComponent: React.FC = () => {
         />
 
         <FileInput
-          label="Images"
+          label="files"
           withAsterisk
           multiple
           value={chatValue}
@@ -149,17 +150,21 @@ const PostChatComponent: React.FC = () => {
           }}
         />
         <br />
-        <Button onClick={handlePostChat} uppercase>
+        {/* <Button onClick={handlePostChat} uppercase>
           Send
-        </Button>
+        </Button> */}
+        {fileURLs !== null ? (
+          <Button onClick={handlePostChat} uppercase>
+            Send
+          </Button>
+        ) : (
+          <Button disabled>upload chat file(s) to Enable Posting</Button>
+        )}
       </Modal>
       <Group position="center">
         <Button onClick={open}>
-          <IconMessage2
-            size="1rem"
-            stroke={1.5}
-          />
-           new message
+          <IconMessage2 size="1rem" stroke={1.5} />
+          new message
         </Button>
       </Group>
     </div>
