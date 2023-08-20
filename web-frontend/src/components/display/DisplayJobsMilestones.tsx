@@ -29,12 +29,9 @@ import { useAccountId } from "~/hooks/UseAccount";
 import { formatBalance } from "~/utils";
 import Milestones from "../milestones/Milestones";
 
-
-
-
 export const ViewClientJobsMilestonesComponent: React.FC = () => {
   const params = useParams();
-  console.log(params)
+  console.log(params);
   const [clientJobs, setClientJobs] = useState<any[]>([]); // Use the appropriate type
   const [singleJob, setSingleJob] = useState<any>();
   const contractAddress = config["0x539"].contractAddress;
@@ -46,8 +43,8 @@ export const ViewClientJobsMilestonesComponent: React.FC = () => {
   const [milestoneDuration, setMilestoneDuration] = useState("");
   const [bids, setBids] = useState<any[]>([]);
   const { accountId } = useAccountId();
-   const [milestoneName, setMilestoneName] = useState("");
-
+  const [milestoneName, setMilestoneName] = useState("");
+  const [userAdress, setUserAdress] = useState<any>(null);
 
   const {
     dispatch,
@@ -126,6 +123,14 @@ export const ViewClientJobsMilestonesComponent: React.FC = () => {
         provider
       );
 
+      async function connectToUserWallet() {
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
+        setUserAdress(address);
+      }
+
+      connectToUserWallet();
+
       async function callViewFunction() {
         try {
           const result = await contractInstance.getBids(params.jobId);
@@ -141,49 +146,49 @@ export const ViewClientJobsMilestonesComponent: React.FC = () => {
   }, [contractAddress, contractABI]);
 
   console.log("am here", bids);
-//  console.log("haloooooooooooooooo")
+  //  console.log("haloooooooooooooooo")
 
- const handleAddMilestone = async () => {
-   if (!isMetaMaskInstalled) {
-     // MetaMask not installed, show a message or prompt the user to install/connect
-     console.error("Hitilafu kwenye kutuma kazi ya mteja");
-     return;
-   }
-   const provider = new ethers.providers.Web3Provider(
-     window.ethereum as unknown as ethers.providers.ExternalProvider
-   );
-   const signer = provider.getSigner();
+  const handleAddMilestone = async () => {
+    if (!isMetaMaskInstalled) {
+      // MetaMask not installed, show a message or prompt the user to install/connect
+      console.error("Hitilafu kwenye kutuma kazi ya mteja");
+      return;
+    }
+    const provider = new ethers.providers.Web3Provider(
+      window.ethereum as unknown as ethers.providers.ExternalProvider
+    );
+    const signer = provider.getSigner();
 
-   const contractInstance = new ethers.Contract(
-     contractAddress,
-     contractABI,
-     signer
-   );
+    const contractInstance = new ethers.Contract(
+      contractAddress,
+      contractABI,
+      signer
+    );
 
+    try {
+      const new_jobId = parseInt(params.jobId);
+      const new_bidId = parseInt(params.bidId);
 
-   try {
- 
-    const new_jobId = parseInt(params.jobId);
-    const new_bidId = parseInt(params.bidId);
-     
-     const tx = await contractInstance.addProjectMileStone(
-       ethers.BigNumber.from(new_jobId),
-       ethers.BigNumber.from(new_bidId),
-       milestoneName,
-       description,
-       ethers.BigNumber.from(budget),
-       ethers.BigNumber.from(milestoneDuration)
-     );
-     await tx.wait();
-     console.log("milestone addition successful");
-     notifications.show({
-       title: "Successful",
-       message: "milestone addition done successful",
-     });
-   } catch (e) {
-     console.error("Error posting milestone :", e);
-   }
- };
+      console.log(new_jobId, new_bidId, budget, milestoneDuration);
+
+      const tx = await contractInstance.addProjectMileStone(
+        ethers.BigNumber.from(new_jobId),
+        ethers.BigNumber.from(new_bidId),
+        milestoneName,
+        description,
+        ethers.BigNumber.from(budget),
+        ethers.BigNumber.from(milestoneDuration)
+      );
+      await tx.wait();
+      console.log("milestone addition successful");
+      notifications.show({
+        title: "Successful",
+        message: "milestone addition done successful",
+      });
+    } catch (e) {
+      console.error("Error posting milestone :", e);
+    }
+  };
 
   useEffect(() => {
     const ethereumProviderInjected = typeof window.ethereum !== "undefined";
@@ -300,47 +305,55 @@ export const ViewClientJobsMilestonesComponent: React.FC = () => {
       { from: freelancer }
     );
           */}
-            <>
-              <Text size="lg" weight={600}>
-                New Milestone
-              </Text>
-              <Container size="30rem" sx={{ backgroundColor: "#ffffff" }}>
-                <TextInput
-                  label="Name"
-                  value={milestoneName}
-                  onChange={(e) => setMilestoneName(e.target.value)}
-                />
-                <NumberInput
-                  label="Milestone Budget"
-                  precision={6}
-                  parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-                  formatter={(value) =>
-                    !Number.isNaN(parseFloat(value))
-                      ? `ETH ${value}`.replace(
-                          /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
-                          ","
-                        )
-                      : "ETH "
-                  }
-                  onChange={(value: number) => setBudget(value)}
-                />
-                <TextInput
-                  label="Duration"
-                  value={milestoneDuration}
-                  onChange={(e) => setMilestoneDuration(e.target.value)}
-                />
-                <Textarea
-                  label="Description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-                <br />
-                <Button onClick={handleAddMilestone} uppercase>
-                  Add
-                </Button>
-                ;
-              </Container>
-            </>
+            {singleJob ? (
+              userAdress === singleJob.accountId ? (
+                " "
+              ) : (
+                <>
+                  <Text size="lg" weight={600}>
+                    New Milestone
+                  </Text>
+                  <Container size="30rem" sx={{ backgroundColor: "#ffffff" }}>
+                    <TextInput
+                      label="Name"
+                      value={milestoneName}
+                      onChange={(e) => setMilestoneName(e.target.value)}
+                    />
+                    <NumberInput
+                      label="Milestone Budget"
+                      precision={6}
+                      parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                      formatter={(value) =>
+                        !Number.isNaN(parseFloat(value))
+                          ? `ETH ${value}`.replace(
+                              /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                              ","
+                            )
+                          : "ETH "
+                      }
+                      onChange={(value: number) => setBudget(value)}
+                    />
+                    <TextInput
+                      label="Duration"
+                      value={milestoneDuration}
+                      onChange={(e) => setMilestoneDuration(e.target.value)}
+                    />
+                    <Textarea
+                      label="Description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                    />
+                    <br />
+                    <Button onClick={handleAddMilestone} uppercase>
+                      Add
+                    </Button>
+                    ;
+                  </Container>
+                </>
+              )
+            ) : (
+              <Text>No Single Job</Text>
+            )}
           </Card>
         </Container>
       ) : (
@@ -348,7 +361,11 @@ export const ViewClientJobsMilestonesComponent: React.FC = () => {
       )}
       <br />
       {bids.length > 0 ? (
-        <Milestones jobId={params.jobId} singleJob={singleJob} bidId={params.bidId}/>
+        <Milestones
+          jobId={params.jobId}
+          singleJob={singleJob}
+          bidId={params.bidId}
+        />
       ) : (
         "No bids"
       )}

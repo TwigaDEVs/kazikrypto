@@ -137,7 +137,8 @@ function goToMilestonesPage(x,y) {
                       Approved
                     </Text>
                     {singleJob ? (
-                      bid.accountId === freelancerAddress ? (
+                      bid.accountId === freelancerAddress ||
+                      freelancerAddress == singleJob.accountId ? (
                         <Button
                           onClick={() => {
                             goToMilestonesPage(
@@ -166,9 +167,9 @@ function goToMilestonesPage(x,y) {
                       Not Approved
                     </Text>
                     {singleJob ? (
-                      bid.accountId === singleJob.accountId ? (
+                      freelancerAddress === singleJob.accountId ? (
                         <Button onClick={() => approveBid(bid.bidId)}>
-                          Approved Bid
+                          Approve Bid
                         </Button>
                       ) : (
                         " "

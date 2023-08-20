@@ -49737,12 +49737,18 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x78f3Ca51AA59981CD4A55cd97fCDF01B415FEf17",
-      "transactionHash": "0xdea6c1828749425386d98e1d7154cdc6663c2a385b0578f27fa94e823f1de915"
+      "address": "0xf4da98e133B232ddC5644c71aB714E32455d7Df7",
+      "transactionHash": "0xc926b32e1943ebea8e068979166b89009f8098b278c891c804ccb7d7b932ba45"
+    },
+    "59140": {
+      "events": {},
+      "links": {},
+      "address": "0x2C0Bf8f9014cAFbC9dC56b524D9069CE505414Ae",
+      "transactionHash": "0xa1e4bb7568585ac2515544a33512f43acf7d7487cb4a4d0afe9dd03747574e6e"
     }
   },
   "schemaVersion": "3.4.14",
-  "updatedAt": "2023-08-19T12:37:57.199Z",
+  "updatedAt": "2023-08-19T23:25:54.399Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "user Registration and profilesJob posting and biddingSmart contract escrowmessaging and collaborationreputation and reviewspayment and escrow releasetransaction history and analyticsconflict resolution",

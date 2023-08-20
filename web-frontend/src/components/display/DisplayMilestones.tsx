@@ -27,14 +27,16 @@ const GetMilestonesComponent: React.FC<GetMilestonesComponent> = ({
   jobId,
   singleJob,
   bidId,
+
 }) => {
   const [milestones, setMilestones] = useState<any[]>([]); // Use the appropriate type
-    console.log("bidid",bidId)
+  console.log("bidid", bidId);
   const contractAddress = config["0x539"].contractAddress;
   const contractABI = KaziKrypto.abi;
+  const [bid, setBid] = useState<any>();
+  
 
-
-  async function approveBid(bidId) {
+  async function handleApproveProjectMilestone(mileStoneId) {
     try {
       const ethereumProviderInjected = typeof window.ethereum !== "undefined";
       const isMetaMaskInstalled =
@@ -53,11 +55,15 @@ const GetMilestonesComponent: React.FC<GetMilestonesComponent> = ({
         );
 
         // Make sure jobId is in the right format
-        const new_jobId = parseInt(jobId);
-        const transaction = await contract.acceptBid(new_jobId, bidId);
+        const new_mileStoneId = parseInt(mileStoneId);
+        console.log("ciiiiiisaas",bid.accountId);
+        const transaction = await contract.approveProjectMilestone(
+          bid.accountId,
+          new_mileStoneId
+        );
 
         await transaction.wait(); // Wait for the transaction to be mined
-        console.log("Bid accepted successfully!");
+        console.log("milestone accepted successfully!");
       }
     } catch (error) {
       console.error("Error approving bid:", error);
@@ -79,9 +85,21 @@ const GetMilestonesComponent: React.FC<GetMilestonesComponent> = ({
         provider
       );
 
+      async function callBidFunction() {
+        try {
+          const result = await contractInstance.getBid(jobId, bidId);
+          console.log(result);
+          console.log("holla");
+          setBid(result);
+        } catch (error) {
+          console.error("Error calling view function:", error);
+        }
+      }
+      callBidFunction();
+
       async function callViewFunction() {
         try {
-        const new_bidId = parseInt(bidId);
+          const new_bidId = parseInt(bidId);
           const result = await contractInstance.getProjectMileStones(new_bidId);
           // console.log(result);
           // console.log("holla");
@@ -143,17 +161,21 @@ const GetMilestonesComponent: React.FC<GetMilestonesComponent> = ({
                     >
                       Not Approved
                     </Text>
-                    {/* {singleJob ? (
-                      milestone.accountId === singleJob.accountId ? (
-                        <Button onClick={() => approveBid(bid.bidId)}>
-                          Approved Bid
+                    {singleJob ? (
+                      freelancerAddress === singleJob.accountId ? (
+                        <Button
+                          onClick={() =>
+                            handleApproveProjectMilestone(milestone.mileStoneId)
+                          }
+                        >
+                          Approve Milestone
                         </Button>
                       ) : (
                         " "
                       )
                     ) : (
                       <Text>No Single Job</Text>
-                    )} */}
+                    )}
                   </>
                 )}
               </Text>

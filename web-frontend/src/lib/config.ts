@@ -8,7 +8,7 @@ export const config = {
   },
   "0xe704": {
     name: "Linea",
-    contractAddress: "0x721f8754B213dfE26160caab435618f2C6606041",
+    contractAddress: "0x2C0Bf8f9014cAFbC9dC56b524D9069CE505414Ae",
     symbol: "ETH",
     blockExplorer: "https://explorer.goerli.linea.build",
     rpcUrl: "https://rpc.goerli.linea.build",
@@ -22,7 +22,7 @@ export const config = {
   },
   "0x539": {
     name: "localhost",
-    contractAddress: "0x78f3Ca51AA59981CD4A55cd97fCDF01B415FEf17",
+    contractAddress: "0xf4da98e133B232ddC5644c71aB714E32455d7Df7",
     symbol: "ETH",
     blockExplorer: "",
     rpcUrl: "HTTP://127.0.0.1:7545",
