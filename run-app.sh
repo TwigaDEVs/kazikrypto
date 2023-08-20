@@ -6,11 +6,6 @@ REPO="https://github.com/TwigaDEVs/kazikrypto.git"
 # Branch name
 BRANCH="master"
 
-# Install command
-INSTALL="npm install" 
-
-# dev command 
-DEV="npm run dev"
 
 # Clone repo
 git clone  $REPO 
@@ -32,8 +27,3 @@ else
   exit 1
 fi
 
-# Install dependencies
-# $INSTALL
-
-# # run web
-# $DEV
