@@ -16,6 +16,9 @@
     "solidity-coverage": "^0.7.22"
   },
   "dependencies": {
+    "@truffle/hdwallet-provider": "^2.1.13",
+    "dotenv": "^16.3.1",
+    "install": "^0.13.0",
     "web3": "^4.0.3"
   }
 }

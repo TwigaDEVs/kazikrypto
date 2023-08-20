@@ -801,7 +801,7 @@ contract("KaziKrypto", (accounts) => {
       { from: client, value: projectBudget }
     );
 
-    const a = await instance.getAllClientJobs();
+    const a = await instance.getClientJob();
     console.log(a);
 
     // const jobId = 1;
