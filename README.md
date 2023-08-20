@@ -1,6 +1,6 @@
 # Kazi Krypto
 
-Description: The use case involves building a freelancing platform on the Ethereum blockchain using React Native for Android application development. The platform will utilize Infura, MetaMask SDK, MetaMask snaps, and Linea to enable cross-chain functionality and seamless integration with the Ethereum network. The platform aims to connect freelancers and clients, facilitating secure and transparent transactions while leveraging the benefits of blockchain technology.
+Description: The use case involves building a freelancing platform on the Ethereum blockchain using ViteJS + React,Infura, MetaMask SDK and Linea Testnet  to enable cross-chain functionality and seamless integration with the Ethereum network. The platform aims to connect freelancers and clients, facilitating secure and transparent transactions while leveraging the benefits of blockchain technology.
 
 ## Key Features
 
@@ -25,7 +25,7 @@ Description: The use case involves building a freelancing platform on the Ethere
    - Reputation scores are calculated based on completed projects, feedback, and timely payments.
 
 6. Multi-Chain Integration:
-   - Utilize MetaMask Snap and Linia to enable seamless integration with various Ethereum-compatible chains (e.g., Ethereum mainnet, testnets, sidechains).
+   - Utilize MetaMask  and Linia to enable seamless integration with various Ethereum-compatible chains (e.g., Ethereum mainnet, testnets, sidechains).
    - Users can choose their preferred chain for transactions, considering factors such as gas fees and transaction speed.
 
 7. Wallet Integration:
@@ -44,7 +44,7 @@ Description: The use case involves building a freelancing platform on the Ethere
    - Users can access a transparent transaction history, including payments made, received, and pending.
    - Analytics and reporting features to track project progress, earnings, and performance metrics.
 
-The above use case outlines a freelancing platform on the Ethereum blockchain, leveraging React Native for Android development, Infura for blockchain connectivity, MetaMask SDK and MetaMask Snap for wallet integration, and Linia for cross-chain functionality. The platform aims to provide a secure, decentralized, and transparent environment for freelancers and clients to connect, collaborate, and transact with ease while benefiting from the advantages offered by blockchain technology.
+
 
 ## KaziKrypto Details 
 
