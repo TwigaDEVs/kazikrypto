@@ -68,7 +68,7 @@ graph LR;
 
 ## Installation and Setup
 ```
-git clone 
+git clone https://github.com/TwigaDEVs/kazikrypto.git
 ```
 ...
 
