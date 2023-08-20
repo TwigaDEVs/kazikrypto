@@ -69,17 +69,16 @@ graph LR;
 ## Installation and Setup
 
 ```bash
-git clone https://github.com/TwigaDEVs/kazikrypto.git && \ 
-cd kazikrypto
+git clone https://github.com/TwigaDEVs/kazikrypto.git && cd kazikrypto
 ```
 ...
 
 ## Usage
 ```
-cd  web-frontend && npm install
+chmod +x run-app.sh && ./run-app.sh
 ```
 ```
-npm run dev
+
 ```
 
 ...
