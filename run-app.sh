@@ -13,10 +13,10 @@ INSTALL="npm install"
 DEV="npm run dev"
 
 # Clone repo
-git clone  $REPO
+git clone  $REPO && cd cd kazikrypto/web-frontend
 
 # Change to main directory
-cd kazikrypto 
+
 
 # Change to repo directory 
 cd web-frontend
