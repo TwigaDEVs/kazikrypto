@@ -14,7 +14,10 @@ DEV="npm run dev"
 
 # Clone repo
 git clone  $REPO
-cd kazikyrpto 
+
+# Change to main directory
+cd kazikrypto 
+
 # Change to repo directory 
 cd web-frontend
 
