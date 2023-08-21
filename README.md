@@ -291,11 +291,11 @@ Pull requests should target the develop branch. Follow these steps:
 ...
 
 ## Contact Information
-- group mail:twigadevs@gmail.com
-- peter:kagwepeter07@gmail.com
-- onchezz: brianonchezz@gmail.com
-- felix 
-- Ted
+- group mail:twigadevs@gmail.com [github](https://github.com/TwigaDEVs)
+- peter: kagwepeter07@gmail.com [github](https://github.com/Kagwep)
+- felix: felixawere01@gmail.com [github](https://github.com/Felabs1)
+- onchezz: brianonchezz@gmail.com [github](https://github.com/onchezz)
+- Ted: ogolated00@gmail.com [github](https://github.com/Ted1166)
 
 
 
