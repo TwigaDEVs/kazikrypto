@@ -72,7 +72,12 @@ graph LR;
 3. IYKYK Linea Edition
 4. Dapp That Slaps, No Cap 
 
-
+## links 
+- infura rpc : https://linea-goerli.infura.io/v3/
+- infura ipfs : https://hambre.infura-ipfs.io/
+- deployed contract: 
+https://explorer.goerli.linea.build/address/0x2C0Bf8f9014cAFbC9dC56b524D9069CE505414Ae
+- web app frontend: https://kazikrypto.vercel.app/
 ...
 ## Installation and Setup
 #### prerequisites
@@ -286,7 +291,12 @@ Pull requests should target the develop branch. Follow these steps:
 ...
 
 ## Contact Information
-- twigadevs@gmail.com
+- group mail:twigadevs@gmail.com
+- peter:kagwepeter07@gmail.com
+- onchezz: brianonchezz@gmail.com
+- felix 
+- Ted
+
 
 
 ...
