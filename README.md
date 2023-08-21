@@ -109,6 +109,8 @@ cd web-frontend && npm install
 
 This project consists of a Solidity smart contract and a React frontend application that interacts with it via MetaMask.
 #### Smart Contract overview
+ Deployed smart contract infura link : 
+https://explorer.goerli.linea.build/address/0x2C0Bf8f9014cAFbC9dC56b524D9069CE505414Ae
 
 The smart contract is written in Solidity and contains the core logic and state of the application. It is deployed on the Ethereum blockchain. Main functions:
 - `addNewFreelancer()` - Allows adding a new freelancer profile  
