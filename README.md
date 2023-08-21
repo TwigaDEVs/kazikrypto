@@ -66,6 +66,14 @@ graph LR;
 
 ```
 
+## Bounties
+1. Infura and Beyond
+2. Mobile Fun with MetaMask SDK
+3. IYKYK Linea Edition
+4. Dapp That Slaps, No Cap 
+
+
+...
 ## Installation and Setup
 #### prerequisites
 - node v18
@@ -174,7 +182,10 @@ The contract uses events like ValueSet and ValueChanged to emit notifications wh
 
 #### Frontend Overview
 
+
 The frontend React app provides the user interface and interacts with the deployed smart contract.
+- deployed frontend ui  [web app link](https://kazikrypto.vercel.app/)
+
 #### Key Functions
 
 The frontend UI is built using React and provides forms and views to interact with the smart contract functions:
@@ -276,5 +287,6 @@ Pull requests should target the develop branch. Follow these steps:
 
 ## Contact Information
 - twigadevs@gmail.com
+
 
 ...
