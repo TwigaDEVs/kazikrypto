@@ -66,11 +66,6 @@ graph LR;
 
 ```
 
-## Bounties
-1. Infura and Beyond
-2. Mobile Fun with MetaMask SDK
-3. IYKYK Linea Edition
-4. Dapp That Slaps, No Cap 
 
 ## links 
 - infura rpc : https://linea-goerli.infura.io/v3/
